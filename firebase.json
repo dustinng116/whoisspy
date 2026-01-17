@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "dist/who-is-spy",  
+    "public": "dist/who-is-spy/browser",
     "ignore": [
       "firebase.json",
       "**/.*",
