@@ -1,0 +1,428 @@
+<div class="app-container">
+
+    <!-- ================= HOME SCREEN ================= -->
+    @if (!joined()) {
+    <div class="screen-home fade-in">
+        <div class="fingerprint-icon">
+            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#6c5ce7" stroke-width="1.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 12C2 6.5 6.5 2 12 2a10 10 0 0 1 8 6" />
+                <path d="M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2" />
+                <path d="M8.65 22c.21-.66.45-1.32.57-2" />
+                <path d="M9 6.8a6 6 0 0 1 9 5.2c0 .47 0 .95-.07 1.43" />
+                <path d="M16 22h1.8" />
+                <path d="M13 22.4c-.05-1-.26-2-.35-3" />
+                <path d="M9 12.5a4.5 4.5 0 0 1 6.8-2.6" />
+            </svg>
+        </div>
+        <h1>Who is the Spy?</h1>
+        <div class="input-group">
+            <input [ngModel]="playerName()" (ngModelChange)="playerName.set($event)"
+                placeholder="Nhập tên của bạn..." />
+        </div>
+
+        @if (viewMode() === 'home') {
+        <button class="btn-primary" (click)="createRoom()">TẠO PHÒNG +</button>
+        <button class="btn-secondary" (click)="viewMode.set('join_input')">THAM GIA →</button>
+        } @else {
+        <div class="input-group fade-in">
+            <label>ROOM ID</label>
+            <input type="text" placeholder="Nhập 8 số mã phòng..." [value]="joinRoomInput()"
+                (input)="onlyNumberInput($event)" autofocus />
+        </div>
+        <div class="row-btn">
+            <button class="btn-primary" [disabled]="joinRoomInput().length !== 8" (click)="joinRoom()">VÀO NGAY</button>
+            <button class="btn-text" (click)="viewMode.set('home')">Quay lại</button>
+        </div>
+        }
+    </div>
+    }
+
+    <!-- ================= JOINED ================= -->
+    @if (joined()) {
+
+    <!-- ===== ROLE OVERLAY / MAIN SCREEN ===== -->
+    @if (showWord()) {
+    <div class="role-overlay fade-in">
+        <div class="role-card">
+            <div class="role-header">VAI TRÒ CỦA BẠN</div>
+            <h1 class="role-name" [class.spy]="myRoleRaw() === 'spy'">
+                {{ myRoleRaw() === 'spy' ? 'ĐIỆP VIÊN' : 'DÂN THƯỜNG' }}
+            </h1>
+
+            <div class="role-icon">
+                @if(myRoleRaw() === 'spy') { 🕵️‍♂️ } @else { 👤 }
+            </div>
+
+            <p class="role-hint">Từ bí mật của bạn là:</p>
+            <div class="secret-word">{{ myWord() }}</div>
+            <p class="role-sub">Hãy ghi nhớ từ này và đừng để lộ!</p>
+        </div>
+
+        <button class="btn-primary large ready-btn" (click)="acknowledgeRole()">
+            SẴN SÀNG ✓
+        </button>
+        <p class="waiting-text">ĐANG CHỜ NGƯỜI CHƠI KHÁC...</p>
+    </div>
+    } @else {
+    <div class="screen-main fade-in">
+
+        <div class="main-header">
+            @if (isLobby()) {
+            <div class="room-info-group">
+                <span class="label">PHÒNG CHỜ</span>
+                <div class="code-wrapper">
+                    <h1 class="room-id">#{{ roomId() }}</h1>
+                    <button class="btn-copy" (click)="copyRoomId()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2-2h2"></path>
+                        </svg>
+                    </button>
+
+                    <button class="btn-icon qr-btn" (click)="toggleQr(true)" title="Hiện mã QR">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            @if (isHost()) {
+            <div class="host-pill-card">
+                <div class="icon-shield">👑</div>
+                <div class="info">
+                    <span class="role-label">CHỦ PHÒNG</span>
+                    <span class="host-name">Bạn ({{ playerName() }})</span>
+                </div>
+            </div>
+            }
+            }
+
+            @if (isVoting()) {
+            <div class="vote-header fade-in">
+                <div class="timer-pill">⏱ {{ voteCountdown() }}s</div>
+                <h2>Who is the <span class="spy-text">Spy?</span></h2>
+                <p>Chọn người đáng ngờ nhất!</p>
+            </div>
+            }
+            @if (isDiscussion()) {
+            <div class="playing-header fade-in">
+                <h2>🗣️ Đang thảo luận</h2>
+                <p>Hãy tìm ra kẻ giả mạo!</p>
+
+                @if (isSpy() && !isEliminated()) {
+                <button class="btn-spy-guess fade-in" (click)="openSpyGuess()">
+                    🎯 Đoán từ (Win ngay)
+                </button>
+                }
+            </div>
+            }
+        </div>
+
+        <div class="player-grid">
+            @for (slot of playersSlots(); track $index) {
+            @if (slot) {
+            <div class="card player-card" [class.selectable]="isVoting() && !slot.eliminated && slot.id !== playerId"
+                [class.selected]="selectedVoteId() === slot.id" [class.eliminated]="slot.eliminated"
+                [class.is-me]="slot.id === playerId"
+                (click)="isVoting() ? selectForVote(slot.id) : onAvatarClick(slot)">
+
+                @if (selectedVoteId() === slot.id) { <div class="check-circle">✓</div> }
+                @if (isVoting() && getVoteDots(slot.id).length > 0) { ... }
+
+                <div class="avatar-box" [class.has-image]="slot.avatar"
+                    [style.background-color]="slot.avatar ? 'transparent' : getAvatarColor(slot.name)">
+
+                    @if (slot.avatar) {
+                    <img [src]="'assets/avatars/' + slot.avatar" alt="Avatar" class="avatar-img" />
+                    } @else {
+                    {{ slot.name.substring(0,2).toUpperCase() }}
+                    }
+
+                    @if (slot.id === playerId && isLobby()) {
+                    <div class="edit-badge">✏️</div>
+                    }
+                </div>
+
+                <div class="info-box">
+                    <div class="p-name">{{ slot.name }} @if (slot.id === room().hostId) { <span
+                            class="txt-host">👑</span> }</div>
+                    <div class="p-role">
+                        @if (slot.eliminated) { <span class="txt-dead">ĐÃ LOẠI</span> }
+                        <!-- @else if (slot.id === room().hostId) { <span class="txt-host">HOST👑</span> } -->
+                        @else if (isLobby()) { <span class="txt-ready">SẴN SÀNG</span> }
+                    </div>
+                </div>
+
+            </div>
+            }
+            @else {
+            @if (isLobby()) {
+            <div class="card empty-slot">
+                <div class="txt-empty">Trống</div>
+            </div>
+            }
+            }
+            }
+        </div>
+
+        <div class="footer-actions">
+
+            @if (isLobby()) {
+            <div class="left-group">
+                <button class="btn-white" (click)="openSettings()">
+                    <span>⚙️</span> Cài đặt game
+                </button>
+                <button class="btn-exit">
+                    <span>❌</span> Thoát
+                </button>
+            </div>
+
+            <div class="right-group">
+                @if (isHost()) {
+                <div class="start-hint">
+                    <strong>Sẵn sàng để bắt đầu?</strong>
+                    <span>Cần tối thiểu {{ minRequiredPlayers() }} người chơi</span>
+                </div>
+
+                <button class="btn-start" [ngClass]="playerCount() < minRequiredPlayers() ? 'disabled' : ''"
+                    [disabled]="playerCount() < minRequiredPlayers()" (click)="startGame()">
+                    BẮT ĐẦU GAME ▶
+                </button>
+                } @else {
+                <button class="btn-start disabled" disabled>Đang chờ chủ phòng...</button>
+                }
+            </div>
+            }
+
+
+            @if (isDiscussion() && isHost()) {
+            <div class="center-group fade-in">
+                <button class="btn-primary vote-btn" (click)="startVoting()">
+                    BẮT ĐẦU VOTE ⚡
+                </button>
+            </div>
+            }
+
+            @if (isVoting()) {
+            <div class="center-group fade-in">
+                <button class="btn-primary confirm-btn" [disabled]="!selectedVoteId()" (click)="confirmVote()">
+                    XÁC NHẬN →
+                </button>
+            </div>
+            }
+        </div>
+    </div>
+    }
+    @if (showQrModal()) {
+    <div class="modal-backdrop fade-in" (click)="toggleQr(false)">
+        <div class="modal-content" (click)="$event.stopPropagation()">
+            <h3>Quét mã để tham gia</h3>
+            <div class="qr-container">
+                @if (qrCodeUrl()) {
+                <img [src]="qrCodeUrl()" alt="Room QR Code" />
+                }
+            </div>
+            <p class="room-hint">Phòng: <strong>#{{ roomId() }}</strong></p>
+            <button class="btn-primary" (click)="toggleQr(false)">Đóng</button>
+        </div>
+    </div>
+    }
+    @if (isSpyGuessing()) {
+    <div class="modal-backdrop fade-in" (click)="closeSpyGuess()">
+        <div class="modal-content spy-modal" (click)="$event.stopPropagation()">
+            <h3>🕵️‍♂️ SPY GUESS</h3>
+            <p>Nếu bạn đoán đúng từ khóa của Dân Thường, bạn sẽ thắng ngay lập tức!</p>
+
+            <input class="spy-input" placeholder="Nhập từ bí mật..." [ngModel]="spyGuessInput()"
+                (ngModelChange)="spyGuessInput.set($event)" autofocus />
+
+            <div class="modal-actions">
+                <button class="btn-white" (click)="closeSpyGuess()">Hủy</button>
+                <button class="btn-primary" (click)="submitSpyGuess()">Đoán ngay</button>
+            </div>
+        </div>
+    </div>
+    }
+    @if (showDrawModal()) {
+    <div class="modal-backdrop fade-in">
+        <div class="modal-content result-modal">
+            <div class="skull-icon">⚖️</div>
+            <h1 class="eliminated-name" style="color: #f1c40f">HÒA VOTE</h1>
+            <p>Số phiếu bằng nhau. Không ai bị loại!</p>
+        </div>
+    </div>
+    }
+    @if (showAvatarModal()) {
+    <div class="modal-backdrop fade-in" (click)="showAvatarModal.set(false)">
+        <div class="modal-content avatar-modal" (click)="$event.stopPropagation()">
+
+            @if (previewAvatar()) {
+            <div class="preview-mode fade-in">
+                <h3>XEM TRƯỚC</h3>
+
+                <div class="preview-box">
+                    <img [src]="'assets/avatars/' + previewAvatar()" alt="Preview" />
+                </div>
+
+                <div class="action-row">
+                    <button class="btn-white" (click)="backToList()">
+                        ← Chọn hình khác
+                    </button>
+                    <button class="btn-primary" (click)="confirmAvatar()">
+                        Xác nhận ✓
+                    </button>
+                </div>
+            </div>
+            }
+
+            @else {
+            <div class="list-mode fade-in">
+                <h3>ĐỔI AVATAR</h3>
+                <p class="hint">Chọn một hình để xem trước</p>
+
+                <div class="avatar-list-grid">
+                    @for (img of AVATAR_LIST; track $index) {
+                    <div class="avatar-option small" (click)="openPreview(img)">
+                        <img [src]="'assets/avatars/' + img" loading="lazy" />
+                    </div>
+                    }
+                </div>
+
+                <button class="btn-white mt-20" (click)="showAvatarModal.set(false)">Đóng</button>
+            </div>
+            }
+
+        </div>
+    </div>
+    }
+    @if (showResultModal()) {
+    <div class="modal-backdrop fade-in" (click)="isGameOver() ? null : closeResultModal()">
+        <div class="modal-content result-modal" (click)="$event.stopPropagation()">
+
+            @if (isGameOver()) {
+            <div class="skull-icon">
+                {{ winner() === 'spy' ? '🏆' : '🤡' }}
+            </div>
+
+            <h3>KẾT THÚC GAME</h3>
+
+            <h1 class="eliminated-name" [style.color]="winner() === 'spy' ? '#ff4757' : '#0984e3'">
+                {{ winner() === 'spy' ? 'ĐIỆP VIÊN THẮNG' : 'DÂN THƯỜNG THẮNG' }}
+            </h1>
+
+            @if (endReason() === 'spy_guessed_wrong') {
+            <p class="reason-text">Điệp viên đã đoán sai từ khóa!</p>
+            } @else if (endReason() === 'spy_guessed_correct') {
+            <p class="reason-text">Điệp viên đã đoán đúng từ khóa!</p>
+            }
+
+            <div class="spy-reveal-section">
+                <p class="reveal-label">DANH TÍNH ĐIỆP VIÊN:</p>
+                <div class="spy-list">
+                    @for (spy of spiesList(); track $index) {
+                    <div class="spy-card-mini">
+                        <div class="avatar-mini" [style.background-color]="getAvatarColor(spy.name)">
+                            {{ spy.name.substring(0,2).toUpperCase() }}
+                        </div>
+                        <span class="spy-name">{{ spy.name }}</span>
+                    </div>
+                    }
+                </div>
+            </div>
+
+            @if (isHost()) {
+            <button class="btn-primary mt-20" (click)="backToLobby()">
+                🔄 Quay về Lobby (Reset)
+            </button>
+            } @else {
+            <p class="waiting-text">Chờ chủ phòng reset game...</p>
+            }
+
+            } @else {
+            <div class="skull-icon">☠️</div>
+            <h3>NGƯỜI BỊ LOẠI</h3>
+            <h1 class="eliminated-name">{{ room().game.revealedPlayer.id === playerId ? 'BẠN' : '...' }}</h1>
+            <div class="identity-box">
+                Là: <strong [class.spy]="room().game.revealedPlayer.role === 'spy'">
+                    {{ room().game.revealedPlayer.role === 'spy' ? 'ĐIỆP VIÊN' : 'DÂN THƯỜNG' }}
+                </strong>
+            </div>
+            <button class="btn-primary mt-20" (click)="closeResultModal()">Đóng (5s)</button>
+            }
+
+        </div>
+    </div>
+    }
+    @if (viewingUser()) {
+    <div class="modal-backdrop fade-in" (click)="closeViewUser()">
+        <div class="modal-content avatar-view-modal" (click)="$event.stopPropagation()">
+
+            <h3 class="user-name-title">{{ viewingUser().name }}</h3>
+
+            <div class="preview-box large">
+                @if (viewingUser().avatar) {
+                <img [src]="'assets/avatars/' + viewingUser().avatar" alt="User Avatar" />
+                } @else {
+                <div class="fallback-avatar" [style.background-color]="getAvatarColor(viewingUser().name)">
+                    {{ viewingUser().name.substring(0,2).toUpperCase() }}
+                </div>
+                }
+            </div>
+
+            <button class="btn-white mt-20" (click)="closeViewUser()">Đóng</button>
+        </div>
+    </div>
+    }
+    @if (showSettingsModal()) {
+    <div class="modal-backdrop fade-in" (click)="closeSettings()">
+        <div class="modal-content settings-modal" (click)="$event.stopPropagation()">
+            <h3>⚙️ CÀI ĐẶT PHÒNG</h3>
+
+            <div class="settings-form">
+
+                <div class="form-group">
+                    <label>Số lượng Điệp viên (Spy)</label>
+                    <div class="select-wrapper">
+                        <select [ngModel]="tempSpyCount()" (ngModelChange)="tempSpyCount.set(+$event)">
+                            <option [value]="1">1 Spy (Cổ điển)</option>
+                            <option [value]="2">2 Spies (Đông vui)</option>
+                            <option [value]="3">3 Spies (Hỗn loạn)</option>
+                        </select>
+                    </div>
+                    <p class="hint-text">
+                        Lưu ý: Chế độ {{ tempSpyCount() }} Spy cần ít nhất
+                        <strong>{{ tempMinRequired() }} người chơi</strong>.
+                    </p>
+                </div>
+
+                <div class="form-group row-between">
+                    <label>Cho phép đổi Vote?</label>
+                    <div class="toggle-switch">
+                        <input type="checkbox" id="voteChange" [ngModel]="tempAllowVoteChange()"
+                            (ngModelChange)="tempAllowVoteChange.set($event)">
+                        <label for="voteChange" class="slider"></label>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-white" (click)="closeSettings()">Hủy</button>
+                @if (isHost()) {
+                <button class="btn-primary" (click)="saveSettings()">Lưu Cài Đặt</button>
+                } @else {
+                <button class="btn-primary" disabled>Chỉ Host chỉnh được</button>
+                }
+            </div>
+        </div>
+    </div>
+    }
+    }
+
+</div>
