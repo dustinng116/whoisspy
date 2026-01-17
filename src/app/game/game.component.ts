@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { GameService } from './game.service';
 import QRCode from 'qrcode';
+import { ActivatedRoute } from '@angular/router';
+import wordData from './dataSource.json';
 
 interface Player {
   id: string;
@@ -61,6 +63,12 @@ export class GameComponent {
   minRequiredPlayers = computed(() => this.currentSpyCount() * 2 + 1);
   tempMinRequired = computed(() => this.tempSpyCount() * 2 + 1);
   viewingUser = signal<any>(null);
+
+  isNameError = signal(false);
+  isRoomError = signal(false);
+
+  showErrorModal = signal(false);
+  errorMessage = signal('');
   readonly AVATAR_LIST = [
     '1.jpg',
     '2.jpg',
@@ -74,7 +82,7 @@ export class GameComponent {
     '10.jpg',
   ];
 
-  constructor(private game: GameService) {
+  constructor(private game: GameService, private route: ActivatedRoute) {
     // 1. Timer Vote Logic
     effect(() => {
       const g = this.room()?.game;
@@ -136,6 +144,16 @@ export class GameComponent {
       } else if (status === 'draw') {
         this.showDrawModal.set(true);
         setTimeout(() => this.closeDrawModal(), 3000);
+      }
+    });
+
+    this.route.queryParams.subscribe((params) => {
+      const roomFromUrl = params['room'];
+
+      if (roomFromUrl) {
+        this.joinRoomInput.set(roomFromUrl);
+
+        this.viewMode.set('join_input');
       }
     });
   }
@@ -236,24 +254,60 @@ export class GameComponent {
   }
 
   async createRoom() {
-    if (!this.playerName()) return alert('Nhập tên');
+    if (!this.playerName().trim()) {
+      this.isNameError.set(true);
+      return;
+    }
     const id = this.generateRoomId();
     this.roomId.set(id);
-    const pair = WORDS[Math.floor(Math.random() * WORDS.length)];
+    const pair = wordData[Math.floor(Math.random() * wordData.length)];
     await this.game.createRoom(id, this.playerId, this.playerName(), pair);
     this.joined.set(true);
     this.listen();
   }
   async joinRoom() {
-    if (this.joinRoomInput().length !== 8 || !this.playerName()) return;
-    this.roomId.set(this.joinRoomInput());
-    await this.game.joinRoom(
-      this.joinRoomInput(),
-      this.playerId,
-      this.playerName()
-    );
-    this.joined.set(true);
-    this.listen();
+    let isValid = true;
+
+    if (!this.playerName().trim()) {
+      this.isNameError.set(true);
+      isValid = false;
+    }
+    if (this.joinRoomInput().length !== 8) {
+      this.isRoomError.set(true);
+      isValid = false;
+    }
+
+    if (!isValid) return;
+
+    try {
+      await this.game.joinRoom(
+        this.joinRoomInput(),
+        this.playerId,
+        this.playerName()
+      );
+
+      this.roomId.set(this.joinRoomInput());
+      this.joined.set(true);
+      this.listen();
+    } catch (err: any) {
+      this.errorMessage.set(err.message || 'Có lỗi xảy ra, vui lòng thử lại.');
+      this.showErrorModal.set(true);
+    }
+  }
+
+  // Hàm đóng modal lỗi
+  closeErrorModal() {
+    this.showErrorModal.set(false);
+    this.errorMessage.set('');
+  }
+  onNameInput(val: string) {
+    this.playerName.set(val);
+    if (val) this.isNameError.set(false);
+  }
+
+  onRoomInput(event: Event) {
+    this.onlyNumberInput(event);
+    this.isRoomError.set(false);
   }
   startGame() {
     this.game.startGame(this.roomId()!, this.playerId);
@@ -294,7 +348,10 @@ export class GameComponent {
     }
   }
   showJoinInput() {
-    if (!this.playerName()) return alert('Nhập tên');
+    if (!this.playerName().trim()) {
+      this.isNameError.set(true);
+      return;
+    }
     this.viewMode.set('join_input');
   }
   acknowledgeRole() {

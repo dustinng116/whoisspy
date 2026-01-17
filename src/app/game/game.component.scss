@@ -1252,3 +1252,68 @@ button {
     }
   }
 }
+input.input-error {
+  border-color: #ff4757 !important;
+  background-color: #fff0f1 !important; // Nền đỏ rất nhạt
+  color: #ff4757;
+  box-shadow: 0 0 0 4px rgba(255, 71, 87, 0.2) !important;
+  animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+
+  &::placeholder {
+    color: rgba(255, 71, 87, 0.6);
+  }
+}
+
+// Hiệu ứng rung lắc
+@keyframes shake {
+  10%,
+  90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+  20%,
+  80% {
+    transform: translate3d(2px, 0, 0);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+  40%,
+  60% {
+    transform: translate3d(4px, 0, 0);
+  }
+}
+
+.error-modal {
+  max-width: 320px !important;
+  text-align: center;
+
+  .icon-warning {
+    font-size: 50px;
+    margin-bottom: 15px;
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  h3 {
+    color: #ff4757; // Màu đỏ cảnh báo
+    margin-bottom: 10px;
+    font-weight: 800;
+    font-size: 20px;
+  }
+
+  .error-msg {
+    color: #636e72;
+    font-size: 15px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+ 
+  button {
+    background: #ff4757;
+    box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4);
+    &:hover {
+      box-shadow: 0 6px 20px rgba(255, 71, 87, 0.5);
+    }
+  }
+}

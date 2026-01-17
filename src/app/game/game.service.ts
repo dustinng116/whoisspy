@@ -52,13 +52,24 @@ export class GameService {
   }
 
   async joinRoom(roomId: string, playerId: string, name: string) {
-    const roomSnap = await get(ref(this.db, `rooms/${roomId}`));
+    const roomRef = ref(this.db, `rooms/${roomId}`);
+    const roomSnap = await get(roomRef);
+ 
+    if (!roomSnap.exists()) {
+      throw new Error('Phòng không tồn tại! Vui lòng kiểm tra lại ID.');
+    }
+
     const room = roomSnap.val();
-    if (!room || room.game.status !== 'lobby') return;
-
+ 
+    if (room.game.status !== 'lobby') {
+      throw new Error('Game đang diễn ra hoặc đã kết thúc!');
+    } 
     const count = Object.keys(room.players || {}).length;
-    if (count >= room.maxPlayers) return;
+    if (count >= room.maxPlayers) {
+      throw new Error('Phòng đã đầy!');
+    }
 
+    // Nếu mọi thứ OK -> Cho vào phòng
     await update(ref(this.db, `rooms/${roomId}/players/${playerId}`), {
       name,
       role: null,
