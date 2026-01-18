@@ -1572,3 +1572,75 @@ input.input-error {
     }
   }
 }
+// TỐI ƯU CHO MOBILE (Màn hình < 600px)
+@media (max-width: 600px) {
+  // 1. XỬ LÝ HEADER LOBBY (Tránh bị tràn mã phòng)
+  .screen-main .main-header {
+    flex-direction: column; // Xếp dọc thay vì ngang
+    align-items: center; // Căn giữa
+    gap: 15px;
+    margin-bottom: 20px; // Giảm khoảng cách dưới
+
+    .room-info-group {
+      text-align: center;
+
+      .code-wrapper {
+        justify-content: center;
+
+        // Giảm kích thước mã phòng
+        .room-id {
+          font-size: 36px; // Giảm từ 48px -> 36px
+        }
+
+        // Thu nhỏ nút copy/qr
+        .btn-copy,
+        .qr-btn {
+          transform: scale(0.9);
+        }
+      }
+    }
+
+    // Chỉnh lại thẻ Host cho gọn và nằm giữa
+    .host-pill-card {
+      width: fit-content;
+      padding: 5px 15px 5px 5px;
+
+      .icon-shield {
+        width: 30px;
+        height: 30px;
+        font-size: 14px;
+      }
+      .info {
+        .host-name {
+          font-size: 13px;
+        }
+      }
+    }
+  }
+
+  // 2. XỬ LÝ FOOTER (Nút bấm)
+  .footer-actions {
+    flex-direction: column-reverse; // Đảo ngược: Nút Start lên trên, nút cài đặt xuống dưới
+    gap: 15px;
+    width: 100%;
+
+    .left-group,
+    .right-group {
+      width: 100%;
+      justify-content: center;
+      flex-direction: column; // Xếp dọc các nút con luôn
+      gap: 10px;
+    }
+
+    // Làm nút to ra để dễ bấm trên điện thoại
+    button {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .start-hint {
+      text-align: center;
+      margin-bottom: 5px;
+    }
+  }
+}
