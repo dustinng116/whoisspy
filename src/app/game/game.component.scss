@@ -1572,75 +1572,191 @@ input.input-error {
     }
   }
 }
-// TỐI ƯU CHO MOBILE (Màn hình < 600px)
 @media (max-width: 600px) {
-  // 1. XỬ LÝ HEADER LOBBY (Tránh bị tràn mã phòng)
-  .screen-main .main-header {
-    flex-direction: column; // Xếp dọc thay vì ngang
-    align-items: center; // Căn giữa
-    gap: 15px;
-    margin-bottom: 20px; // Giảm khoảng cách dưới
 
-    .room-info-group {
-      text-align: center;
+    // 1. SỬA CONTAINER NGOÀI CÙNG (:host)
+    :host {
+        display: flex;           // [QUAN TRỌNG] Chuyển thành Flexbox
+        flex-direction: column;
+        min-height: 100vh;       // [QUAN TRỌNG] Chiều cao bằng 100% màn hình
+        padding: 15px;           // Padding xung quanh để không dính sát mép
+        box-sizing: border-box;
+    }
 
-      .code-wrapper {
-        justify-content: center;
+    .app-container {
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        padding-bottom: env(safe-area-inset-bottom);
+        
+        // [QUAN TRỌNG] Biến app-container thành flex container
+        display: flex;
+        flex-direction: column;
+        flex: 1; // Chiếm hết không gian còn lại của :host
+    }
 
-        // Giảm kích thước mã phòng
-        .room-id {
-          font-size: 36px; // Giảm từ 48px -> 36px
+    // 2. CĂN GIỮA CARD LOGIN (SCREEN HOME)
+    .screen-home {
+        // [QUAN TRỌNG] "margin: auto" trong Flexbox sẽ tự động đẩy phần tử vào CHÍNH GIỮA (dọc + ngang)
+        margin: auto; 
+        
+        width: 100%;
+        padding: 30px 20px;
+        box-sizing: border-box;
+
+        h1 {
+            font-size: 24px;
+        }
+        
+        .input-group input {
+            font-size: 16px; 
         }
 
-        // Thu nhỏ nút copy/qr
-        .btn-copy,
-        .qr-btn {
-          transform: scale(0.9);
+        .row-btn {
+            flex-direction: column;
+            gap: 12px;
+            button { width: 100%; }
         }
-      }
     }
 
-    // Chỉnh lại thẻ Host cho gọn và nằm giữa
-    .host-pill-card {
-      width: fit-content;
-      padding: 5px 15px 5px 5px;
+    // 3. MÀN HÌNH GAME (GIỮ NGUYÊN TỪ TRÊN XUỐNG)
+    // Để khi danh sách dài thì vẫn cuộn được bình thường, không bị ép vào giữa
+    .screen-main {
+        margin-top: 20px; 
+        margin-bottom: 20px;
+        
+        // --- HEADER ---
+        .main-header {
+            flex-direction: column; // Xếp dọc
+            align-items: center;
+            margin-bottom: 20px;
+            min-height: auto;
+            gap: 15px;
 
-      .icon-shield {
-        width: 30px;
-        height: 30px;
-        font-size: 14px;
-      }
-      .info {
-        .host-name {
-          font-size: 13px;
+            .room-info-group {
+                text-align: center;
+                width: 100%;
+
+                .label {
+                    font-size: 11px;
+                }
+
+                .code-wrapper {
+                    justify-content: center;
+                    gap: 10px;
+                    flex-wrap: wrap; // Cho phép xuống dòng nếu cần
+
+                    .room-id {
+                        font-size: 40px; // Giảm từ 48px xuống 40px
+                        line-height: 1.2;
+                    }
+
+                    // Nút copy/QR nhỏ lại chút
+                    .btn-copy, .qr-btn {
+                        width: 32px;
+                        height: 32px;
+                        padding: 0;
+                    }
+                }
+            }
+
+            // Thẻ Host nằm giữa
+            .host-pill-card {
+                width: fit-content;
+                max-width: 90%; // Không cho quá rộng
+                padding: 6px 15px 6px 6px;
+                
+                .info {
+                    .host-name {
+                        font-size: 13px;
+                        // Cắt tên nếu quá dài
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        max-width: 150px;
+                    }
+                }
+            }
+
+            // Header khi Vote/Thảo luận
+            .vote-header, .playing-header {
+                h2 {
+                    font-size: 24px;
+                }
+                .timer-pill {
+                    font-size: 14px;
+                    padding: 4px 12px;
+                }
+            }
         }
-      }
-    }
-  }
 
-  // 2. XỬ LÝ FOOTER (Nút bấm)
-  .footer-actions {
-    flex-direction: column-reverse; // Đảo ngược: Nút Start lên trên, nút cài đặt xuống dưới
-    gap: 15px;
-    width: 100%;
+        // --- GRID PLAYER (Như đã sửa trước đó) ---
+        .player-grid {
+            gap: 8px;
+            
+            .player-card {
+                border-radius: 12px;
+                .avatar-box {
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 12px;
+                    font-size: 14px;
+                }
+                .p-name {
+                    font-size: 11px;
+                    padding: 0 2px;
+                }
+                .me-badge {
+                    font-size: 8px;
+                    padding: 2px 4px;
+                }
+            }
+        }
 
-    .left-group,
-    .right-group {
-      width: 100%;
-      justify-content: center;
-      flex-direction: column; // Xếp dọc các nút con luôn
-      gap: 10px;
+        // --- FOOTER (QUAN TRỌNG NHẤT - SỬA LỖI BREAK LAYOUT) ---
+        .footer-actions {
+            display: flex;
+            flex-direction: column-reverse; // Đảo ngược: Nút Start lên trên, Cài đặt xuống dưới
+            gap: 15px;
+            width: 100%;
+            padding-top: 10px;
+
+            // Xử lý các nhóm nút con
+            .left-group, .right-group, .center-group {
+                width: 100%;
+                display: flex;
+                flex-direction: column; // Các nút con cũng xếp dọc luôn
+                gap: 10px;
+                align-items: stretch; // Kéo giãn full chiều ngang
+            }
+
+            // Cấu hình chung cho tất cả nút ở Footer Mobile
+            button {
+                width: 100% !important; // Bắt buộc full width
+                justify-content: center;
+                padding: 14px;
+                margin: 0;
+            }
+
+            // Chỉnh lại text gợi ý (Sẵn sàng để bắt đầu...)
+            .start-hint {
+                text-align: center;
+                align-items: center;
+                margin-bottom: 5px;
+            }
+
+            // Ẩn bớt text trong nút nếu cần, hoặc chỉnh font nhỏ lại
+            .btn-white, .btn-exit {
+                font-size: 14px;
+            }
+        }
     }
 
-    // Làm nút to ra để dễ bấm trên điện thoại
-    button {
-      width: 100%;
-      justify-content: center;
+    // 4. MODAL
+    .modal-content {
+        width: 85% !important; // Tránh dính sát lề
+        padding: 20px !important;
+        max-height: 80vh;
+        overflow-y: auto; // Cho phép cuộn nếu modal dài
     }
-
-    .start-hint {
-      text-align: center;
-      margin-bottom: 5px;
-    }
-  }
 }
