@@ -402,7 +402,7 @@ export class GameComponent {
         return;
       }
       if (data.players && !data.players[this.playerId]) {
-        this.errorMessage.set('Bạn đã bị mời ra khỏi phòng!');
+        this.errorMessage.set('Bạn đã thoát ra khỏi phòng!');
         this.showErrorModal.set(true);
 
         if (this.unsubRoom) {

@@ -479,11 +479,86 @@ button {
   // --- B. GRID SYSTEM ---
   .player-grid {
     display: grid;
+    // Mặc định vẫn là 3 cột
     grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
+    gap: 20px; // Khoảng cách lớn trên PC
     margin-bottom: 40px;
+
+    // Trên màn hình lớn (Tablet/PC) thì tăng lên 4 cột cho đẹp
     @media (min-width: 768px) {
       grid-template-columns: repeat(4, 1fr);
+    }
+
+    // ============================================
+    // [NEW] CẤU HÌNH CHO MOBILE (Màn nhỏ < 600px)
+    // ============================================
+    @media (max-width: 600px) {
+      gap: 8px; // 1. Giảm khoảng cách giữa các thẻ xuống tối thiểu
+      margin-bottom: 20px;
+
+      .player-card {
+        border-radius: 12px; // Bo góc nhỏ lại cho cân đối
+
+        // 2. Thu nhỏ Avatar
+        .avatar-box {
+          width: 36px; // Giảm từ 50px -> 36px
+          height: 36px;
+          border-radius: 12px;
+          margin-bottom: 6px;
+          font-size: 14px; // Chữ trong avatar mặc định nhỏ lại
+
+          .avatar-img {
+            border-radius: 12px;
+          }
+        }
+
+        // 3. Thu nhỏ Tên
+        .p-name {
+          font-size: 11px; // Giảm font chữ tên
+          line-height: 1.2;
+          margin-bottom: 2px;
+
+          // Cắt bớt nếu tên quá dài (Thêm dấu ...)
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          max-width: 100%;
+          padding: 0 4px;
+        }
+
+        // 4. Thu nhỏ Role / Trạng thái
+        .p-role {
+          font-size: 9px;
+          letter-spacing: 0;
+        }
+
+        // 5. Chỉnh lại Badge "BẠN"
+        .me-badge {
+          font-size: 8px;
+          padding: 1px 5px;
+          top: -8px;
+          border-width: 1px;
+        }
+
+        // 6. Chỉnh lại Icon Vote (Dấu tích)
+        .check-circle {
+          width: 18px;
+          height: 18px;
+          font-size: 10px;
+          top: -5px;
+          right: -5px;
+        }
+
+        // 7. Chỉnh lại dấu chấm Vote (Dots)
+        .vote-dots-container {
+          top: 5px;
+          left: 5px;
+          .vote-dot {
+            width: 5px;
+            height: 5px;
+          }
+        }
+      }
     }
 
     .card {
@@ -518,7 +593,21 @@ button {
           transform: scale(1.05); // Hiệu ứng zoom nhẹ khi hover
         }
       }
-
+      .me-badge {
+        position: absolute;
+        top: -6px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: $primary; // Màu tím chủ đạo
+        color: white;
+        font-size: 9px;
+        font-weight: 800;
+        padding: 2px 8px;
+        border-radius: 10px;
+        z-index: 10;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        border: 2px solid white; // Viền trắng cho nổi
+      }
       &.self-voting {
         background-color: #f1f2f6;
         border: 2px dashed #dcdde1; // Viền nét đứt

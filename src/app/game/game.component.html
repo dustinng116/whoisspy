@@ -164,6 +164,9 @@
 
                 <div class="avatar-box" [class.has-image]="slot.avatar"
                     [style.background-color]="slot.avatar ? 'transparent' : getAvatarColor(slot.name)">
+                    @if (slot.id === playerId) {
+                        <div class="me-badge">BẠN</div>
+                    }
                     @if (slot.avatar) {
                     <img [src]="'assets/avatars/' + slot.avatar" alt="Avatar" class="avatar-img" />
                     } @else {
