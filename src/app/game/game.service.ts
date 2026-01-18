@@ -1,6 +1,15 @@
 import { Injectable } from '@angular/core';
 import { initializeApp } from 'firebase/app';
-import { getDatabase, ref, set, update, get, onValue } from 'firebase/database';
+import {
+  getDatabase,
+  ref,
+  set,
+  update,
+  get,
+  onValue,
+  remove,
+  onDisconnect,
+} from 'firebase/database';
 import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
@@ -16,8 +25,10 @@ export class GameService {
     roomId: string,
     hostId: string,
     hostName: string,
-    wordPair: any
+    wordPair: any,
+    voteDuration: number = 15
   ) {
+    const roomRef = ref(this.db, `rooms/${roomId}`);
     await set(ref(this.db, `rooms/${roomId}`), {
       hostId,
       maxPlayers: 8,
@@ -26,6 +37,7 @@ export class GameService {
       config: {
         spyCount: 1, // 1 Điệp viên
         allowVoteChange: true, // Được phép đổi vote
+        voteDuration: voteDuration,
       },
       game: {
         status: 'lobby',
@@ -44,6 +56,7 @@ export class GameService {
         },
       },
     });
+    onDisconnect(roomRef).remove();
   }
 
   // 2. MỚI: CẬP NHẬT SETTINGS
@@ -54,20 +67,40 @@ export class GameService {
   async joinRoom(roomId: string, playerId: string, name: string) {
     const roomRef = ref(this.db, `rooms/${roomId}`);
     const roomSnap = await get(roomRef);
- 
+
     if (!roomSnap.exists()) {
       throw new Error('Phòng không tồn tại! Vui lòng kiểm tra lại ID.');
     }
 
     const room = roomSnap.val();
- 
+
+    // 1. Check Status
     if (room.game.status !== 'lobby') {
       throw new Error('Game đang diễn ra hoặc đã kết thúc!');
-    } 
-    const count = Object.keys(room.players || {}).length;
+    }
+
+    const players = room.players || {};
+    const count = Object.keys(players).length;
+
+    // 2. Check Full
     if (count >= room.maxPlayers) {
       throw new Error('Phòng đã đầy!');
     }
+
+    // -------------------------------------------------------------
+    // 3. LOGIC MỚI: KIỂM TRA TRÙNG TÊN (Case-insensitive)
+    // -------------------------------------------------------------
+    const normalize = (str: string) => str.trim().toLowerCase();
+    const newNameClean = normalize(name);
+
+    const isDuplicate = Object.values(players).some((p: any) => {
+      return normalize(p.name) === newNameClean && p.id !== playerId;
+    });
+    const playerRef = ref(this.db, `rooms/${roomId}/players/${playerId}`);
+    if (isDuplicate) {
+      throw new Error(`Tên "${name}" đã có người sử dụng trong phòng này!`);
+    }
+    // -------------------------------------------------------------
 
     // Nếu mọi thứ OK -> Cho vào phòng
     await update(ref(this.db, `rooms/${roomId}/players/${playerId}`), {
@@ -77,8 +110,30 @@ export class GameService {
       vote: null,
       joinedAt: Date.now(),
     });
+    onDisconnect(playerRef).remove();
   }
 
+  async leaveRoom(roomId: string, playerId: string) {
+    const roomRef = ref(this.db, `rooms/${roomId}`);
+    const playerRef = ref(this.db, `rooms/${roomId}/players/${playerId}`);
+    const roomSnap = await get(roomRef);
+
+    if (!roomSnap.exists()) return; // Phòng không còn tồn tại
+
+    const room = roomSnap.val();
+
+    if (room.hostId === playerId) {
+      await onDisconnect(roomRef).cancel();
+      await remove(roomRef);
+    } else {
+      await onDisconnect(playerRef).cancel();
+      await remove(playerRef);
+
+      if (room.game.status !== 'lobby') {
+        // Logic xử lý khi thoát giữa chừng (tùy bạn quyết định, hiện tại xóa là đủ)
+      }
+    }
+  }
   async startGame(roomId: string, hostId: string) {
     const roomRef = ref(this.db, `rooms/${roomId}`);
     const room = (await get(roomRef)).val();
@@ -137,28 +192,82 @@ export class GameService {
       vote: targetId,
     });
   }
+  async checkGameViability(roomId: string) {
+    const roomRef = ref(this.db, `rooms/${roomId}`);
+    const roomSnap = await get(roomRef);
+    if (!roomSnap.exists()) return;
+
+    const room = roomSnap.val();
+
+    // Chỉ kiểm tra khi game đang diễn ra (playing hoặc voting)
+    if (room.game.status !== 'playing' && room.game.status !== 'voting') return;
+
+    const players = room.players || {};
+    // Lọc ra những người chưa bị loại VÀ còn đang kết nối (có trong DB)
+    const activePlayers = Object.values(players).filter(
+      (p: any) => !p.eliminated
+    );
+
+    // 1. Kiểm tra số lượng tối thiểu
+    // Nếu chỉ còn 1 người (Host) -> Game Over ngay lập tức
+    if (activePlayers.length < 2) {
+      await update(ref(this.db, `rooms/${roomId}/game`), {
+        status: 'game_over',
+        winner: 'none', // Không ai thắng
+        endReason: 'not_enough_players', // Lý do mới
+      });
+      return;
+    }
+
+    // 2. Kiểm tra lại điều kiện thắng thua theo số lượng MỚI
+    // (Ví dụ: 3 người chơi, 1 Spy thoát -> Còn 2 Dân -> Dân thắng ngay)
+    const winResult = this.checkWinCondition(players);
+    if (winResult) {
+      await update(ref(this.db, `rooms/${roomId}/game`), {
+        status: 'game_over',
+        winner: winResult,
+        endReason: 'player_left', // Thắng do đối thủ bỏ cuộc
+      });
+    }
+  }
 
   async resolveVote(roomId: string) {
     const room = (await get(ref(this.db, `rooms/${roomId}`))).val();
+
+    // Kiểm tra lại status để tránh chạy 2 lần
     if (room.game.status !== 'voting') return;
 
     const tally: Record<string, number> = {};
+
+    // Log để debug xem lúc này Server nhận được bao nhiêu phiếu
+    console.log('=== BẮT ĐẦU KIỂM PHIẾU ===');
+
     Object.entries(room.players).forEach(([_, p]: any) => {
+      // Chỉ đếm người chơi CHƯA BỊ LOẠI và ĐÃ VOTE
       if (!p.eliminated && p.vote) {
         tally[p.vote] = (tally[p.vote] || 0) + 1;
       }
     });
 
+    console.log('Kết quả kiểm phiếu:', tally);
+
+    // Sắp xếp giảm dần (Người nhiều phiếu nhất đứng đầu)
     const sorted = Object.entries(tally).sort((a, b) => b[1] - a[1]);
 
     let isDraw = false;
+
+    // TRƯỜNG HỢP 1: Không ai vote cả -> HÒA
     if (sorted.length === 0) {
       isDraw = true;
-    } else if (sorted.length > 1 && sorted[0][1] === sorted[1][1]) {
+    }
+    // TRƯỜNG HỢP 2: Có ít nhất 2 người được vote, và số phiếu bằng nhau -> HÒA
+    // Ví dụ: A(2 phiếu), B(2 phiếu) => sorted[0][1] == 2, sorted[1][1] == 2
+    else if (sorted.length > 1 && sorted[0][1] === sorted[1][1]) {
       isDraw = true;
     }
 
     if (isDraw) {
+      console.log('-> KẾT QUẢ: HÒA');
       await update(ref(this.db, `rooms/${roomId}/game`), {
         status: 'draw',
         revealedPlayer: null,
@@ -166,8 +275,11 @@ export class GameService {
       return;
     }
 
-    // XỬ LÝ LOẠI NGƯỜI
+    // XỬ LÝ LOẠI NGƯỜI (Người đứng đầu mảng sorted)
     const eliminatedId = sorted[0][0];
+    const votesCount = sorted[0][1];
+
+    console.log(`-> LOẠI NGƯỜI CHƠI: ${eliminatedId} với ${votesCount} phiếu`);
 
     // 1. Cập nhật trạng thái bị loại trong DB
     await update(ref(this.db, `rooms/${roomId}/players/${eliminatedId}`), {
@@ -200,29 +312,74 @@ export class GameService {
       });
     }
   }
+  async backToLobby(roomId: string, newPair: any) {
+    const updates: any = {};
 
-  // --- NEW: SPY GUESS LOGIC ---
-  async spyGuessWord(roomId: string, playerId: string, word: string) {
+    // 1. Reset trạng thái Game
+    updates[`rooms/${roomId}/game`] = {
+      status: 'lobby',
+      winner: null,
+      endReason: null,
+      heroId: null,
+      revealedPlayer: null,
+    };
+
+    // 2. CẬP NHẬT TỪ KHÓA MỚI (Đây là dòng quan trọng bị thiếu)
+    updates[`rooms/${roomId}/wordPair`] = newPair;
+
+    // 3. Reset trạng thái người chơi (Bỏ vote, bỏ role, hồi sinh)
+    // Lấy danh sách người chơi hiện tại để reset
+    const roomSnap = await get(ref(this.db, `rooms/${roomId}/players`));
+    if (roomSnap.exists()) {
+      const players = roomSnap.val();
+      Object.keys(players).forEach((pid) => {
+        updates[`rooms/${roomId}/players/${pid}/role`] = null;
+        updates[`rooms/${roomId}/players/${pid}/vote`] = null;
+        updates[`rooms/${roomId}/players/${pid}/eliminated`] = false;
+      });
+    }
+
+    // Thực hiện update 1 lần cho tối ưu
+    await update(ref(this.db), updates);
+  }
+  async guessWord(roomId: string, playerId: string, guessWord: string) {
     const room = (await get(ref(this.db, `rooms/${roomId}`))).val();
-    const villianWord = room.wordPair.villian;
+    const player = room.players[playerId];
+    const playerRole = player.role; // 'spy' hoặc 'villian'
 
-    if (word.trim().toLowerCase() === villianWord.toLowerCase()) {
-      // 1. SPY ĐOÁN ĐÚNG -> SPY THẮNG
+    // 1. Xác định từ khóa mục tiêu (Target Word)
+    // Nếu mình là Spy -> Phải đoán từ của Villian
+    // Nếu mình là Villian -> Phải đoán từ của Spy
+    let targetWord = '';
+    if (playerRole === 'spy') {
+      targetWord = room.wordPair.villian;
+    } else {
+      targetWord = room.wordPair.spy;
+    }
+
+    const isCorrect =
+      guessWord.trim().toLowerCase() === targetWord.toLowerCase();
+
+    // 2. Xử lý kết quả
+    if (isCorrect) {
+      // --- ĐOÁN ĐÚNG ---
+      // Người đoán thắng -> Phe của người đó thắng
       await update(ref(this.db, `rooms/${roomId}/game`), {
         status: 'game_over',
-        winner: 'spy',
-        endReason: 'spy_guessed_correct', // Thêm lý do để UI hiển thị
+        winner: playerRole, // 'spy' hoặc 'villian'
+        endReason: 'guessed_correct',
+        heroId: playerId, // Lưu ID người hùng đã đoán đúng
       });
     } else {
-      // 2. SPY ĐOÁN SAI -> DÂN (VILLIAN) THẮNG NGAY LẬP TỨC
+      // --- ĐOÁN SAI ---
+      // Người đoán thua -> Phe ĐỐI PHƯƠNG thắng
+      const winnerRole = playerRole === 'spy' ? 'villian' : 'spy';
+
       await update(ref(this.db, `rooms/${roomId}/game`), {
         status: 'game_over',
-        winner: 'villian',
-        endReason: 'spy_guessed_wrong', // Lý do thua: Đoán sai
-        wrongGuessPayload: {
-          playerId: playerId,
-          word: word,
-        },
+        winner: winnerRole,
+        endReason: 'guessed_wrong',
+        heroId: playerId, // Lưu ID "tội đồ" đã đoán sai
       });
     }
   }
@@ -259,16 +416,17 @@ export class GameService {
     let villianCount = 0;
 
     Object.values(players).forEach((p: any) => {
+      // Chỉ đếm người CHƯA bị loại
       if (!p.eliminated) {
         if (p.role === 'spy') spyCount++;
         else villianCount++;
       }
     });
 
-    if (spyCount === 0) return 'villian';
-    if (spyCount >= villianCount) return 'spy';
+    if (spyCount === 0) return 'villian'; // Hết Spy -> Dân thắng
+    if (spyCount >= villianCount) return 'spy'; // Spy áp đảo -> Spy thắng
 
-    return null; // Continue game
+    return null; // Game tiếp tục
   }
 
   async endReveal(roomId: string) {

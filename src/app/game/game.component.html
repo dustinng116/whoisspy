@@ -14,7 +14,7 @@
                 <path d="M13 22.4c-.05-1-.26-2-.35-3" />
                 <path d="M9 12.5a4.5 4.5 0 0 1 6.8-2.6" />
             </svg> -->
-            <img src="assets/spy.png" alt="Spy" width="80%"/>
+            <img src="assets/spy.png" alt="Spy" width="80%" />
         </div>
         <h1>Who is the Spy?</h1>
         <div class="input-group">
@@ -23,8 +23,9 @@
         </div>
 
         @if (viewMode() === 'home') {
-        <button class="btn-primary" (click)="createRoom()">TẠO PHÒNG +</button>
-        <button class="btn-secondary" (click)="viewMode.set('join_input')">THAM GIA →</button>
+        <button class="btn-primary" (click)="createRoom()">TẠO PHÒNG</button>
+        <button class="btn-secondary " style="margin-top: 1rem;" (click)="viewMode.set('join_input')">THAM GIA VÀO PHÒNG
+            →</button>
         } @else {
         <div class="input-group fade-in">
             <label>ROOM ID</label>
@@ -49,17 +50,26 @@
     @if (showWord()) {
     <div class="role-overlay fade-in">
         <div class="role-card">
-            <div class="role-header">VAI TRÒ CỦA BẠN</div>
+            <!-- <div class="role-header">VAI TRÒ CỦA BẠN</div>
             <h1 class="role-name" [class.spy]="myRoleRaw() === 'spy'">
-                {{ myRoleRaw() === 'spy' ? 'ĐIỆP VIÊN' : 'DÂN THƯỜNG' }}
+                {{ myRoleRaw() === 'spy' ? 'GIÁN ĐIỆP' : 'DÂN THƯỜNG' }}
             </h1>
 
             <div class="role-icon">
                 @if(myRoleRaw() === 'spy') { 🕵️‍♂️ } @else { 👤 }
-            </div>
+            </div> -->
 
+            <h1>Who is the Spy?</h1>
             <p class="role-hint">Từ bí mật của bạn là:</p>
-            <div class="secret-word">{{ myWord() }}</div>
+            <div class="secret-word-row">
+                <div class="secret-word" [class.hidden]="!isWordVisible()">
+                    {{ isWordVisible() ? myWord() : '******' }}
+                </div>
+                
+                <button class="btn-eye" (click)="toggleWordVisibility()">
+                    {{ isWordVisible() ? '🙈' : '👁️' }}
+                </button>
+            </div>
             <p class="role-sub">Hãy ghi nhớ từ này và đừng để lộ!</p>
         </div>
 
@@ -119,8 +129,17 @@
                 <h2>🗣️ Đang thảo luận</h2>
                 <p>Hãy tìm ra kẻ giả mạo!</p>
 
-                @if (isSpy() && !isEliminated()) {
-                <button class="btn-spy-guess fade-in" (click)="openSpyGuess()">
+                <div class="keyword-review-box" (click)="toggleReviewKeyword()"
+                     [class.active]="isReviewingKeyword()">
+                    <span class="icon">🔑</span>
+                    <span class="content">
+                        {{ isReviewingKeyword() ? myWord() : 'Xem lại từ khóa' }}
+                    </span>
+                    <span class="eye-mini">{{ isReviewingKeyword() ? '🙈' : '👁️' }}</span>
+                </div>
+
+                @if (!isEliminated()) {
+                <button class="btn-spy-guess fade-in mt-20" (click)="openGuessModal()">
                     🎯 Đoán từ (Win ngay)
                 </button>
                 }
@@ -133,21 +152,23 @@
             @if (slot) {
             <div class="card player-card" [class.selectable]="isVoting() && !slot.eliminated && slot.id !== playerId"
                 [class.selected]="selectedVoteId() === slot.id" [class.eliminated]="slot.eliminated"
-                [class.is-me]="slot.id === playerId"
+                [class.is-me]="slot.id === playerId" [class.self-voting]="isVoting() && slot.id === playerId"
                 (click)="isVoting() ? selectForVote(slot.id) : onAvatarClick(slot)">
 
                 @if (selectedVoteId() === slot.id) { <div class="check-circle">✓</div> }
-                @if (isVoting() && getVoteDots(slot.id).length > 0) { ... }
+                @if (isVoting() && getVoteDots(slot.id).length > 0) {
+                <div class="vote-dots-container">
+                    @for(dot of getVoteDots(slot.id); track $index) { <span class="vote-dot"></span> }
+                </div>
+                }
 
                 <div class="avatar-box" [class.has-image]="slot.avatar"
                     [style.background-color]="slot.avatar ? 'transparent' : getAvatarColor(slot.name)">
-
                     @if (slot.avatar) {
                     <img [src]="'assets/avatars/' + slot.avatar" alt="Avatar" class="avatar-img" />
                     } @else {
                     {{ slot.name.substring(0,2).toUpperCase() }}
-                    }
-
+                    } 
                     @if (slot.id === playerId && isLobby()) {
                     <div class="edit-badge">✏️</div>
                     }
@@ -157,11 +178,11 @@
                     <div class="p-name">{{ slot.name }} @if (slot.id === room().hostId) { <span
                             class="txt-host">👑</span> }</div>
                     <div class="p-role">
-                        @if (slot.eliminated) { <span class="txt-dead">ĐÃ LOẠI</span> }
-                        <!-- @else if (slot.id === room().hostId) { <span class="txt-host">HOST👑</span> } -->
+                        @if (slot.eliminated) { <span class="txt-dead">ĐÃ LOẠI</span> } 
                         @else if (isLobby()) { <span class="txt-ready">SẴN SÀNG</span> }
                     </div>
                 </div>
+
 
             </div>
             }
@@ -182,7 +203,7 @@
                 <button class="btn-white" (click)="openSettings()">
                     <span>⚙️</span> Cài đặt game
                 </button>
-                <button class="btn-exit">
+                <button class="btn-exit" (click)="exitGame()">
                     <span>❌</span> Thoát
                 </button>
             </div>
@@ -237,7 +258,7 @@
         </div>
     </div>
     }
-    @if (isSpyGuessing()) {
+    <!-- @if (isSpyGuessing()) {
     <div class="modal-backdrop fade-in" (click)="closeSpyGuess()">
         <div class="modal-content spy-modal" (click)="$event.stopPropagation()">
             <h3>🕵️‍♂️ SPY GUESS</h3>
@@ -252,7 +273,7 @@
             </div>
         </div>
     </div>
-    }
+    } -->
     @if (showDrawModal()) {
     <div class="modal-backdrop fade-in">
         <div class="modal-content result-modal">
@@ -305,29 +326,68 @@
         </div>
     </div>
     }
+    @if (isGuessing()) {
+    <div class="modal-backdrop fade-in" (click)="closeGuessModal()">
+        <div class="modal-content spy-modal" (click)="$event.stopPropagation()">
+            <h3>🎯 QUYẾT ĐỊNH TÁO BẠO</h3>
+
+            <p style="font-size: 13px; color: #636e72;">
+                Bạn sẽ đoán từ khóa của <strong>phe đối thủ</strong>.<br>
+                <span style="color: #ff4757; font-weight: bold;">CẢNH BÁO:</span>
+                Nếu đoán SAI, phe bạn sẽ <strong style="color: #ff4757">THUA NGAY LẬP TỨC</strong>!
+            </p>
+
+            <input class="spy-input" placeholder="Nhập từ khóa..." [ngModel]="guessInput()"
+                (ngModelChange)="guessInput.set($event)" autofocus />
+
+            <div class="modal-actions">
+                <button class="btn-white" (click)="closeGuessModal()">Hủy</button>
+                <button class="btn-primary" (click)="submitGuess()">Chốt đơn</button>
+            </div>
+        </div>
+    </div>
+    }
+
     @if (showResultModal()) {
     <div class="modal-backdrop fade-in" (click)="isGameOver() ? null : closeResultModal()">
         <div class="modal-content result-modal" (click)="$event.stopPropagation()">
 
             @if (isGameOver()) {
             <div class="skull-icon">
-                {{ winner() === 'spy' ? '🏆' : '🤡' }}
-            </div>
+                {{ winner() === 'spy' ? '🏆' : randomEmoji() }} </div>
 
             <h3>KẾT THÚC GAME</h3>
 
             <h1 class="eliminated-name" [style.color]="winner() === 'spy' ? '#ff4757' : '#0984e3'">
-                {{ winner() === 'spy' ? 'ĐIỆP VIÊN THẮNG' : 'DÂN THƯỜNG THẮNG' }}
+                {{ winner() === 'spy' ? 'GIÁN ĐIỆP THẮNG' : 'DÂN THƯỜNG THẮNG' }}
             </h1>
 
-            @if (endReason() === 'spy_guessed_wrong') {
-            <p class="reason-text">Điệp viên đã đoán sai từ khóa!</p>
-            } @else if (endReason() === 'spy_guessed_correct') {
-            <p class="reason-text">Điệp viên đã đoán đúng từ khóa!</p>
-            }
+            <div class="reason-box">
+                @if (endReason() === 'guessed_correct') {
+                <p><strong>{{ heroName() }}</strong> đã xuất sắc đoán đúng từ khóa!</p>
+                }
+                @else if (endReason() === 'guessed_wrong') {
+                <p><strong>{{ heroName() }}</strong> đã đoán sai và "báo" cả team! 🤣</p>
+                }
+                @else if (endReason() === 'not_enough_players') {
+                <p style="color: #e67e22; font-weight: bold;">
+                    ⚠️ Game bị hủy do không đủ người chơi!
+                </p>
+                <p class="small-text">(Các người chơi khác đã thoát)</p>
+                }
+                @else if (endReason() === 'player_left') {
+                <p>
+                    {{ winner() === 'spy' ? 'Dân thường' : 'Gián điệp' }} đã bỏ chạy! 🏃‍♂️💨
+                </p>
+                <p>Chiến thắng thuộc về phe còn lại!</p>
+                }
+                @else {
+                <p>Gián điệp đã bị loại hết!</p>
+                }
+            </div>
 
             <div class="spy-reveal-section">
-                <p class="reveal-label">DANH TÍNH ĐIỆP VIÊN:</p>
+                <p class="reveal-label">DANH TÍNH GIÁN ĐIỆP:</p>
                 <div class="spy-list">
                     @for (spy of spiesList(); track $index) {
                     <div class="spy-card-mini">
@@ -341,22 +401,24 @@
             </div>
 
             @if (isHost()) {
-            <button class="btn-primary mt-20" (click)="backToLobby()">
-                🔄 Quay về Lobby (Reset)
-            </button>
+            <button class="btn-primary mt-20" (click)="backToLobby()">🔄 Chơi ván mới</button>
             } @else {
-            <p class="waiting-text">Chờ chủ phòng reset game...</p>
+            <p class="waiting-text">Chờ chủ phòng...</p>
             }
 
             } @else {
             <div class="skull-icon">☠️</div>
             <h3>NGƯỜI BỊ LOẠI</h3>
-            <h1 class="eliminated-name">{{ room().game.revealedPlayer.id === playerId ? 'BẠN' : '...' }}</h1>
+            <h1 class="eliminated-name">{{ room().game.revealedPlayer.id === playerId ? 'BẠN' :
+                room().players[room().game.revealedPlayer.id]?.name }}</h1>
+            @if(room().game.revealedPlayer.id === playerId){
             <div class="identity-box">
                 Là: <strong [class.spy]="room().game.revealedPlayer.role === 'spy'">
-                    {{ room().game.revealedPlayer.role === 'spy' ? 'ĐIỆP VIÊN' : 'DÂN THƯỜNG' }}
+                    {{ room().game.revealedPlayer.role === 'spy' ? 'gIÁN ĐIỆP' : 'DÂN THƯỜNG' }}
                 </strong>
             </div>
+            }
+
             <button class="btn-primary mt-20" (click)="closeResultModal()">Đóng (5s)</button>
             }
 
@@ -391,9 +453,19 @@
             <h3>⚙️ CÀI ĐẶT PHÒNG</h3>
 
             <div class="settings-form">
-
+                <div class="config-section">
+                    <label>⏱️ Thời gian Vote:</label>
+                    <div class="time-options">
+                        @for (time of timeOptions; track time) {
+                        <button class="btn-time" [class.active]="tempVoteDuration() === time"
+                            (click)="tempVoteDuration.set(time)">
+                            {{ time }}s
+                        </button>
+                        }
+                    </div>
+                </div>
                 <div class="form-group">
-                    <label>Số lượng Điệp viên (Spy)</label>
+                    <label>Số lượng Gián Điệp (Spy)</label>
                     <div class="select-wrapper">
                         <select [ngModel]="tempSpyCount()" (ngModelChange)="tempSpyCount.set(+$event)">
                             <option [value]="1">1 Spy (Cổ điển)</option>

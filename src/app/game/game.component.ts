@@ -25,11 +25,13 @@ interface Player {
 export class GameComponent {
   readonly MAX_PLAYERS = 12;
   readonly VOTE_TIME = 15000;
-
+  private unsubRoom: any = null;
+  selectedTime = signal(15);
+  timeOptions = [15, 30, 60];
   // State
   viewMode = signal<'home' | 'join_input'>('home');
   roomId = signal<string | null>(null);
-  playerName = signal('');
+  playerName = signal(localStorage.getItem('spy_username') || '');
   playerId = crypto.randomUUID();
   joined = signal(false);
   room = signal<any>(null);
@@ -58,6 +60,7 @@ export class GameComponent {
 
   tempSpyCount = signal(1);
   tempAllowVoteChange = signal(true);
+  tempVoteDuration = signal(15);
 
   currentSpyCount = computed(() => this.room()?.config?.spyCount || 1);
   minRequiredPlayers = computed(() => this.currentSpyCount() * 2 + 1);
@@ -69,6 +72,13 @@ export class GameComponent {
 
   showErrorModal = signal(false);
   errorMessage = signal('');
+
+  isGuessing = signal(false);
+  guessInput = signal('');
+  emoji = '';
+  isWordVisible = signal(false);
+
+  isReviewingKeyword = signal(false);
   readonly AVATAR_LIST = [
     '1.jpg',
     '2.jpg',
@@ -80,8 +90,39 @@ export class GameComponent {
     '8.jpg',
     '9.jpg',
     '10.jpg',
+    '11.png',
+    '12.jpg',
+    '13.jpg',
+    '14.jpg',
+    '15.png',
+    '16.jpg',
+    '17.jpg',
+    '18.jpg',
+    '19.jpg',
+    '20.jpg',
+    '21.jpg',
+    '22.jpg',
   ];
+  randomEmoji(): string {
+    const emojis = [
+      '😎',
+      '😂',
+      '🤔',
+      '🥳',
+      '🔥',
+      '✨',
+      '🚀',
+      '🎉',
+      '💡',
+      '🤯',
+      '👀',
+      '👍',
+      '❤️',
+    ];
 
+    const index = Math.floor(Math.random() * emojis.length);
+    return emojis[index];
+  }
   constructor(private game: GameService, private route: ActivatedRoute) {
     // 1. Timer Vote Logic
     effect(() => {
@@ -90,22 +131,34 @@ export class GameComponent {
         this.selectedVoteId.set(null);
         return;
       }
+      const DURATION_SEC = this.room()?.config?.voteDuration || 30;
+      const DURATION_MS = DURATION_SEC * 1000;
 
       const tick = () => {
+        if (!g.voteStartedAt) {
+          return;
+        }
+
         const now = Date.now();
-        const elapsed = now - (g.voteStartedAt || now);
-        const remain = Math.max(0, this.VOTE_TIME - elapsed);
+        const elapsed = now - g.voteStartedAt;
+        if (elapsed > DURATION_MS + 5000) {
+          return;
+        }
+        const remain = Math.max(0, DURATION_MS - elapsed);
+        const seconds = Math.ceil(remain / 1000);
 
-        this.voteCountdown.set(Math.ceil(remain / 1000));
-
-        // Stale timestamp check
-        if (elapsed > this.VOTE_TIME + 5000) return;
-
+        if (this.voteCountdown() !== seconds) {
+          this.voteCountdown.set(seconds);
+        }
         if (remain <= 0) {
-          this.game.resolveVote(this.roomId()!);
+          clearInterval(i);
+          if (this.isHost()) {
+            setTimeout(() => {
+              this.game.resolveVote(this.roomId()!);
+            }, 2000);
+          }
         }
       };
-
       tick();
       const i = setInterval(tick, 1000);
       return () => clearInterval(i);
@@ -157,15 +210,25 @@ export class GameComponent {
       }
     });
   }
+  toggleWordVisibility() {
+    this.isWordVisible.update((v) => !v);
+  }
 
+  toggleReviewKeyword() {
+    this.isReviewingKeyword.update((v) => !v);
+  }
   // ===== ACTIONS =====
   openSettings() {
     const config = this.room()?.config || {
       spyCount: 1,
       allowVoteChange: true,
+      voteDuration: 15,
     };
+
     this.tempSpyCount.set(config.spyCount);
     this.tempAllowVoteChange.set(config.allowVoteChange);
+    this.tempVoteDuration.set(config.voteDuration || 15);
+
     this.showSettingsModal.set(true);
   }
 
@@ -179,6 +242,7 @@ export class GameComponent {
     const newConfig = {
       spyCount: Number(this.tempSpyCount()),
       allowVoteChange: this.tempAllowVoteChange(),
+      voteDuration: this.tempVoteDuration(),
     };
 
     await this.game.updateSettings(this.roomId()!, newConfig);
@@ -193,17 +257,25 @@ export class GameComponent {
   closeSpyGuess() {
     this.isSpyGuessing.set(false);
   }
-
-  async submitSpyGuess() {
-    if (!this.spyGuessInput()) return;
-    await this.game.spyGuessWord(
-      this.roomId()!,
-      this.playerId,
-      this.spyGuessInput()
-    );
-    this.closeSpyGuess();
+  openGuessModal() {
+    this.guessInput.set('');
+    this.isGuessing.set(true);
   }
 
+  closeGuessModal() {
+    this.isGuessing.set(false);
+  }
+  async submitGuess() {
+    if (!this.guessInput()) return;
+    // Gọi hàm service mới
+    await this.game.guessWord(this.roomId()!, this.playerId, this.guessInput());
+    this.closeGuessModal();
+  }
+  heroId = computed(() => this.room()?.game?.heroId);
+  heroName = computed(() => {
+    const id = this.heroId();
+    return id ? this.room()?.players[id]?.name : '';
+  });
   // MODAL ACTIONS
   closeResultModal() {
     this.showResultModal.set(false);
@@ -258,10 +330,17 @@ export class GameComponent {
       this.isNameError.set(true);
       return;
     }
+    localStorage.setItem('spy_username', this.playerName());
     const id = this.generateRoomId();
     this.roomId.set(id);
     const pair = wordData[Math.floor(Math.random() * wordData.length)];
-    await this.game.createRoom(id, this.playerId, this.playerName(), pair);
+    await this.game.createRoom(
+      id,
+      this.playerId,
+      this.playerName(),
+      pair,
+      this.selectedTime()
+    );
     this.joined.set(true);
     this.listen();
   }
@@ -278,7 +357,7 @@ export class GameComponent {
     }
 
     if (!isValid) return;
-
+    localStorage.setItem('spy_username', this.playerName());
     try {
       await this.game.joinRoom(
         this.joinRoomInput(),
@@ -294,7 +373,6 @@ export class GameComponent {
       this.showErrorModal.set(true);
     }
   }
-
   // Hàm đóng modal lỗi
   closeErrorModal() {
     this.showErrorModal.set(false);
@@ -316,7 +394,87 @@ export class GameComponent {
     this.game.startVoting(this.roomId()!);
   }
   listen() {
-    this.game.listenRoom(this.roomId()!, (data) => this.room.set(data));
+    if (this.unsubRoom) this.unsubRoom();
+
+    this.unsubRoom = this.game.listenRoom(this.roomId()!, (data) => {
+      if (!data) {
+        this.forceExit();
+        return;
+      }
+      if (data.players && !data.players[this.playerId]) {
+        this.errorMessage.set('Bạn đã bị mời ra khỏi phòng!');
+        this.showErrorModal.set(true);
+
+        if (this.unsubRoom) {
+          this.unsubRoom();
+          this.unsubRoom = null;
+        }
+        this.resetLocalState();
+        return;
+      }
+      const status = data.game?.status;
+      if (
+        this.playerId === data.hostId &&
+        (status === 'playing' || status === 'voting')
+      ) {
+        // Kiểm tra xem có cần End Game ngay không?
+        // (Gọi mỗi khi data thay đổi đảm bảo tính realtime cao nhất)
+        this.game.checkGameViability(this.roomId()!);
+      }
+      // Cập nhật data bình thường
+      this.room.set(data);
+    });
+  }
+  async exitGame() {
+    const currentRoomId = this.roomId();
+    const currentPlayerId = this.playerId;
+
+    if (!currentRoomId) return;
+
+    if (this.unsubRoom) {
+      this.unsubRoom();
+      this.unsubRoom = null;
+    }
+
+    try {
+      await this.game.leaveRoom(currentRoomId, currentPlayerId);
+    } catch (e) {
+      console.error('Lỗi khi thoát phòng:', e);
+    }
+
+    this.resetLocalState();
+  }
+  forceExit() {
+    this.errorMessage.set('Chủ phòng đã giải tán phòng chơi!');
+    this.showErrorModal.set(true);
+
+    this.resetLocalState();
+  }
+  private resetLocalState() {
+    // Ngắt kết nối Firebase listener
+    if (this.unsubRoom) {
+      this.unsubRoom();
+      this.unsubRoom = null;
+    }
+
+    // Reset các Signal
+    this.joined.set(false);
+    this.roomId.set(null);
+    this.room.set(null);
+    this.joinRoomInput.set('');
+
+    // Reset các modal/trạng thái game
+    this.showResultModal.set(false);
+    this.showDrawModal.set(false);
+    this.showSettingsModal.set(false);
+    this.isSpyGuessing.set(false);
+    this.showWord.set(false);
+    this.hasSeenRole = false;
+    this.voteCountdown.set(0);
+    this.isWordVisible.set(false);
+    this.isReviewingKeyword.set(false);
+    // Quay về màn hình Home
+    this.viewMode.set('home');
   }
   selectForVote(id: string) {
     if (this.room()?.game?.status !== 'voting') return;
@@ -360,7 +518,8 @@ export class GameComponent {
   }
   async backToLobby() {
     if (this.isHost()) {
-      await this.game.resetRoom(this.roomId()!);
+      const newPair = wordData[Math.floor(Math.random() * wordData.length)];
+      await this.game.backToLobby(this.roomId()!, newPair);
     }
     this.showResultModal.set(false);
   }
@@ -390,7 +549,10 @@ export class GameComponent {
   });
 
   // Winner Logic
-  winner = computed(() => this.room()?.game?.winner); // 'spy' or 'villian'
+  winner = computed(() => {
+    this.emoji = this.randomEmoji();
+    return this.room()?.game?.winner;
+  });
 
   // Helpers
   playerCount = computed(() => Object.keys(this.room()?.players || {}).length);
@@ -480,11 +642,3 @@ export class GameComponent {
     }
   }
 }
-
-const WORDS = [
-  { villian: 'Cà phê', spy: 'Trà sữa' },
-  { villian: 'Bệnh viện', spy: 'Phòng khám' },
-  { villian: 'Superman', spy: 'Batman' },
-  { villian: 'Facebook', spy: 'Instagram' },
-  { villian: 'Piano', spy: 'Guitar' },
-];
