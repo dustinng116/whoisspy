@@ -29,14 +29,14 @@ export class GameService {
     voteDuration: number = 15
   ) {
     const roomRef = ref(this.db, `rooms/${roomId}`);
-    await set(ref(this.db, `rooms/${roomId}`), {
+
+    await set(roomRef, {
       hostId,
       maxPlayers: 8,
       wordPair,
-      // CONFIG MẶC ĐỊNH
       config: {
-        spyCount: 1, // 1 Điệp viên
-        allowVoteChange: true, // Được phép đổi vote
+        spyCount: 1,
+        allowVoteChange: true,
         voteDuration: voteDuration,
       },
       game: {
@@ -48,15 +48,23 @@ export class GameService {
       },
       players: {
         [hostId]: {
+          id: hostId, // Lưu ID vào object để dễ map
           name: hostName,
           role: null,
           eliminated: false,
           vote: null,
           joinedAt: Date.now(),
+          isOnline: true, // [NEW] Trạng thái online
         },
       },
     });
-    onDisconnect(roomRef).remove();
+
+    // [CHANGED] Host rớt mạng -> Chỉ set offline, KHÔNG XÓA PHÒNG
+    const playerStatusRef = ref(
+      this.db,
+      `rooms/${roomId}/players/${hostId}/isOnline`
+    );
+    onDisconnect(playerStatusRef).set(false);
   }
 
   // 2. MỚI: CẬP NHẬT SETTINGS
@@ -64,7 +72,11 @@ export class GameService {
     await update(ref(this.db, `rooms/${roomId}/config`), config);
   }
 
-  async joinRoom(roomId: string, playerId: string, name: string) {
+  async joinRoom(
+    roomId: string,
+    playerId: string,
+    name: string
+  ): Promise<string> {
     const roomRef = ref(this.db, `rooms/${roomId}`);
     const roomSnap = await get(roomRef);
 
@@ -73,44 +85,64 @@ export class GameService {
     }
 
     const room = roomSnap.val();
-
-    // 1. Check Status
-    if (room.game.status !== 'lobby') {
-      throw new Error('Game đang diễn ra hoặc đã kết thúc!');
-    }
-
     const players = room.players || {};
-    const count = Object.keys(players).length;
 
-    // 2. Check Full
-    if (count >= room.maxPlayers) {
-      throw new Error('Phòng đã đầy!');
-    }
-
-    // -------------------------------------------------------------
-    // 3. LOGIC MỚI: KIỂM TRA TRÙNG TÊN (Case-insensitive)
-    // -------------------------------------------------------------
+    // 1. TÌM XEM TÊN NÀY ĐÃ TỒN TẠI CHƯA (Case-insensitive)
     const normalize = (str: string) => str.trim().toLowerCase();
-    const newNameClean = normalize(name);
+    const cleanName = normalize(name);
 
-    const isDuplicate = Object.values(players).some((p: any) => {
-      return normalize(p.name) === newNameClean && p.id !== playerId;
-    });
-    const playerRef = ref(this.db, `rooms/${roomId}/players/${playerId}`);
-    if (isDuplicate) {
-      throw new Error(`Tên "${name}" đã có người sử dụng trong phòng này!`);
+    // Tìm key (ID) của người chơi có tên trùng
+    const existingPlayerId = Object.keys(players).find(
+      (key) => normalize(players[key].name) === cleanName
+    );
+
+    let finalPlayerId = playerId; // Mặc định là ID mới
+
+    // =========================================================
+    // TRƯỜNG HỢP 1: NGƯỜI CŨ QUAY LẠI (RECLAIM)
+    // =========================================================
+    if (existingPlayerId) {
+      // Cho phép vào lại bất kể trạng thái game (Lobby hay Playing)
+      finalPlayerId = existingPlayerId;
+
+      // Cập nhật lại trạng thái Online
+      await update(ref(this.db, `rooms/${roomId}/players/${finalPlayerId}`), {
+        isOnline: true,
+      });
     }
-    // -------------------------------------------------------------
+    // =========================================================
+    // TRƯỜNG HỢP 2: NGƯỜI CHƠI MỚI TINH
+    // =========================================================
+    else {
+      // Nếu là người mới thì phải check điều kiện phòng
+      if (room.game.status !== 'lobby') {
+        throw new Error('Game đang diễn ra, không thể tham gia mới!');
+      }
+      if (Object.keys(players).length >= room.maxPlayers) {
+        throw new Error('Phòng đã đầy!');
+      }
 
-    // Nếu mọi thứ OK -> Cho vào phòng
-    await update(ref(this.db, `rooms/${roomId}/players/${playerId}`), {
-      name,
-      role: null,
-      eliminated: false,
-      vote: null,
-      joinedAt: Date.now(),
-    });
-    onDisconnect(playerRef).remove();
+      // Tạo data người chơi mới
+      await update(ref(this.db, `rooms/${roomId}/players/${finalPlayerId}`), {
+        id: finalPlayerId,
+        name,
+        role: null,
+        eliminated: false,
+        vote: null,
+        joinedAt: Date.now(),
+        isOnline: true, // [NEW]
+      });
+    }
+
+    // [CHANGED] CÀI ĐẶT ONDISCONNECT: CHỈ SET OFFLINE, KHÔNG XÓA
+    // Dù là người mới hay người cũ, rớt mạng là set isOnline = false
+    const statusRef = ref(
+      this.db,
+      `rooms/${roomId}/players/${finalPlayerId}/isOnline`
+    );
+    onDisconnect(statusRef).set(false);
+
+    return finalPlayerId; // Trả về ID chính thức để Component cập nhật
   }
 
   async leaveRoom(roomId: string, playerId: string) {

@@ -65,7 +65,7 @@
                 <div class="secret-word" [class.hidden]="!isWordVisible()">
                     {{ isWordVisible() ? myWord() : '******' }}
                 </div>
-                
+
                 <button class="btn-eye" (click)="toggleWordVisibility()">
                     {{ isWordVisible() ? '🙈' : '👁️' }}
                 </button>
@@ -129,8 +129,7 @@
                 <h2>🗣️ Đang thảo luận</h2>
                 <p>Hãy tìm ra kẻ giả mạo!</p>
 
-                <div class="keyword-review-box" (click)="toggleReviewKeyword()"
-                     [class.active]="isReviewingKeyword()">
+                <div class="keyword-review-box" (click)="toggleReviewKeyword()" [class.active]="isReviewingKeyword()">
                     <span class="icon">🔑</span>
                     <span class="content">
                         {{ isReviewingKeyword() ? myWord() : 'Xem lại từ khóa' }}
@@ -151,8 +150,9 @@
             @for (slot of playersSlots(); track $index) {
             @if (slot) {
             <div class="card player-card" [class.selectable]="isVoting() && !slot.eliminated && slot.id !== playerId"
-                [class.selected]="selectedVoteId() === slot.id" [class.eliminated]="slot.eliminated"
-                [class.is-me]="slot.id === playerId" [class.self-voting]="isVoting() && slot.id === playerId"
+                [class.offline]="!slot.isOnline" [class.selected]="selectedVoteId() === slot.id"
+                [class.eliminated]="slot.eliminated" [class.is-me]="slot.id === playerId"
+                [class.self-voting]="isVoting() && slot.id === playerId"
                 (click)="isVoting() ? selectForVote(slot.id) : onAvatarClick(slot)">
 
                 @if (selectedVoteId() === slot.id) { <div class="check-circle">✓</div> }
@@ -165,13 +165,13 @@
                 <div class="avatar-box" [class.has-image]="slot.avatar"
                     [style.background-color]="slot.avatar ? 'transparent' : getAvatarColor(slot.name)">
                     @if (slot.id === playerId) {
-                        <div class="me-badge">BẠN</div>
+                    <div class="me-badge">BẠN</div>
                     }
                     @if (slot.avatar) {
                     <img [src]="'assets/avatars/' + slot.avatar" alt="Avatar" class="avatar-img" />
                     } @else {
                     {{ slot.name.substring(0,2).toUpperCase() }}
-                    } 
+                    }
                     @if (slot.id === playerId && isLobby()) {
                     <div class="edit-badge">✏️</div>
                     }
@@ -181,8 +181,15 @@
                     <div class="p-name">{{ slot.name }} @if (slot.id === room().hostId) { <span
                             class="txt-host">👑</span> }</div>
                     <div class="p-role">
-                        @if (slot.eliminated) { <span class="txt-dead">ĐÃ LOẠI</span> } 
-                        @else if (isLobby()) { <span class="txt-ready">SẴN SÀNG</span> }
+                        @if (!slot.isOnline) {
+                        <span class="txt-offline">OFFLINE 🔴</span>
+                        }
+                        @else if (slot.eliminated) {
+                        <span class="txt-dead">ĐÃ LOẠI</span>
+                        }
+                        @else if (isLobby()) {
+                        <span class="txt-ready">SẴN SÀNG</span>
+                        }
                     </div>
                 </div>
 

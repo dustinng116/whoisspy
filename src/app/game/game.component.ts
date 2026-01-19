@@ -32,7 +32,7 @@ export class GameComponent {
   viewMode = signal<'home' | 'join_input'>('home');
   roomId = signal<string | null>(null);
   playerName = signal(localStorage.getItem('spy_username') || '');
-  playerId = crypto.randomUUID();
+  playerId:any = crypto.randomUUID();
   joined = signal(false);
   room = signal<any>(null);
 
@@ -358,12 +358,14 @@ export class GameComponent {
 
     if (!isValid) return;
     localStorage.setItem('spy_username', this.playerName());
-    try {
-      await this.game.joinRoom(
+    try { 
+      const realId = await this.game.joinRoom(
         this.joinRoomInput(),
         this.playerId,
         this.playerName()
       );
+ 
+      this.playerId = realId;
 
       this.roomId.set(this.joinRoomInput());
       this.joined.set(true);
