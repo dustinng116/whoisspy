@@ -1,5 +1,33 @@
 <div class="app-container">
+    @if (joined() && !isLobby()) {
+    <button class="btn-power-exit" (click)="openExitConfirm()">
+        <span class="icon"><img src="assets/power.png" alt="Spy" width="80%" /></span>
+    </button>
+    }
+    @if (showExitConfirm()) {
+    <div class="modal-backdrop fade-in" (click)="closeExitConfirm()">
+        <div class="modal-content confirm-modal" (click)="$event.stopPropagation()">
+            <div class="icon-warning red">🛑</div>
 
+            <h3>{{ isHost() ? 'GIẢI TÁN PHÒNG?' : 'RỜI KHỎI GAME?' }}</h3>
+
+            <p class="confirm-msg">
+                @if (isHost()) {
+                Bạn là chủ phòng. Nếu bạn thoát, phòng sẽ bị hủy và tất cả người chơi sẽ bị out.
+                } @else {
+                Bạn có chắc chắn muốn thoát khi game đang diễn ra không?
+                }
+            </p>
+
+            <div class="modal-actions">
+                <button class="btn-white" (click)="closeExitConfirm()">Hủy</button>
+                <button class="btn-primary danger-btn" (click)="confirmExit()">
+                    {{ isHost() ? 'Giải tán ngay' : 'Thoát luôn' }}
+                </button>
+            </div>
+        </div>
+    </div>
+    }
     <!-- ================= HOME SCREEN ================= -->
     @if (!joined()) {
     <div class="screen-home fade-in">

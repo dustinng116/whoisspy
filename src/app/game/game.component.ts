@@ -79,6 +79,8 @@ export class GameComponent {
   isWordVisible = signal(false);
 
   isReviewingKeyword = signal(false);
+
+  showExitConfirm = signal(false);
   readonly AVATAR_LIST = [
     '1.jpg',
     '2.jpg',
@@ -374,6 +376,20 @@ export class GameComponent {
       this.errorMessage.set(err.message || 'Có lỗi xảy ra, vui lòng thử lại.');
       this.showErrorModal.set(true);
     }
+  }
+  openExitConfirm() {
+    this.showExitConfirm.set(true);
+  }
+
+  // [NEW] Đóng Modal
+  closeExitConfirm() {
+    this.showExitConfirm.set(false);
+  }
+
+  // [NEW] Xác nhận thoát (Gọi hàm exitGame cũ)
+  confirmExit() {
+    this.exitGame(); // Hàm này đã có sẵn logic xử lý Host/User ở các bước trước
+    this.closeExitConfirm();
   }
   // Hàm đóng modal lỗi
   closeErrorModal() {

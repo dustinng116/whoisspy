@@ -354,24 +354,33 @@ export class GameService {
       endReason: null,
       heroId: null,
       revealedPlayer: null,
+      startedAt: null,      // Reset thêm cái này cho sạch
+      voteStartedAt: null   // Reset thêm cái này cho sạch
     };
 
-    // 2. CẬP NHẬT TỪ KHÓA MỚI (Đây là dòng quan trọng bị thiếu)
+    // 2. Cập nhật từ khóa mới
     updates[`rooms/${roomId}/wordPair`] = newPair;
 
-    // 3. Reset trạng thái người chơi (Bỏ vote, bỏ role, hồi sinh)
-    // Lấy danh sách người chơi hiện tại để reset
+    // 3. Reset trạng thái người chơi & DỌN DẸP NGƯỜI OFFLINE
     const roomSnap = await get(ref(this.db, `rooms/${roomId}/players`));
     if (roomSnap.exists()) {
       const players = roomSnap.val();
       Object.keys(players).forEach((pid) => {
-        updates[`rooms/${roomId}/players/${pid}/role`] = null;
-        updates[`rooms/${roomId}/players/${pid}/vote`] = null;
-        updates[`rooms/${roomId}/players/${pid}/eliminated`] = false;
+        const p = players[pid];
+
+        // [NEW LOGIC] Nếu người chơi đang Offline -> Xóa khỏi phòng luôn
+        if (p.isOnline === false) {
+            updates[`rooms/${roomId}/players/${pid}`] = null;
+        } 
+        // Nếu đang Online -> Reset để chơi ván mới
+        else {
+            updates[`rooms/${roomId}/players/${pid}/role`] = null;
+            updates[`rooms/${roomId}/players/${pid}/vote`] = null;
+            updates[`rooms/${roomId}/players/${pid}/eliminated`] = false;
+        }
       });
     }
 
-    // Thực hiện update 1 lần cho tối ưu
     await update(ref(this.db), updates);
   }
   async guessWord(roomId: string, playerId: string, guessWord: string) {
