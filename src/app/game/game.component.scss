@@ -1040,7 +1040,49 @@ $font-family-base: "Be Vietnam Pro", "Plus Jakarta Sans", "Segoe UI", Roboto,
   align-items: center;
   justify-content: center;
 }
+.avatar-view-modal {
+  max-width: 350px !important;
+  text-align: center;
 
+  .user-name-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: $text-dark;
+    margin-bottom: 20px;
+  }
+
+  .preview-box.large {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+    border-radius: 30px; // Bo góc tròn hơn chút cho đẹp
+    overflow: hidden;
+    box-shadow: 0 15px 40px rgba(108, 92, 231, 0.2);
+    border: 4px solid white;
+    background: #f8f9fd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    // Style cho trường hợp Avatar chữ cái
+    .fallback-avatar {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 60px;
+      font-weight: 800;
+      color: white;
+    }
+  }
+}
 .modal-content {
   background: white;
   width: 90%;
