@@ -26,7 +26,8 @@ export class GameService {
     hostId: string,
     hostName: string,
     wordPair: any,
-    voteDuration: number = 15
+    voteDuration: number = 15,
+    initialIndex: number
   ) {
     const roomRef = ref(this.db, `rooms/${roomId}`);
 
@@ -34,6 +35,7 @@ export class GameService {
       hostId,
       maxPlayers: 8,
       wordPair,
+      usedIndices: [initialIndex],
       config: {
         spyCount: 1,
         allowVoteChange: true,
@@ -356,7 +358,7 @@ export class GameService {
       });
     }
   }
-  async backToLobby(roomId: string, newPair: any) {
+  async backToLobby(roomId: string, newPair: any, updatedUsedIndices: number[]) {
     const updates: any = {};
 
     // 1. Reset trạng thái Game
@@ -366,29 +368,26 @@ export class GameService {
       endReason: null,
       heroId: null,
       revealedPlayer: null,
-      startedAt: null, // Reset thêm cái này cho sạch
-      voteStartedAt: null, // Reset thêm cái này cho sạch
+      startedAt: null,
+      voteStartedAt: null
     };
 
-    // 2. Cập nhật từ khóa mới
+    // 2. Cập nhật từ khóa mới VÀ Danh sách đã dùng
     updates[`rooms/${roomId}/wordPair`] = newPair;
+    updates[`rooms/${roomId}/usedIndices`] = updatedUsedIndices; // [NEW]
 
-    // 3. Reset trạng thái người chơi & DỌN DẸP NGƯỜI OFFLINE
+    // 3. Reset trạng thái người chơi & Dọn dẹp Offline
     const roomSnap = await get(ref(this.db, `rooms/${roomId}/players`));
     if (roomSnap.exists()) {
       const players = roomSnap.val();
       Object.keys(players).forEach((pid) => {
         const p = players[pid];
-
-        // [NEW LOGIC] Nếu người chơi đang Offline -> Xóa khỏi phòng luôn
         if (p.isOnline === false) {
-          updates[`rooms/${roomId}/players/${pid}`] = null;
-        }
-        // Nếu đang Online -> Reset để chơi ván mới
-        else {
-          updates[`rooms/${roomId}/players/${pid}/role`] = null;
-          updates[`rooms/${roomId}/players/${pid}/vote`] = null;
-          updates[`rooms/${roomId}/players/${pid}/eliminated`] = false;
+            updates[`rooms/${roomId}/players/${pid}`] = null;
+        } else {
+            updates[`rooms/${roomId}/players/${pid}/role`] = null;
+            updates[`rooms/${roomId}/players/${pid}/vote`] = null;
+            updates[`rooms/${roomId}/players/${pid}/eliminated`] = false;
         }
       });
     }

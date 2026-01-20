@@ -40,14 +40,6 @@
     "spy": "Bánh mì"
   },
   {
-    "villian": "Lẩu",
-    "spy": "Nướng"
-  },
-  {
-    "villian": "Nướng",
-    "spy": "Lẩu"
-  },
-  {
     "villian": "Kem",
     "spy": "Sữa chua"
   },
@@ -64,38 +56,6 @@
     "spy": "Bia"
   },
   {
-    "villian": "Nước ngọt",
-    "spy": "Nước ép"
-  },
-  {
-    "villian": "Nước ép",
-    "spy": "Nước ngọt"
-  },
-  {
-    "villian": "Trà đá",
-    "spy": "Nước lọc"
-  },
-  {
-    "villian": "Nước lọc",
-    "spy": "Trà đá"
-  },
-  {
-    "villian": "Trường học",
-    "spy": "Lớp học"
-  },
-  {
-    "villian": "Lớp học",
-    "spy": "Trường học"
-  },
-  {
-    "villian": "Bệnh viện",
-    "spy": "Phòng khám"
-  },
-  {
-    "villian": "Phòng khám",
-    "spy": "Bệnh viện"
-  },
-  {
     "villian": "Công ty",
     "spy": "Văn phòng"
   },
@@ -103,22 +63,7 @@
     "villian": "Văn phòng",
     "spy": "Công ty"
   },
-  {
-    "villian": "Siêu thị",
-    "spy": "Chợ"
-  },
-  {
-    "villian": "Chợ",
-    "spy": "Siêu thị"
-  },
-  {
-    "villian": "Khách sạn",
-    "spy": "Homestay"
-  },
-  {
-    "villian": "Homestay",
-    "spy": "Khách sạn"
-  },
+
   {
     "villian": "Sân bay",
     "spy": "Nhà ga"
@@ -144,28 +89,12 @@
     "spy": "Thư viện"
   },
   {
-    "villian": "Nhà hàng",
-    "spy": "Quán ăn"
-  },
-  {
-    "villian": "Quán ăn",
-    "spy": "Nhà hàng"
-  },
-  {
     "villian": "Quán bar",
     "spy": "Quán pub"
   },
   {
     "villian": "Quán pub",
     "spy": "Quán bar"
-  },
-  {
-    "villian": "Điện thoại",
-    "spy": "Máy tính bảng"
-  },
-  {
-    "villian": "Máy tính bảng",
-    "spy": "Điện thoại"
   },
   {
     "villian": "Laptop",
@@ -175,30 +104,7 @@
     "villian": "PC",
     "spy": "Laptop"
   },
-  {
-    "villian": "Tai nghe",
-    "spy": "Loa"
-  },
-  {
-    "villian": "Loa",
-    "spy": "Tai nghe"
-  },
-  {
-    "villian": "Chuột",
-    "spy": "Bàn phím"
-  },
-  {
-    "villian": "Bàn phím",
-    "spy": "Chuột"
-  },
-  {
-    "villian": "TV",
-    "spy": "Máy chiếu"
-  },
-  {
-    "villian": "Máy chiếu",
-    "spy": "TV"
-  },
+
   {
     "villian": "Máy ảnh",
     "spy": "Camera"
@@ -215,22 +121,7 @@
     "villian": "Vòng tay",
     "spy": "Đồng hồ"
   },
-  {
-    "villian": "Router",
-    "spy": "Modem"
-  },
-  {
-    "villian": "Modem",
-    "spy": "Router"
-  },
-  {
-    "villian": "USB",
-    "spy": "Ổ cứng"
-  },
-  {
-    "villian": "Ổ cứng",
-    "spy": "USB"
-  },
+
   {
     "villian": "Pin sạc",
     "spy": "Sạc nhanh"
@@ -239,46 +130,16 @@
     "villian": "Sạc nhanh",
     "spy": "Pin sạc"
   },
-  {
-    "villian": "Bóng đá",
-    "spy": "Futsal"
-  },
-  {
-    "villian": "Futsal",
-    "spy": "Bóng đá"
-  },
-  {
-    "villian": "Bóng rổ",
-    "spy": "Bóng chuyền"
-  },
-  {
-    "villian": "Bóng chuyền",
-    "spy": "Bóng rổ"
-  },
+
   {
     "villian": "Cầu lông",
-    "spy": "Bóng bàn"
+    "spy": "Tennis"
   },
   {
-    "villian": "Bóng bàn",
+    "villian": "Tennis",
     "spy": "Cầu lông"
   },
-  {
-    "villian": "Gym",
-    "spy": "Yoga"
-  },
-  {
-    "villian": "Yoga",
-    "spy": "Gym"
-  },
-  {
-    "villian": "Chạy bộ",
-    "spy": "Đi bộ"
-  },
-  {
-    "villian": "Đi bộ",
-    "spy": "Chạy bộ"
-  },
+
   {
     "villian": "Bơi lội",
     "spy": "Lặn"
@@ -287,22 +148,7 @@
     "villian": "Lặn",
     "spy": "Bơi lội"
   },
-  {
-    "villian": "Leo núi",
-    "spy": "Trekking"
-  },
-  {
-    "villian": "Trekking",
-    "spy": "Leo núi"
-  },
-  {
-    "villian": "Đạp xe",
-    "spy": "Xe đạp"
-  },
-  {
-    "villian": "Xe đạp",
-    "spy": "Đạp xe"
-  },
+
   {
     "villian": "Võ thuật",
     "spy": "Boxing"
@@ -311,22 +157,7 @@
     "villian": "Boxing",
     "spy": "Võ thuật"
   },
-  {
-    "villian": "Biển",
-    "spy": "Hồ"
-  },
-  {
-    "villian": "Hồ",
-    "spy": "Biển"
-  },
-  {
-    "villian": "Sông",
-    "spy": "Suối"
-  },
-  {
-    "villian": "Suối",
-    "spy": "Sông"
-  },
+
   {
     "villian": "Núi",
     "spy": "Đồi"
@@ -335,22 +166,7 @@
     "villian": "Đồi",
     "spy": "Núi"
   },
-  {
-    "villian": "Rừng",
-    "spy": "Thảo nguyên"
-  },
-  {
-    "villian": "Thảo nguyên",
-    "spy": "Rừng"
-  },
-  {
-    "villian": "Sa mạc",
-    "spy": "Đồi cát"
-  },
-  {
-    "villian": "Đồi cát",
-    "spy": "Sa mạc"
-  },
+
   {
     "villian": "Đảo",
     "spy": "Bán đảo"
@@ -359,22 +175,7 @@
     "villian": "Bán đảo",
     "spy": "Đảo"
   },
-  {
-    "villian": "Hang động",
-    "spy": "Hẻm núi"
-  },
-  {
-    "villian": "Hẻm núi",
-    "spy": "Hang động"
-  },
-  {
-    "villian": "Thác nước",
-    "spy": "Ghềnh"
-  },
-  {
-    "villian": "Ghềnh",
-    "spy": "Thác nước"
-  },
+
   {
     "villian": "Cánh đồng",
     "spy": "Ruộng"
@@ -383,94 +184,7 @@
     "villian": "Ruộng",
     "spy": "Cánh đồng"
   },
-  {
-    "villian": "Vườn",
-    "spy": "Trang trại"
-  },
-  {
-    "villian": "Trang trại",
-    "spy": "Vườn"
-  },
-  {
-    "villian": "Cà phê",
-    "spy": "Trà sữa"
-  },
-  {
-    "villian": "Trà sữa",
-    "spy": "Cà phê"
-  },
-  {
-    "villian": "Phở",
-    "spy": "Bún bò"
-  },
-  {
-    "villian": "Bún bò",
-    "spy": "Phở"
-  },
-  {
-    "villian": "Cơm tấm",
-    "spy": "Cơm gà"
-  },
-  {
-    "villian": "Cơm gà",
-    "spy": "Cơm tấm"
-  },
-  {
-    "villian": "Pizza",
-    "spy": "Hamburger"
-  },
-  {
-    "villian": "Hamburger",
-    "spy": "Pizza"
-  },
-  {
-    "villian": "Bánh mì",
-    "spy": "Sandwich"
-  },
-  {
-    "villian": "Sandwich",
-    "spy": "Bánh mì"
-  },
-  {
-    "villian": "Lẩu",
-    "spy": "Nướng"
-  },
-  {
-    "villian": "Nướng",
-    "spy": "Lẩu"
-  },
-  {
-    "villian": "Kem",
-    "spy": "Sữa chua"
-  },
-  {
-    "villian": "Sữa chua",
-    "spy": "Kem"
-  },
-  {
-    "villian": "Bia",
-    "spy": "Rượu"
-  },
-  {
-    "villian": "Rượu",
-    "spy": "Bia"
-  },
-  {
-    "villian": "Nước ngọt",
-    "spy": "Nước ép"
-  },
-  {
-    "villian": "Nước ép",
-    "spy": "Nước ngọt"
-  },
-  {
-    "villian": "Trà đá",
-    "spy": "Nước lọc"
-  },
-  {
-    "villian": "Nước lọc",
-    "spy": "Trà đá"
-  },
+
   {
     "villian": "Trường học",
     "spy": "Lớp học"
@@ -487,22 +201,7 @@
     "villian": "Phòng khám",
     "spy": "Bệnh viện"
   },
-  {
-    "villian": "Công ty",
-    "spy": "Văn phòng"
-  },
-  {
-    "villian": "Văn phòng",
-    "spy": "Công ty"
-  },
-  {
-    "villian": "Siêu thị",
-    "spy": "Chợ"
-  },
-  {
-    "villian": "Chợ",
-    "spy": "Siêu thị"
-  },
+
   {
     "villian": "Khách sạn",
     "spy": "Homestay"
@@ -512,46 +211,6 @@
     "spy": "Khách sạn"
   },
   {
-    "villian": "Sân bay",
-    "spy": "Nhà ga"
-  },
-  {
-    "villian": "Nhà ga",
-    "spy": "Sân bay"
-  },
-  {
-    "villian": "Công viên",
-    "spy": "Vườn hoa"
-  },
-  {
-    "villian": "Vườn hoa",
-    "spy": "Công viên"
-  },
-  {
-    "villian": "Thư viện",
-    "spy": "Hiệu sách"
-  },
-  {
-    "villian": "Hiệu sách",
-    "spy": "Thư viện"
-  },
-  {
-    "villian": "Nhà hàng",
-    "spy": "Quán ăn"
-  },
-  {
-    "villian": "Quán ăn",
-    "spy": "Nhà hàng"
-  },
-  {
-    "villian": "Quán bar",
-    "spy": "Quán pub"
-  },
-  {
-    "villian": "Quán pub",
-    "spy": "Quán bar"
-  },
-  {
     "villian": "Điện thoại",
     "spy": "Máy tính bảng"
   },
@@ -559,22 +218,7 @@
     "villian": "Máy tính bảng",
     "spy": "Điện thoại"
   },
-  {
-    "villian": "Laptop",
-    "spy": "PC"
-  },
-  {
-    "villian": "PC",
-    "spy": "Laptop"
-  },
-  {
-    "villian": "Tai nghe",
-    "spy": "Loa"
-  },
-  {
-    "villian": "Loa",
-    "spy": "Tai nghe"
-  },
+
   {
     "villian": "Chuột máy tính",
     "spy": "Bàn phím"
@@ -591,22 +235,7 @@
     "villian": "Máy chiếu",
     "spy": "TV"
   },
-  {
-    "villian": "Máy ảnh",
-    "spy": "Camera"
-  },
-  {
-    "villian": "Camera",
-    "spy": "Máy ảnh"
-  },
-  {
-    "villian": "Đồng hồ",
-    "spy": "Vòng tay"
-  },
-  {
-    "villian": "Vòng tay",
-    "spy": "Đồng hồ"
-  },
+
   {
     "villian": "USB",
     "spy": "Ổ cứng"
@@ -615,14 +244,7 @@
     "villian": "Ổ cứng",
     "spy": "USB"
   },
-  {
-    "villian": "Pin sạc",
-    "spy": "Sạc nhanh"
-  },
-  {
-    "villian": "Sạc nhanh",
-    "spy": "Pin sạc"
-  },
+
   {
     "villian": "Bóng rổ",
     "spy": "Bóng chuyền"
@@ -631,22 +253,7 @@
     "villian": "Bóng chuyền",
     "spy": "Bóng rổ"
   },
-  {
-    "villian": "Cầu lông",
-    "spy": "Bóng bàn"
-  },
-  {
-    "villian": "Bóng bàn",
-    "spy": "Cầu lông"
-  },
-  {
-    "villian": "Gym",
-    "spy": "Yoga"
-  },
-  {
-    "villian": "Yoga",
-    "spy": "Gym"
-  },
+
   {
     "villian": "Chạy bộ",
     "spy": "Đi bộ"
@@ -655,22 +262,7 @@
     "villian": "Đi bộ",
     "spy": "Chạy bộ"
   },
-  {
-    "villian": "Bơi lội",
-    "spy": "Lặn"
-  },
-  {
-    "villian": "Lặn",
-    "spy": "Bơi lội"
-  },
-  {
-    "villian": "Leo núi",
-    "spy": "Trekking"
-  },
-  {
-    "villian": "Trekking",
-    "spy": "Leo núi"
-  },
+
   {
     "villian": "Đạp xe",
     "spy": "Xe đạp"
@@ -679,22 +271,7 @@
     "villian": "Xe đạp",
     "spy": "Đạp xe"
   },
-  {
-    "villian": "Võ thuật",
-    "spy": "Boxing"
-  },
-  {
-    "villian": "Boxing",
-    "spy": "Võ thuật"
-  },
-  {
-    "villian": "Biển",
-    "spy": "Hồ"
-  },
-  {
-    "villian": "Hồ",
-    "spy": "Biển"
-  },
+
   {
     "villian": "Sông",
     "spy": "Suối"
@@ -703,22 +280,7 @@
     "villian": "Suối",
     "spy": "Sông"
   },
-  {
-    "villian": "Núi",
-    "spy": "Đồi"
-  },
-  {
-    "villian": "Đồi",
-    "spy": "Núi"
-  },
-  {
-    "villian": "Rừng",
-    "spy": "Thảo nguyên"
-  },
-  {
-    "villian": "Thảo nguyên",
-    "spy": "Rừng"
-  },
+
   {
     "villian": "Sa mạc",
     "spy": "Đồi cát"
@@ -727,22 +289,7 @@
     "villian": "Đồi cát",
     "spy": "Sa mạc"
   },
-  {
-    "villian": "Đảo",
-    "spy": "Bán đảo"
-  },
-  {
-    "villian": "Bán đảo",
-    "spy": "Đảo"
-  },
-  {
-    "villian": "Hang động",
-    "spy": "Hẻm núi"
-  },
-  {
-    "villian": "Hẻm núi",
-    "spy": "Hang động"
-  },
+
   {
     "villian": "Thác nước",
     "spy": "Ghềnh"
@@ -751,22 +298,7 @@
     "villian": "Ghềnh",
     "spy": "Thác nước"
   },
-  {
-    "villian": "Cánh đồng",
-    "spy": "Ruộng"
-  },
-  {
-    "villian": "Ruộng",
-    "spy": "Cánh đồng"
-  },
-  {
-    "villian": "Vườn",
-    "spy": "Trang trại"
-  },
-  {
-    "villian": "Trang trại",
-    "spy": "Vườn"
-  },
+
   {
     "villian": "Cà phê",
     "spy": "Trà sữa"
@@ -775,62 +307,7 @@
     "villian": "Trà sữa",
     "spy": "Cà phê"
   },
-  {
-    "villian": "Phở",
-    "spy": "Bún bò"
-  },
-  {
-    "villian": "Bún bò",
-    "spy": "Phở"
-  },
-  {
-    "villian": "Cơm tấm",
-    "spy": "Cơm gà"
-  },
-  {
-    "villian": "Cơm gà",
-    "spy": "Cơm tấm"
-  },
-  {
-    "villian": "Pizza",
-    "spy": "Hamburger"
-  },
-  {
-    "villian": "Hamburger",
-    "spy": "Pizza"
-  },
-  {
-    "villian": "Bánh mì",
-    "spy": "Sandwich"
-  },
-  {
-    "villian": "Sandwich",
-    "spy": "Bánh mì"
-  },
-  {
-    "villian": "Lẩu",
-    "spy": "Nướng"
-  },
-  {
-    "villian": "Nướng",
-    "spy": "Lẩu"
-  },
-  {
-    "villian": "Kem",
-    "spy": "Sữa chua"
-  },
-  {
-    "villian": "Sữa chua",
-    "spy": "Kem"
-  },
-  {
-    "villian": "Bia",
-    "spy": "Rượu"
-  },
-  {
-    "villian": "Rượu",
-    "spy": "Bia"
-  },
+
   {
     "villian": "Nước ngọt",
     "spy": "Nước ép"
@@ -847,30 +324,7 @@
     "villian": "Nước lọc",
     "spy": "Trà đá"
   },
-  {
-    "villian": "Trường học",
-    "spy": "Lớp học"
-  },
-  {
-    "villian": "Lớp học",
-    "spy": "Trường học"
-  },
-  {
-    "villian": "Bệnh viện",
-    "spy": "Phòng khám"
-  },
-  {
-    "villian": "Phòng khám",
-    "spy": "Bệnh viện"
-  },
-  {
-    "villian": "Công ty",
-    "spy": "Văn phòng"
-  },
-  {
-    "villian": "Văn phòng",
-    "spy": "Công ty"
-  },
+
   {
     "villian": "Siêu thị",
     "spy": "Chợ"
@@ -880,38 +334,6 @@
     "spy": "Siêu thị"
   },
   {
-    "villian": "Khách sạn",
-    "spy": "Homestay"
-  },
-  {
-    "villian": "Homestay",
-    "spy": "Khách sạn"
-  },
-  {
-    "villian": "Sân bay",
-    "spy": "Nhà ga"
-  },
-  {
-    "villian": "Nhà ga",
-    "spy": "Sân bay"
-  },
-  {
-    "villian": "Công viên",
-    "spy": "Vườn hoa"
-  },
-  {
-    "villian": "Vườn hoa",
-    "spy": "Công viên"
-  },
-  {
-    "villian": "Thư viện",
-    "spy": "Hiệu sách"
-  },
-  {
-    "villian": "Hiệu sách",
-    "spy": "Thư viện"
-  },
-  {
     "villian": "Nhà hàng",
     "spy": "Quán ăn"
   },
@@ -919,30 +341,7 @@
     "villian": "Quán ăn",
     "spy": "Nhà hàng"
   },
-  {
-    "villian": "Quán bar",
-    "spy": "Quán pub"
-  },
-  {
-    "villian": "Quán pub",
-    "spy": "Quán bar"
-  },
-  {
-    "villian": "Điện thoại",
-    "spy": "Máy tính bảng"
-  },
-  {
-    "villian": "Máy tính bảng",
-    "spy": "Điện thoại"
-  },
-  {
-    "villian": "Laptop",
-    "spy": "PC"
-  },
-  {
-    "villian": "PC",
-    "spy": "Laptop"
-  },
+
   {
     "villian": "Tai nghe",
     "spy": "Loa"
@@ -951,38 +350,7 @@
     "villian": "Loa",
     "spy": "Tai nghe"
   },
-  {
-    "villian": "Chuột",
-    "spy": "Bàn phím"
-  },
-  {
-    "villian": "Bàn phím",
-    "spy": "Chuột"
-  },
-  {
-    "villian": "TV",
-    "spy": "Máy chiếu"
-  },
-  {
-    "villian": "Máy chiếu",
-    "spy": "TV"
-  },
-  {
-    "villian": "Máy ảnh",
-    "spy": "Camera"
-  },
-  {
-    "villian": "Camera",
-    "spy": "Máy ảnh"
-  },
-  {
-    "villian": "Đồng hồ",
-    "spy": "Vòng tay"
-  },
-  {
-    "villian": "Vòng tay",
-    "spy": "Đồng hồ"
-  },
+
   {
     "villian": "Router",
     "spy": "Modem"
@@ -991,22 +359,7 @@
     "villian": "Modem",
     "spy": "Router"
   },
-  {
-    "villian": "USB",
-    "spy": "Ổ cứng"
-  },
-  {
-    "villian": "Ổ cứng",
-    "spy": "USB"
-  },
-  {
-    "villian": "Pin sạc",
-    "spy": "Sạc nhanh"
-  },
-  {
-    "villian": "Sạc nhanh",
-    "spy": "Pin sạc"
-  },
+
   {
     "villian": "Bóng đá",
     "spy": "Futsal"
@@ -1015,22 +368,7 @@
     "villian": "Futsal",
     "spy": "Bóng đá"
   },
-  {
-    "villian": "Bóng rổ",
-    "spy": "Bóng chuyền"
-  },
-  {
-    "villian": "Bóng chuyền",
-    "spy": "Bóng rổ"
-  },
-  {
-    "villian": "Cầu lông",
-    "spy": "Bóng bàn"
-  },
-  {
-    "villian": "Bóng bàn",
-    "spy": "Cầu lông"
-  },
+
   {
     "villian": "Gym",
     "spy": "Yoga"
@@ -1039,22 +377,7 @@
     "villian": "Yoga",
     "spy": "Gym"
   },
-  {
-    "villian": "Chạy bộ",
-    "spy": "Đi bộ"
-  },
-  {
-    "villian": "Đi bộ",
-    "spy": "Chạy bộ"
-  },
-  {
-    "villian": "Bơi lội",
-    "spy": "Lặn"
-  },
-  {
-    "villian": "Lặn",
-    "spy": "Bơi lội"
-  },
+
   {
     "villian": "Leo núi",
     "spy": "Trekking"
@@ -1063,22 +386,7 @@
     "villian": "Trekking",
     "spy": "Leo núi"
   },
-  {
-    "villian": "Đạp xe",
-    "spy": "Xe đạp"
-  },
-  {
-    "villian": "Xe đạp",
-    "spy": "Đạp xe"
-  },
-  {
-    "villian": "Võ thuật",
-    "spy": "Boxing"
-  },
-  {
-    "villian": "Boxing",
-    "spy": "Võ thuật"
-  },
+
   {
     "villian": "Biển",
     "spy": "Hồ"
@@ -1087,22 +395,7 @@
     "villian": "Hồ",
     "spy": "Biển"
   },
-  {
-    "villian": "Sông",
-    "spy": "Suối"
-  },
-  {
-    "villian": "Suối",
-    "spy": "Sông"
-  },
-  {
-    "villian": "Núi",
-    "spy": "Đồi"
-  },
-  {
-    "villian": "Đồi",
-    "spy": "Núi"
-  },
+
   {
     "villian": "Rừng",
     "spy": "Thảo nguyên"
@@ -1111,22 +404,7 @@
     "villian": "Thảo nguyên",
     "spy": "Rừng"
   },
-  {
-    "villian": "Sa mạc",
-    "spy": "Đồi cát"
-  },
-  {
-    "villian": "Đồi cát",
-    "spy": "Sa mạc"
-  },
-  {
-    "villian": "Đảo",
-    "spy": "Bán đảo"
-  },
-  {
-    "villian": "Bán đảo",
-    "spy": "Đảo"
-  },
+
   {
     "villian": "Hang động",
     "spy": "Hẻm núi"
@@ -1135,22 +413,7 @@
     "villian": "Hẻm núi",
     "spy": "Hang động"
   },
-  {
-    "villian": "Thác nước",
-    "spy": "Ghềnh"
-  },
-  {
-    "villian": "Ghềnh",
-    "spy": "Thác nước"
-  },
-  {
-    "villian": "Cánh đồng",
-    "spy": "Ruộng"
-  },
-  {
-    "villian": "Ruộng",
-    "spy": "Cánh đồng"
-  },
+
   {
     "villian": "Vườn",
     "spy": "Trang trại"
@@ -1415,262 +678,925 @@
     "villian": "Guitar",
     "spy": "Piano"
   },
-  [
-    {
-      "villian": "Bánh chưng",
-      "spy": "Bánh tét"
-    },
-    {
-      "villian": "Bánh tét",
-      "spy": "Bánh chưng"
-    },
-    {
-      "villian": "Shopee",
-      "spy": "Lazada"
-    },
-    {
-      "villian": "Lazada",
-      "spy": "Shopee"
-    },
-    {
-      "villian": "Momo",
-      "spy": "ZaloPay"
-    },
-    {
-      "villian": "ZaloPay",
-      "spy": "Momo"
-    },
-    {
-      "villian": "Tiền mặt",
-      "spy": "Chuyển khoản"
-    },
-    {
-      "villian": "Chuyển khoản",
-      "spy": "Tiền mặt"
-    },
-    {
-      "villian": "iOS",
-      "spy": "Android"
-    },
-    {
-      "villian": "Android",
-      "spy": "iOS"
-    },
-    {
-      "villian": "Cái Dù (Ô)",
-      "spy": "Áo mưa"
-    },
-    {
-      "villian": "Áo mưa",
-      "spy": "Cái Dù (Ô)"
-    },
-    {
-      "villian": "Thang máy",
-      "spy": "Thang cuốn"
-    },
-    {
-      "villian": "Thang cuốn",
-      "spy": "Thang máy"
-    },
-    {
-      "villian": "Xe ôm",
-      "spy": "Taxi"
-    },
-    {
-      "villian": "Taxi",
-      "spy": "Xe ôm"
-    },
-    {
-      "villian": "Xe buýt",
-      "spy": "Xe khách"
-    },
-    {
-      "villian": "Xe khách",
-      "spy": "Xe buýt"
-    },
-    {
-      "villian": "Quả Chanh",
-      "spy": "Quả Tắc (Quất)"
-    },
-    {
-      "villian": "Quả Tắc (Quất)",
-      "spy": "Quả Chanh"
-    },
-    {
-      "villian": "Dưa hấu",
-      "spy": "Dưa gang"
-    },
-    {
-      "villian": "Dưa gang",
-      "spy": "Dưa hấu"
-    },
-    {
-      "villian": "Gừng",
-      "spy": "Nghệ"
-    },
-    {
-      "villian": "Nghệ",
-      "spy": "Gừng"
-    },
-    {
-      "villian": "Hành lá",
-      "spy": "Hẹ"
-    },
-    {
-      "villian": "Hẹ",
-      "spy": "Hành lá"
-    },
-    {
-      "villian": "Nước mía",
-      "spy": "Nước dừa"
-    },
-    {
-      "villian": "Nước dừa",
-      "spy": "Nước mía"
-    },
-    {
-      "villian": "Cà rốt",
-      "spy": "Củ cải trắng"
-    },
-    {
-      "villian": "Củ cải trắng",
-      "spy": "Cà rốt"
-    },
-    {
-      "villian": "Vàng",
-      "spy": "Bạc"
-    },
-    {
-      "villian": "Bạc",
-      "spy": "Vàng"
-    },
-    {
-      "villian": "Kim cương",
-      "spy": "Ngọc trai"
-    },
-    {
-      "villian": "Ngọc trai",
-      "spy": "Kim cương"
-    },
-    {
-      "villian": "Mặt nạ",
-      "spy": "Kem dưỡng da"
-    },
-    {
-      "villian": "Kem dưỡng da",
-      "spy": "Mặt nạ"
-    },
-    {
-      "villian": "Son môi",
-      "spy": "Son dưỡng"
-    },
-    {
-      "villian": "Son dưỡng",
-      "spy": "Son môi"
-    },
-    {
-      "villian": "Truyện tranh",
-      "spy": "Tiểu thuyết"
-    },
-    {
-      "villian": "Tiểu thuyết",
-      "spy": "Truyện tranh"
-    },
-    {
-      "villian": "Phim ma (Kinh dị)",
-      "spy": "Phim hành động"
-    },
-    {
-      "villian": "Phim hành động",
-      "spy": "Phim ma (Kinh dị)"
-    },
-    {
-      "villian": "Đám cưới",
-      "spy": "Đám hỏi"
-    },
-    {
-      "villian": "Đám hỏi",
-      "spy": "Đám cưới"
-    },
-    {
-      "villian": "Sinh nhật",
-      "spy": "Thôi nôi"
-    },
-    {
-      "villian": "Thôi nôi",
-      "spy": "Sinh nhật"
-    },
-    {
-      "villian": "Bút xóa",
-      "spy": "Tẩy (Gôm)"
-    },
-    {
-      "villian": "Tẩy (Gôm)",
-      "spy": "Bút xóa"
-    },
-    {
-      "villian": "Kéo",
-      "spy": "Dao rọc giấy"
-    },
-    {
-      "villian": "Dao rọc giấy",
-      "spy": "Kéo"
-    },
-    {
-      "villian": "Dầu gội",
-      "spy": "Dầu xả"
-    },
-    {
-      "villian": "Dầu xả",
-      "spy": "Dầu gội"
-    },
-    {
-      "villian": "Khăn mặt",
-      "spy": "Khăn tắm"
-    },
-    {
-      "villian": "Khăn tắm",
-      "spy": "Khăn mặt"
-    },
-    {
-      "villian": "Bếp ga",
-      "spy": "Bếp từ"
-    },
-    {
-      "villian": "Bếp từ",
-      "spy": "Bếp ga"
-    },
-    {
-      "villian": "Nồi cơm điện",
-      "spy": "Nồi áp suất"
-    },
-    {
-      "villian": "Nồi áp suất",
-      "spy": "Nồi cơm điện"
-    },
-    {
-      "villian": "YouTube",
-      "spy": "Netflix"
-    },
-    {
-      "villian": "Netflix",
-      "spy": "YouTube"
-    },
-    {
-      "villian": "Tủ lạnh",
-      "spy": "Tủ đông"
-    },
-    {
-      "villian": "Tủ đông",
-      "spy": "Tủ lạnh"
-    },
-    {
-      "villian": "Cửa sổ",
-      "spy": "Cửa chính"
-    },
-    {
-      "villian": "Cửa chính",
-      "spy": "Cửa sổ"
-    }
-  ]
+  {
+    "villian": "Bánh chưng",
+    "spy": "Bánh tét"
+  },
+  {
+    "villian": "Bánh tét",
+    "spy": "Bánh chưng"
+  },
+  {
+    "villian": "Shopee",
+    "spy": "Lazada"
+  },
+  {
+    "villian": "Lazada",
+    "spy": "Shopee"
+  },
+  {
+    "villian": "Momo",
+    "spy": "ZaloPay"
+  },
+  {
+    "villian": "ZaloPay",
+    "spy": "Momo"
+  },
+  {
+    "villian": "Tiền mặt",
+    "spy": "Chuyển khoản"
+  },
+  {
+    "villian": "Chuyển khoản",
+    "spy": "Tiền mặt"
+  },
+  {
+    "villian": "iOS",
+    "spy": "Android"
+  },
+  {
+    "villian": "Android",
+    "spy": "iOS"
+  },
+  {
+    "villian": "Cái Dù (Ô)",
+    "spy": "Áo mưa"
+  },
+  {
+    "villian": "Áo mưa",
+    "spy": "Cái Dù (Ô)"
+  },
+  {
+    "villian": "Thang máy",
+    "spy": "Thang cuốn"
+  },
+  {
+    "villian": "Thang cuốn",
+    "spy": "Thang máy"
+  },
+  {
+    "villian": "Xe ôm",
+    "spy": "Taxi"
+  },
+  {
+    "villian": "Taxi",
+    "spy": "Xe ôm"
+  },
+  {
+    "villian": "Xe buýt",
+    "spy": "Xe khách"
+  },
+  {
+    "villian": "Xe khách",
+    "spy": "Xe buýt"
+  },
+  {
+    "villian": "Quả Chanh",
+    "spy": "Quả Tắc (Quất)"
+  },
+  {
+    "villian": "Quả Tắc (Quất)",
+    "spy": "Quả Chanh"
+  },
+  {
+    "villian": "Dưa hấu",
+    "spy": "Dưa gang"
+  },
+  {
+    "villian": "Dưa gang",
+    "spy": "Dưa hấu"
+  },
+  {
+    "villian": "Gừng",
+    "spy": "Nghệ"
+  },
+  {
+    "villian": "Nghệ",
+    "spy": "Gừng"
+  },
+  {
+    "villian": "Hành lá",
+    "spy": "Hẹ"
+  },
+  {
+    "villian": "Hẹ",
+    "spy": "Hành lá"
+  },
+  {
+    "villian": "Nước mía",
+    "spy": "Nước dừa"
+  },
+  {
+    "villian": "Nước dừa",
+    "spy": "Nước mía"
+  },
+  {
+    "villian": "Cà rốt",
+    "spy": "Củ cải trắng"
+  },
+  {
+    "villian": "Củ cải trắng",
+    "spy": "Cà rốt"
+  },
+  {
+    "villian": "Vàng",
+    "spy": "Bạc"
+  },
+  {
+    "villian": "Bạc",
+    "spy": "Vàng"
+  },
+  {
+    "villian": "Kim cương",
+    "spy": "Ngọc trai"
+  },
+  {
+    "villian": "Ngọc trai",
+    "spy": "Kim cương"
+  },
+  {
+    "villian": "Mặt nạ",
+    "spy": "Kem dưỡng da"
+  },
+  {
+    "villian": "Kem dưỡng da",
+    "spy": "Mặt nạ"
+  },
+  {
+    "villian": "Son môi",
+    "spy": "Son dưỡng"
+  },
+  {
+    "villian": "Son dưỡng",
+    "spy": "Son môi"
+  },
+  {
+    "villian": "Truyện tranh",
+    "spy": "Tiểu thuyết"
+  },
+  {
+    "villian": "Tiểu thuyết",
+    "spy": "Truyện tranh"
+  },
+  {
+    "villian": "Phim ma (Kinh dị)",
+    "spy": "Phim hành động"
+  },
+  {
+    "villian": "Phim hành động",
+    "spy": "Phim ma (Kinh dị)"
+  },
+  {
+    "villian": "Đám cưới",
+    "spy": "Đám hỏi"
+  },
+  {
+    "villian": "Đám hỏi",
+    "spy": "Đám cưới"
+  },
+  {
+    "villian": "Sinh nhật",
+    "spy": "Thôi nôi"
+  },
+  {
+    "villian": "Thôi nôi",
+    "spy": "Sinh nhật"
+  },
+  {
+    "villian": "Bút xóa",
+    "spy": "Tẩy (Gôm)"
+  },
+  {
+    "villian": "Tẩy (Gôm)",
+    "spy": "Bút xóa"
+  },
+  {
+    "villian": "Kéo",
+    "spy": "Dao rọc giấy"
+  },
+  {
+    "villian": "Dao rọc giấy",
+    "spy": "Kéo"
+  },
+  {
+    "villian": "Dầu gội",
+    "spy": "Dầu xả"
+  },
+  {
+    "villian": "Dầu xả",
+    "spy": "Dầu gội"
+  },
+  {
+    "villian": "Khăn mặt",
+    "spy": "Khăn tắm"
+  },
+  {
+    "villian": "Khăn tắm",
+    "spy": "Khăn mặt"
+  },
+  {
+    "villian": "Bếp ga",
+    "spy": "Bếp từ"
+  },
+  {
+    "villian": "Bếp từ",
+    "spy": "Bếp ga"
+  },
+  {
+    "villian": "Nồi cơm điện",
+    "spy": "Nồi áp suất"
+  },
+  {
+    "villian": "Nồi áp suất",
+    "spy": "Nồi cơm điện"
+  },
+  {
+    "villian": "YouTube",
+    "spy": "Netflix"
+  },
+  {
+    "villian": "Netflix",
+    "spy": "YouTube"
+  },
+  {
+    "villian": "Tủ lạnh",
+    "spy": "Tủ đông"
+  },
+  {
+    "villian": "Tủ đông",
+    "spy": "Tủ lạnh"
+  },
+  {
+    "villian": "Cửa sổ",
+    "spy": "Cửa chính"
+  },
+  {
+    "villian": "Cửa chính",
+    "spy": "Cửa sổ"
+  },
+
+  {
+    "villian": "Ghế",
+    "spy": "Băng ghế"
+  },
+  {
+    "villian": "Băng ghế",
+    "spy": "Ghế"
+  },
+  {
+    "villian": "Bàn",
+    "spy": "Quầy"
+  },
+  {
+    "villian": "Quầy",
+    "spy": "Bàn"
+  },
+  {
+    "villian": "Cầu thang",
+    "spy": "Lối đi"
+  },
+  {
+    "villian": "Lối đi",
+    "spy": "Cầu thang"
+  },
+  {
+    "villian": "Đèn bàn",
+    "spy": "Đèn ngủ"
+  },
+  {
+    "villian": "Đèn ngủ",
+    "spy": "Đèn bàn"
+  },
+  {
+    "villian": "Quạt",
+    "spy": "Máy lạnh"
+  },
+  {
+    "villian": "Máy lạnh",
+    "spy": "Quạt"
+  },
+  {
+    "villian": "Gương",
+    "spy": "Kính"
+  },
+  {
+    "villian": "Kính",
+    "spy": "Gương"
+  },
+  {
+    "villian": "Ví",
+    "spy": "Bóp"
+  },
+  {
+    "villian": "Bóp",
+    "spy": "Ví"
+  },
+  {
+    "villian": "Ba lô",
+    "spy": "Túi xách"
+  },
+  {
+    "villian": "Túi xách",
+    "spy": "Ba lô"
+  },
+  {
+    "villian": "Vali",
+    "spy": "Túi du lịch"
+  },
+  {
+    "villian": "Túi du lịch",
+    "spy": "Vali"
+  },
+  {
+    "villian": "Áo khoác",
+    "spy": "Áo gió"
+  },
+  {
+    "villian": "Áo gió",
+    "spy": "Áo khoác"
+  },
+  {
+    "villian": "Mũ bảo hiểm",
+    "spy": "Mũ lưỡi trai"
+  },
+  {
+    "villian": "Mũ lưỡi trai",
+    "spy": "Mũ bảo hiểm"
+  },
+  {
+    "villian": "Khẩu trang",
+    "spy": "Khăn che mặt"
+  },
+  {
+    "villian": "Khăn che mặt",
+    "spy": "Khẩu trang"
+  },
+  {
+    "villian": "Găng tay",
+    "spy": "Bao tay"
+  },
+  {
+    "villian": "Bao tay",
+    "spy": "Găng tay"
+  },
+  {
+    "villian": "Tất",
+    "spy": "Vớ"
+  },
+  {
+    "villian": "Vớ",
+    "spy": "Tất"
+  },
+  {
+    "villian": "Thắt lưng",
+    "spy": "Dây nịt"
+  },
+  {
+    "villian": "Dây nịt",
+    "spy": "Thắt lưng"
+  },
+  {
+    "villian": "Nhẫn",
+    "spy": "Vòng tay"
+  },
+  {
+    "villian": "Vòng tay",
+    "spy": "Nhẫn"
+  },
+  {
+    "villian": "Dây chuyền",
+    "spy": "Vòng cổ"
+  },
+  {
+    "villian": "Vòng cổ",
+    "spy": "Dây chuyền"
+  },
+  {
+    "villian": "Nước suối",
+    "spy": "Nước khoáng"
+  },
+  {
+    "villian": "Nước khoáng",
+    "spy": "Nước suối"
+  },
+  {
+    "villian": "Cơm chiên",
+    "spy": "Cơm rang"
+  },
+  {
+    "villian": "Cơm rang",
+    "spy": "Cơm chiên"
+  },
+  {
+    "villian": "Mì xào",
+    "spy": "Hủ tiếu xào"
+  },
+  {
+    "villian": "Hủ tiếu xào",
+    "spy": "Mì xào"
+  },
+  {
+    "villian": "Bún riêu",
+    "spy": "Bún mắm"
+  },
+  {
+    "villian": "Bún mắm",
+    "spy": "Bún riêu"
+  },
+  {
+    "villian": "Cháo",
+    "spy": "Súp"
+  },
+  {
+    "villian": "Súp",
+    "spy": "Cháo"
+  },
+  {
+    "villian": "Canh",
+    "spy": "Súp"
+  },
+  {
+    "villian": "Súp",
+    "spy": "Canh"
+  },
+  {
+    "villian": "Bánh ngọt",
+    "spy": "Bánh kem"
+  },
+  {
+    "villian": "Bánh kem",
+    "spy": "Bánh ngọt"
+  },
+  {
+    "villian": "Bánh quy",
+    "spy": "Cookie"
+  },
+  {
+    "villian": "Cookie",
+    "spy": "Bánh quy"
+  },
+  {
+    "villian": "Kẹo cứng",
+    "spy": "Kẹo dẻo"
+  },
+  {
+    "villian": "Kẹo dẻo",
+    "spy": "Kẹo cứng"
+  },
+  {
+    "villian": "Socola",
+    "spy": "Ca cao"
+  },
+  {
+    "villian": "Ca cao",
+    "spy": "Socola"
+  },
+  {
+    "villian": "Sữa tươi",
+    "spy": "Sữa hộp"
+  },
+  {
+    "villian": "Sữa hộp",
+    "spy": "Sữa tươi"
+  },
+  {
+    "villian": "Trà nóng",
+    "spy": "Trà túi lọc"
+  },
+  {
+    "villian": "Trà túi lọc",
+    "spy": "Trà nóng"
+  },
+  {
+    "villian": "Nồi",
+    "spy": "Chảo"
+  },
+  {
+    "villian": "Chảo",
+    "spy": "Nồi"
+  },
+  {
+    "villian": "Muỗng",
+    "spy": "Thìa"
+  },
+  {
+    "villian": "Thìa",
+    "spy": "Muỗng"
+  },
+  {
+    "villian": "Đũa",
+    "spy": "Nĩa"
+  },
+  {
+    "villian": "Nĩa",
+    "spy": "Đũa"
+  },
+  {
+    "villian": "Dao",
+    "spy": "Muỗng"
+  },
+  {
+    "villian": "Muỗng",
+    "spy": "Dao"
+  },
+  {
+    "villian": "Bếp",
+    "spy": "Lò"
+  },
+  {
+    "villian": "Lò",
+    "spy": "Bếp"
+  },
+  {
+    "villian": "Lò vi sóng",
+    "spy": "Lò nướng"
+  },
+  {
+    "villian": "Lò nướng",
+    "spy": "Lò vi sóng"
+  },
+  {
+    "villian": "Quạt trần",
+    "spy": "Quạt đứng"
+  },
+  {
+    "villian": "Quạt đứng",
+    "spy": "Quạt trần"
+  },
+  {
+    "villian": "Máy giặt",
+    "spy": "Máy sấy"
+  },
+  {
+    "villian": "Máy sấy",
+    "spy": "Máy giặt"
+  },
+  {
+    "villian": "Điều hòa",
+    "spy": "Máy lạnh"
+  },
+  {
+    "villian": "Máy lạnh",
+    "spy": "Điều hòa"
+  },
+  {
+    "villian": "Remote",
+    "spy": "Điều khiển"
+  },
+  {
+    "villian": "Điều khiển",
+    "spy": "Remote"
+  },
+  {
+    "villian": "Ổ điện",
+    "spy": "Ổ cắm"
+  },
+  {
+    "villian": "Ổ cắm",
+    "spy": "Ổ điện"
+  },
+  {
+    "villian": "Dây điện",
+    "spy": "Cáp"
+  },
+  {
+    "villian": "Cáp",
+    "spy": "Dây điện"
+  },
+  {
+    "villian": "Pin",
+    "spy": "Ắc quy"
+  },
+  {
+    "villian": "Ắc quy",
+    "spy": "Pin"
+  },
+  {
+    "villian": "Camera an ninh",
+    "spy": "Camera giám sát"
+  },
+  {
+    "villian": "Camera giám sát",
+    "spy": "Camera an ninh"
+  },
+  {
+    "villian": "Chuông cửa",
+    "spy": "Chuông báo"
+  },
+  {
+    "villian": "Chuông báo",
+    "spy": "Chuông cửa"
+  },
+  {
+    "villian": "Cửa kính",
+    "spy": "Cửa nhôm"
+  },
+  {
+    "villian": "Cửa nhôm",
+    "spy": "Cửa kính"
+  },
+  {
+    "villian": "Rèm cửa",
+    "spy": "Mành"
+  },
+  {
+    "villian": "Mành",
+    "spy": "Rèm cửa"
+  },
+  {
+    "villian": "Sofa",
+    "spy": "Ghế dài"
+  },
+  {
+    "villian": "Ghế dài",
+    "spy": "Sofa"
+  },
+  {
+    "villian": "Nệm",
+    "spy": "Đệm"
+  },
+  {
+    "villian": "Đệm",
+    "spy": "Nệm"
+  },
+  {
+    "villian": "Gối",
+    "spy": "Ôm"
+  },
+  {
+    "villian": "Ôm",
+    "spy": "Gối"
+  },
+  {
+    "villian": "Chăn",
+    "spy": "Mền"
+  },
+  {
+    "villian": "Mền",
+    "spy": "Chăn"
+  },
+  {
+    "villian": "Phòng khách",
+    "spy": "Phòng sinh hoạt"
+  },
+  {
+    "villian": "Phòng sinh hoạt",
+    "spy": "Phòng khách"
+  },
+  {
+    "villian": "Phòng ngủ",
+    "spy": "Phòng nghỉ"
+  },
+  {
+    "villian": "Phòng nghỉ",
+    "spy": "Phòng ngủ"
+  },
+  {
+    "villian": "Nhà bếp",
+    "spy": "Gian bếp"
+  },
+  {
+    "villian": "Gian bếp",
+    "spy": "Nhà bếp"
+  },
+  {
+    "villian": "Nhà vệ sinh",
+    "spy": "Phòng tắm"
+  },
+  {
+    "villian": "Phòng tắm",
+    "spy": "Nhà vệ sinh"
+  },
+  {
+    "villian": "Sân thượng",
+    "spy": "Ban công"
+  },
+  {
+    "villian": "Ban công",
+    "spy": "Sân thượng"
+  },
+  {
+    "villian": "Hành lang",
+    "spy": "Lối đi"
+  },
+  {
+    "villian": "Lối đi",
+    "spy": "Hành lang"
+  },
+  {
+    "villian": "Cổng",
+    "spy": "Cửa ngõ"
+  },
+  {
+    "villian": "Cửa ngõ",
+    "spy": "Cổng"
+  },
+  {
+    "villian": "Hàng rào",
+    "spy": "Tường rào"
+  },
+  {
+    "villian": "Tường rào",
+    "spy": "Hàng rào"
+  },
+  {
+    "villian": "Xe máy",
+    "spy": "Xe tay ga"
+  },
+  {
+    "villian": "Xe tay ga",
+    "spy": "Xe máy"
+  },
+  {
+    "villian": "Xe đạp điện",
+    "spy": "Xe máy điện"
+  },
+  {
+    "villian": "Xe máy điện",
+    "spy": "Xe đạp điện"
+  },
+  {
+    "villian": "Ô tô",
+    "spy": "Xe hơi"
+  },
+  {
+    "villian": "Xe hơi",
+    "spy": "Ô tô"
+  },
+  {
+    "villian": "Xe tải",
+    "spy": "Xe container"
+  },
+  {
+    "villian": "Xe container",
+    "spy": "Xe tải"
+  },
+  {
+    "villian": "Tàu hỏa",
+    "spy": "Tàu điện"
+  },
+  {
+    "villian": "Tàu điện",
+    "spy": "Tàu hỏa"
+  },
+  {
+    "villian": "Máy bay",
+    "spy": "Phi cơ"
+  },
+  {
+    "villian": "Phi cơ",
+    "spy": "Máy bay"
+  },
+  {
+    "villian": "Thuyền",
+    "spy": "Ca nô"
+  },
+  {
+    "villian": "Ca nô",
+    "spy": "Thuyền"
+  },
+  {
+    "villian": "Tàu thủy",
+    "spy": "Du thuyền"
+  },
+  {
+    "villian": "Du thuyền",
+    "spy": "Tàu thủy"
+  },
+  {
+    "villian": "Bến xe",
+    "spy": "Nhà xe"
+  },
+  {
+    "villian": "Nhà xe",
+    "spy": "Bến xe"
+  },
+  {
+    "villian": "Bến tàu",
+    "spy": "Cảng"
+  },
+  {
+    "villian": "Cảng",
+    "spy": "Bến tàu"
+  },
+  {
+    "villian": "Sân vận động",
+    "spy": "Nhà thi đấu"
+  },
+  {
+    "villian": "Nhà thi đấu",
+    "spy": "Sân vận động"
+  },
+  {
+    "villian": "Rạp phim",
+    "spy": "Rạp chiếu"
+  },
+  {
+    "villian": "Rạp chiếu",
+    "spy": "Rạp phim"
+  },
+  {
+    "villian": "Nhà hát",
+    "spy": "Sân khấu"
+  },
+  {
+    "villian": "Sân khấu",
+    "spy": "Nhà hát"
+  },
+  {
+    "villian": "Buổi hòa nhạc",
+    "spy": "Liveshow"
+  },
+  {
+    "villian": "Liveshow",
+    "spy": "Buổi hòa nhạc"
+  },
+  {
+    "villian": "Triển lãm",
+    "spy": "Hội chợ"
+  },
+  {
+    "villian": "Hội chợ",
+    "spy": "Triển lãm"
+  },
+  {
+    "villian": "Bảo tàng",
+    "spy": "Phòng trưng bày"
+  },
+  {
+    "villian": "Phòng trưng bày",
+    "spy": "Bảo tàng"
+  },
+  {
+    "villian": "Khách mời",
+    "spy": "Khán giả"
+  },
+  {
+    "villian": "Khán giả",
+    "spy": "Khách mời"
+  },
+  {
+    "villian": "Diễn giả",
+    "spy": "Người thuyết trình"
+  },
+  {
+    "villian": "Người thuyết trình",
+    "spy": "Diễn giả"
+  },
+  {
+    "villian": "Giảng viên",
+    "spy": "Giáo viên"
+  },
+  {
+    "villian": "Giáo viên",
+    "spy": "Giảng viên"
+  },
+  {
+    "villian": "Học sinh",
+    "spy": "Sinh viên"
+  },
+  {
+    "villian": "Sinh viên",
+    "spy": "Học sinh"
+  },
+  {
+    "villian": "Lớp học online",
+    "spy": "Học trực tuyến"
+  },
+  {
+    "villian": "Học trực tuyến",
+    "spy": "Lớp học online"
+  },
+  {
+    "villian": "Bài kiểm tra",
+    "spy": "Bài thi"
+  },
+  {
+    "villian": "Bài thi",
+    "spy": "Bài kiểm tra"
+  },
+  {
+    "villian": "Điểm số",
+    "spy": "Kết quả"
+  },
+  {
+    "villian": "Kết quả",
+    "spy": "Điểm số"
+  },
+  {
+    "villian": "Khen thưởng",
+    "spy": "Phần thưởng"
+  },
+  {
+    "villian": "Phần thưởng",
+    "spy": "Khen thưởng"
+  },
+  {
+    "villian": "Kỷ luật",
+    "spy": "Xử phạt"
+  },
+  {
+    "villian": "Xử phạt",
+    "spy": "Kỷ luật"
+  }
 ]

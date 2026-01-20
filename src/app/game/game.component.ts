@@ -385,7 +385,34 @@ export class GameComponent {
   getInitials(name: string) {
     return name ? name.substring(0, 2).toUpperCase() : '??';
   }
+  private pickUniqueWordIndex(): { index: number; nextUsedIndices: number[] } {
+    const totalWords = wordData.length;
+    const currentUsed = this.room()?.usedIndices || [];
 
+    let availableIndices: number[] = [];
+    for (let i = 0; i < totalWords; i++) {
+      if (!currentUsed.includes(i)) {
+        availableIndices.push(i);
+      }
+    }
+    if (availableIndices.length === 0) {
+      console.log('Đã chơi hết bộ từ! Reset lại từ đầu.');
+      availableIndices = Array.from({ length: totalWords }, (_, i) => i);
+    }
+
+    const randomIndex = Math.floor(Math.random() * availableIndices.length);
+    const selectedIndex = availableIndices[randomIndex];
+
+    let nextUsedIndices: number[] = [];
+
+    if (availableIndices.length === totalWords) {
+      nextUsedIndices = [selectedIndex]; // Reset cycle
+    } else {
+      nextUsedIndices = [...currentUsed, selectedIndex]; // Append
+    }
+
+    return { index: selectedIndex, nextUsedIndices };
+  }
   async createRoom() {
     if (!this.playerName().trim()) {
       this.isNameError.set(true);
@@ -394,14 +421,16 @@ export class GameComponent {
     localStorage.setItem('spy_username', this.playerName());
     const id = this.generateRoomId();
     this.roomId.set(id);
+    const initialIndex = Math.floor(Math.random() * wordData.length);
+    const pair = wordData[initialIndex];
     this.qrCodeUrl.set(null);
-    const pair = wordData[Math.floor(Math.random() * wordData.length)];
     await this.game.createRoom(
       id,
       this.playerId,
       this.playerName(),
       pair,
-      this.selectedTime()
+      this.selectedTime(),
+      initialIndex
     );
     this.joined.set(true);
     this.listen();
@@ -597,8 +626,9 @@ export class GameComponent {
   }
   async backToLobby() {
     if (this.isHost()) {
-      const newPair = wordData[Math.floor(Math.random() * wordData.length)];
-      await this.game.backToLobby(this.roomId()!, newPair);
+      const { index, nextUsedIndices } = this.pickUniqueWordIndex();
+      const newPair = wordData[index];
+      await this.game.backToLobby(this.roomId()!, newPair, nextUsedIndices);
     }
     this.showResultModal.set(false);
   }
