@@ -555,3 +555,18 @@
     </div>
     }
 </div>
+
+
+@if (showToast()) {
+<div class="toast-connection fade-in" [class.warning]="connectionStatus() === 'connecting'"
+    [class.success]="connectionStatus() === 'connected'">
+
+    @if (connectionStatus() === 'connecting') {
+    <div class="spinner"></div>
+    <span>Đang cố gắng kết nối...</span>
+    } @else {
+    <span class="icon">🟢</span>
+    <span>Đã kết nối lại mạng!</span>
+    }
+</div>
+}

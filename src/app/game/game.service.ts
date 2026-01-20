@@ -144,7 +144,19 @@ export class GameService {
 
     return finalPlayerId; // Trả về ID chính thức để Component cập nhật
   }
+  async setPlayerOnline(roomId: string, playerId: string) {
+    const playerRef = ref(this.db, `rooms/${roomId}/players/${playerId}`);
+    const statusRef = ref(
+      this.db,
+      `rooms/${roomId}/players/${playerId}/isOnline`
+    );
 
+    // 1. Cập nhật trạng thái Online ngay lập tức
+    await update(playerRef, { isOnline: true });
+
+    // 2. Cài đặt lại onDisconnect (đề phòng trường hợp socket cũ đã chết và mất onDisconnect)
+    await onDisconnect(statusRef).set(false);
+  }
   async leaveRoom(roomId: string, playerId: string) {
     const roomRef = ref(this.db, `rooms/${roomId}`);
     const playerRef = ref(this.db, `rooms/${roomId}/players/${playerId}`);
@@ -354,8 +366,8 @@ export class GameService {
       endReason: null,
       heroId: null,
       revealedPlayer: null,
-      startedAt: null,      // Reset thêm cái này cho sạch
-      voteStartedAt: null   // Reset thêm cái này cho sạch
+      startedAt: null, // Reset thêm cái này cho sạch
+      voteStartedAt: null, // Reset thêm cái này cho sạch
     };
 
     // 2. Cập nhật từ khóa mới
@@ -370,13 +382,13 @@ export class GameService {
 
         // [NEW LOGIC] Nếu người chơi đang Offline -> Xóa khỏi phòng luôn
         if (p.isOnline === false) {
-            updates[`rooms/${roomId}/players/${pid}`] = null;
-        } 
+          updates[`rooms/${roomId}/players/${pid}`] = null;
+        }
         // Nếu đang Online -> Reset để chơi ván mới
         else {
-            updates[`rooms/${roomId}/players/${pid}/role`] = null;
-            updates[`rooms/${roomId}/players/${pid}/vote`] = null;
-            updates[`rooms/${roomId}/players/${pid}/eliminated`] = false;
+          updates[`rooms/${roomId}/players/${pid}/role`] = null;
+          updates[`rooms/${roomId}/players/${pid}/vote`] = null;
+          updates[`rooms/${roomId}/players/${pid}/eliminated`] = false;
         }
       });
     }

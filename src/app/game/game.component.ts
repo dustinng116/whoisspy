@@ -32,7 +32,7 @@ export class GameComponent {
   viewMode = signal<'home' | 'join_input'>('home');
   roomId = signal<string | null>(null);
   playerName = signal(localStorage.getItem('spy_username') || '');
-  playerId:any = crypto.randomUUID();
+  playerId: any = crypto.randomUUID();
   joined = signal(false);
   room = signal<any>(null);
 
@@ -81,6 +81,12 @@ export class GameComponent {
   isReviewingKeyword = signal(false);
 
   showExitConfirm = signal(false);
+
+  connectionStatus = signal<'connected' | 'connecting' | 'offline'>(
+    'connected'
+  );
+  showToast = signal(false);
+  private heartbeatInterval: any;
   readonly AVATAR_LIST = [
     '1.jpg',
     '2.jpg',
@@ -135,7 +141,7 @@ export class GameComponent {
       }
       const DURATION_SEC = this.room()?.config?.voteDuration || 30;
       const DURATION_MS = DURATION_SEC * 1000;
-      
+
       const tick = () => {
         if (!g.voteStartedAt) {
           return;
@@ -205,12 +211,65 @@ export class GameComponent {
     this.route.queryParams.subscribe((params) => {
       const roomFromUrl = params['room'];
 
-      if (roomFromUrl) { 
-        this.joinRoomInput.set(roomFromUrl); 
-        this.qrCodeUrl.set(null); 
+      if (roomFromUrl) {
+        this.joinRoomInput.set(roomFromUrl);
+        this.qrCodeUrl.set(null);
         this.viewMode.set('join_input');
       }
     });
+    this.startHeartbeat();
+  }
+  startHeartbeat() {
+    this.heartbeatInterval = setInterval(() => {
+      // Chỉ chạy khi đã vào phòng
+      if (!this.joined() || !this.roomId() || !this.room()) return;
+
+      const myPlayer = this.room().players[this.playerId];
+
+      // Nếu không tìm thấy mình trong phòng (có thể bị xóa) -> Bỏ qua
+      if (!myPlayer) return;
+
+      // 1. Kiểm tra trạng thái mạng của trình duyệt HOẶC trạng thái trong DB
+      const isBrowserOffline = !navigator.onLine;
+      const isDbOffline = myPlayer.isOnline === false;
+
+      // NẾU PHÁT HIỆN SỰ CỐ (Mất mạng hoặc DB ghi nhận Offline)
+      if (isBrowserOffline || isDbOffline) {
+        // Cập nhật trạng thái UI
+        if (this.connectionStatus() !== 'connecting') {
+          this.connectionStatus.set('connecting');
+          this.showToast.set(true); // Hiện Toast Spinner
+        }
+
+        // Gọi API để cứu vãn (Try to connect)
+        // Chỉ gọi API nếu mạng trình duyệt còn sống (để tránh lỗi network error liên tục)
+        if (!isBrowserOffline) {
+          console.log('🔄 Đang thử kết nối lại...');
+          this.game
+            .setPlayerOnline(this.roomId()!, this.playerId)
+            .catch((err) => {
+              // Kệ lỗi, lần sau thử tiếp
+            });
+        }
+      }
+
+      // NẾU MỌI THỨ ĐÃ ỔN (Đang từ connecting -> connected)
+      else if (this.connectionStatus() === 'connecting') {
+        this.connectionStatus.set('connected');
+        this.showToast.set(true); // Hiện Toast Xanh
+
+        // Tự tắt Toast sau 3s
+        setTimeout(() => {
+          // Chỉ tắt nếu vẫn đang là connected (tránh trường hợp vừa xanh lại đỏ ngay)
+          if (this.connectionStatus() === 'connected') {
+            this.showToast.set(false);
+          }
+        }, 3000);
+      }
+    }, 3000); // Chạy mỗi 3s
+  }
+  ngOnDestroy() {
+    if (this.heartbeatInterval) clearInterval(this.heartbeatInterval);
   }
   toggleWordVisibility() {
     this.isWordVisible.update((v) => !v);
@@ -361,13 +420,13 @@ export class GameComponent {
 
     if (!isValid) return;
     localStorage.setItem('spy_username', this.playerName());
-    try { 
+    try {
       const realId = await this.game.joinRoom(
         this.joinRoomInput(),
         this.playerId,
         this.playerName()
       );
- 
+
       this.playerId = realId;
 
       this.roomId.set(this.joinRoomInput());
@@ -478,10 +537,10 @@ export class GameComponent {
     this.joined.set(false);
     this.roomId.set(null);
     this.room.set(null);
-    
+
     // [FIX] Reset sạch Input và QR Code
-    this.joinRoomInput.set(''); 
-    this.qrCodeUrl.set(null); 
+    this.joinRoomInput.set('');
+    this.qrCodeUrl.set(null);
 
     // Reset các modal...
     this.showResultModal.set(false);
@@ -493,7 +552,7 @@ export class GameComponent {
     this.voteCountdown.set(0);
     this.isWordVisible.set(false);
     this.isReviewingKeyword.set(false);
-    
+
     this.viewMode.set('home');
   }
   selectForVote(id: string) {
