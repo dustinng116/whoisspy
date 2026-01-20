@@ -147,36 +147,53 @@ export class GameService {
     return finalPlayerId; // Trả về ID chính thức để Component cập nhật
   }
   async setPlayerOnline(roomId: string, playerId: string) {
-    const playerRef = ref(this.db, `rooms/${roomId}/players/${playerId}`);
-    const statusRef = ref(
-      this.db,
-      `rooms/${roomId}/players/${playerId}/isOnline`
-    );
-
-    // 1. Cập nhật trạng thái Online ngay lập tức
-    await update(playerRef, { isOnline: true });
-
-    // 2. Cài đặt lại onDisconnect (đề phòng trường hợp socket cũ đã chết và mất onDisconnect)
+    const playerStatusRef = ref(this.db, `rooms/${roomId}/players/${playerId}`);
+     
+    await update(playerStatusRef, { 
+        isOnline: true,
+        lastActive: Date.now()  
+    });
+ 
+    const statusRef = ref(this.db, `rooms/${roomId}/players/${playerId}/isOnline`);
     await onDisconnect(statusRef).set(false);
   }
   async leaveRoom(roomId: string, playerId: string) {
     const roomRef = ref(this.db, `rooms/${roomId}`);
-    const playerRef = ref(this.db, `rooms/${roomId}/players/${playerId}`);
+    
+    // 1. Lấy thông tin phòng TRƯỚC KHI xóa người chơi (để biết ai đang là Host)
     const roomSnap = await get(roomRef);
+    if (!roomSnap.exists()) return; // Phòng đã bị xóa trước đó
+    
+    const roomData = roomSnap.val();
+    const currentHostId = roomData.hostId;
 
-    if (!roomSnap.exists()) return; // Phòng không còn tồn tại
+    // 2. Xóa người chơi này khỏi danh sách
+    await remove(ref(this.db, `rooms/${roomId}/players/${playerId}`));
 
-    const room = roomSnap.val();
+    // 3. Kiểm tra danh sách người chơi còn lại (SAU KHI đã xóa)
+    const playersSnap = await get(ref(this.db, `rooms/${roomId}/players`));
+    
+    // --- TRƯỜNG HỢP A: KHÔNG CÒN AI ---
+    if (!playersSnap.exists() || Object.keys(playersSnap.val()).length === 0) {
+      console.log('Phòng trống, tiến hành giải tán...');
+      await remove(roomRef); // Xóa luôn phòng
+    } 
+    // --- TRƯỜNG HỢP B: VẪN CÒN NGƯỜI ---
+    else {
+      const remainingPlayers = playersSnap.val();
+      const remainingIds = Object.keys(remainingPlayers);
 
-    if (room.hostId === playerId) {
-      await onDisconnect(roomRef).cancel();
-      await remove(roomRef);
-    } else {
-      await onDisconnect(playerRef).cancel();
-      await remove(playerRef);
+      // Nếu người vừa thoát CHÍNH LÀ HOST
+      if (playerId === currentHostId) {
+        // Chọn người kế thừa (Lấy người đầu tiên trong danh sách còn lại)
+        // Firebase thường sắp xếp keys theo thứ tự thêm vào, nên đây thường là người vào sớm nhất tiếp theo
+        const newHostId = remainingIds[0];
+        const newHostName = remainingPlayers[newHostId].name;
 
-      if (room.game.status !== 'lobby') {
-        // Logic xử lý khi thoát giữa chừng (tùy bạn quyết định, hiện tại xóa là đủ)
+        console.log(`👑 Chuyển quyền chủ phòng cho: ${newHostName} (${newHostId})`);
+        
+        // Cập nhật Host mới lên Firebase
+        await update(roomRef, { hostId: newHostId });
       }
     }
   }
@@ -489,8 +506,23 @@ export class GameService {
     });
   }
 
-  listenRoom(roomId: string, cb: (data: any) => void) {
-    return onValue(ref(this.db, `rooms/${roomId}`), (snap) => cb(snap.val()));
+  listenRoom(roomId: string, callback: (room: any) => void) {
+    const roomRef = ref(this.db, `rooms/${roomId}`);
+     
+    const unsubscribe = onValue(roomRef, (snapshot) => {
+      callback(snapshot.val());
+    });
+ 
+    const connectedRef = ref(this.db, '.info/connected');
+    onValue(connectedRef, (snap) => {
+      if (snap.val() === true) {
+        // Mạng đã kết nối -> Báo ngay cho server biết mình đang Online
+        // Lưu ý: Cần ID user, ở đây ta giả định logic này được gọi ở Component
+        // Nhưng để đơn giản, ta sẽ xử lý ở Component (xem bên dưới)
+      }
+    });
+
+    return unsubscribe;
   }
 
   updateAvatar(roomId: string, playerId: string, avatarImage: string) {

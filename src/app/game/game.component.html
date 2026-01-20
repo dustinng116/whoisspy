@@ -295,6 +295,27 @@
         </div>
     </ng-template>
 
+    @if (showHostPromotedModal()) {
+        <div class="modal-backdrop fade-in" (click)="closeHostPromotedModal()">
+            <div class="modal-content host-modal" (click)="$event.stopPropagation()">
+                <div class="crown-icon">👑</div>
+                
+                <h3>THĂNG CHỨC!</h3>
+                
+                <p class="host-msg">
+                    Chủ phòng cũ đã thoát.<br>
+                    <strong>Bạn đã trở thành Chủ Phòng mới!</strong>
+                </p>
+                
+                <div class="modal-actions">
+                    <button class="btn-primary btn-gold" (click)="closeHostPromotedModal()">
+                        Tuyệt vời!
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
+    
     @if (showQrModal()) {
     <div class="modal-backdrop fade-in" (click)="toggleQr(false)">
         <div class="modal-content" (click)="$event.stopPropagation()">

@@ -107,10 +107,12 @@ export class GameComponent implements OnDestroy {
   qrCodeUrl = signal<string | null>(null);
   previewAvatar = signal<string | null>(null);
   errorMessage = signal('');
+  showHostPromotedModal = signal(false);
   emoji = '';
 
   private unsubRoom: any = null;
   private heartbeatInterval: any;
+  private previousHostId: string | null = null;
 
   // ==========================================
   // 3. COMPUTED SIGNALS
@@ -287,10 +289,15 @@ export class GameComponent implements OnDestroy {
 
   listen() {
     if (this.unsubRoom) this.unsubRoom();
+
     this.unsubRoom = this.game.listenRoom(this.roomId()!, (data) => {
       if (!data) {
-        this.forceExit();
+        this.forceExit(); // Phòng đã bị xóa (do logic xóa phòng trống ở Service)
         return;
+      }
+      const myData = data.players?.[this.playerId];
+      if (myData && myData.isOnline === false) {
+        this.game.setPlayerOnline(this.roomId()!, this.playerId);
       }
       if (data.players && !data.players[this.playerId]) {
         this.errorMessage.set('Bạn đã thoát ra khỏi phòng!');
@@ -302,6 +309,13 @@ export class GameComponent implements OnDestroy {
         this.resetLocalState();
         return;
       }
+
+      if (this.previousHostId && this.previousHostId !== data.hostId) {
+        if (data.hostId === this.playerId) {
+          this.showHostPromotedModal.set(true);
+        }
+      }
+      this.previousHostId = data.hostId;
       const status = data.game?.status;
       if (
         this.playerId === data.hostId &&
@@ -384,7 +398,9 @@ export class GameComponent implements OnDestroy {
     this.showErrorModal.set(true);
     this.resetLocalState();
   }
-
+  closeHostPromotedModal() {
+    this.showHostPromotedModal.set(false);
+  }
   startGame() {
     this.game.startGame(this.roomId()!, this.playerId);
   }

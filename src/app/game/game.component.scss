@@ -1083,6 +1083,61 @@ $font-family-base: "Be Vietnam Pro", "Plus Jakarta Sans", "Segoe UI", Roboto,
     }
   }
 }
+
+.host-modal {
+    text-align: center;
+    max-width: 320px !important;
+
+    .crown-icon {
+        font-size: 60px;
+        margin-bottom: 15px;
+        // Hiệu ứng nhún nhảy
+        animation: floatCrown 1.5s ease-in-out infinite;
+        filter: drop-shadow(0 5px 15px rgba(245, 158, 11, 0.4));
+    }
+
+    h3 {
+        color: #F59E0B; // Màu vàng cam
+        font-size: 22px;
+        font-weight: 800;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .host-msg {
+        font-size: 14px;
+        color: $text-light;
+        line-height: 1.5;
+        margin-bottom: 25px;
+
+        strong {
+            color: $slate-800;
+            font-size: 15px;
+            display: block;
+            margin-top: 4px;
+        }
+    }
+
+    .btn-gold {
+        background: linear-gradient(135deg, #FCD34D 0%, #F59E0B 100%);
+        color: white;
+        border: none;
+        box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+        
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+        }
+        &:active { transform: scale(0.98); }
+    }
+}
+
+// Animation Vương miện bay bay
+@keyframes floatCrown {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(5deg); }
+}
 .modal-content {
   background: white;
   width: 90%;
