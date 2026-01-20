@@ -197,6 +197,9 @@ export class GameService {
       }
     }
   }
+  async deleteRoom(roomId: string) {
+    await remove(ref(this.db, `rooms/${roomId}`));
+  }
   async startGame(roomId: string, hostId: string) {
     const roomRef = ref(this.db, `rooms/${roomId}`);
     const room = (await get(roomRef)).val();

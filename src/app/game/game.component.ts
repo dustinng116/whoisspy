@@ -291,38 +291,51 @@ export class GameComponent implements OnDestroy {
     if (this.unsubRoom) this.unsubRoom();
 
     this.unsubRoom = this.game.listenRoom(this.roomId()!, (data) => {
-      if (!data) {
-        this.forceExit(); // Phòng đã bị xóa (do logic xóa phòng trống ở Service)
-        return;
-      }
-      const myData = data.players?.[this.playerId];
-      if (myData && myData.isOnline === false) {
-        this.game.setPlayerOnline(this.roomId()!, this.playerId);
-      }
+      // 1. Check phòng bị xóa
+      if (!data) { this.forceExit(); return; }
+
+      // 2. Check bị kick
       if (data.players && !data.players[this.playerId]) {
         this.errorMessage.set('Bạn đã thoát ra khỏi phòng!');
         this.showErrorModal.set(true);
-        if (this.unsubRoom) {
-          this.unsubRoom();
-          this.unsubRoom = null;
-        }
         this.resetLocalState();
         return;
       }
 
-      if (this.previousHostId && this.previousHostId !== data.hostId) {
-        if (data.hostId === this.playerId) {
-          this.showHostPromotedModal.set(true);
-        }
-      }
-      this.previousHostId = data.hostId;
+      // [FIX 2] LOGIC QUÉT PHÒNG MA (ZOMBIE ROOM)
+      // Nếu game đang diễn ra (Playing/Voting) 
+      // MÀ chỉ có 1 người Online (là chính mình) -> Hủy phòng luôn
       const status = data.game?.status;
-      if (
-        this.playerId === data.hostId &&
-        (status === 'playing' || status === 'voting')
-      ) {
+      if (status === 'playing' || status === 'voting' || status === 'discussion') {
+          const onlinePlayers = Object.values(data.players || {}).filter((p: any) => p.isOnline);
+          
+          if (onlinePlayers.length <= 1) {
+              // Gọi Service xóa phòng ngay lập tức
+              this.game.deleteRoom(this.roomId()!);
+              
+              // Thông báo cho người dùng
+              this.errorMessage.set('Tất cả người chơi khác đã mất kết nối. Phòng đã bị hủy!');
+              this.showErrorModal.set(true);
+              
+              this.resetLocalState();
+              return; // Dừng xử lý tiếp
+          }
+      }
+
+      // [FIX 3] LOGIC THĂNG CHỨC (Đã sửa lỗi hiện nhầm)
+      // Chỉ chạy logic này nếu previousHostId đã có giá trị (tức là không phải lần đầu vào phòng)
+      if (this.previousHostId && this.previousHostId !== data.hostId) {
+          if (data.hostId === this.playerId) {
+              this.showHostPromotedModal.set(true);
+          }
+      }
+      this.previousHostId = data.hostId; // Cập nhật host mới
+
+      // Check tính khả thi của game (nếu Host thoát khi đang chơi)
+      if (this.playerId === data.hostId && (status === 'playing' || status === 'voting')) {
         this.game.checkGameViability(this.roomId()!);
       }
+      
       this.room.set(data);
     });
   }
@@ -450,20 +463,31 @@ export class GameComponent implements OnDestroy {
     this.selectedVoteId.set(null);
   }
 
-  resetLocalState() {
-    if (this.unsubRoom) {
-      this.unsubRoom();
-      this.unsubRoom = null;
-    }
+  private resetLocalState() {
+    if (this.unsubRoom) { this.unsubRoom(); this.unsubRoom = null; }
+     
+    this.previousHostId = null;  
+    
     this.joined.set(false);
     this.roomId.set(null);
     this.room.set(null);
     this.joinRoomInput.set('');
     this.qrCodeUrl.set(null);
-    this.resetGameplayState();
+
+    // Đóng tất cả modal
+    this.showResultModal.set(false);
+    this.showDrawModal.set(false);
     this.showSettingsModal.set(false);
+    this.showHostPromotedModal.set(false);  
+    this.showErrorModal.set(false);
+    
+    this.isSpyGuessing.set(false);
+    this.showWord.set(false);
+    this.hasSeenRole = false;
+    this.voteCountdown.set(0);
     this.isWordVisible.set(false);
     this.isReviewingKeyword.set(false);
+
     this.viewMode.set('home');
   }
 
