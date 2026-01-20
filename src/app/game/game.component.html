@@ -1,317 +1,314 @@
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+<link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
 <div class="app-container">
-    @if (joined() && !isLobby()) {
-    <button class="btn-power-exit" (click)="openExitConfirm()">
-        <span class="icon"><img src="assets/power.png" alt="Spy" width="80%" /></span>
-    </button>
-    }
-    @if (showExitConfirm()) {
-    <div class="modal-backdrop fade-in" (click)="closeExitConfirm()">
-        <div class="modal-content confirm-modal" (click)="$event.stopPropagation()">
-            <div class="icon-warning red">🛑</div>
 
-            <h3>{{ isHost() ? 'GIẢI TÁN PHÒNG?' : 'RỜI KHỎI GAME?' }}</h3>
+    @if (!joined()) {
+    <div class="screen-home-modern fade-in">
+        <div class="login-card">
+            <div class="top-decoration"></div>
+            <div class="logo-wrapper">
+                <div class="logo-icon"><span class="material-symbols-rounded">person_search</span></div>
+            </div>
+            <h1 class="app-title">Ai là <span class="highlight">GIÁN ĐIỆP?</span></h1>
+            <p class="app-subtitle">Nhập tên và bắt đầu ngay!</p>
 
-            <p class="confirm-msg">
-                @if (isHost()) {
-                Bạn là chủ phòng. Nếu bạn thoát, phòng sẽ bị hủy và tất cả người chơi sẽ bị out.
-                } @else {
-                Bạn có chắc chắn muốn thoát khi game đang diễn ra không?
-                }
-            </p>
+            <div class="form-group">
+                <label>BIỆT DANH</label>
+                <div class="input-wrapper">
+                    <span class="input-icon material-symbols-rounded">face</span>
+                    <input [ngModel]="playerName()" (ngModelChange)="onNameInput($event)"
+                        [class.input-error]="isNameError()" placeholder="Nhập tên..." />
+                </div>
+            </div>
 
-            <div class="modal-actions">
-                <button class="btn-white" (click)="closeExitConfirm()">Hủy</button>
-                <button class="btn-primary danger-btn" (click)="confirmExit()">
-                    {{ isHost() ? 'Giải tán ngay' : 'Thoát luôn' }}
+            @if (viewMode() === 'home') {
+            <div class="action-buttons">
+                <button class="btn-modern-primary" (click)="createRoom()">
+                    <span class="material-symbols-rounded">add_circle</span> TẠO PHÒNG
+                </button>
+                <button class="btn-modern-dark" (click)="viewMode.set('join_input')">
+                    <span class="material-symbols-rounded">login</span> THAM GIA
                 </button>
             </div>
+            } @else {
+            <div class="form-group room-input-group fade-in">
+                <label>MÃ PHÒNG</label>
+                <div class="input-wrapper">
+                    <span class="input-icon material-symbols-rounded">meeting_room</span>
+                    <input type="text" placeholder="Nhập mã phòng..." [value]="joinRoomInput()"
+                        (input)="onRoomInput($event)" [class.input-error]="isRoomError()" autofocus />
+                </div>
+            </div>
+            <div class="action-buttons">
+                <button class="btn-modern-primary" [disabled]="joinRoomInput().length !== 8" (click)="joinRoom()">
+                    VÀO NGAY
+                </button>
+                <button class="btn-text-only" (click)="viewMode.set('home')">← Quay lại</button>
+            </div>
+            }
         </div>
     </div>
     }
-    <!-- ================= HOME SCREEN ================= -->
-    @if (!joined()) {
-    <div class="screen-home fade-in">
-        <div class="fingerprint-icon">
-            <!-- <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#6c5ce7" stroke-width="1.5"
-                stroke-linecap="round" stroke-linejoin="round">
-                <path d="M2 12C2 6.5 6.5 2 12 2a10 10 0 0 1 8 6" />
-                <path d="M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2" />
-                <path d="M8.65 22c.21-.66.45-1.32.57-2" />
-                <path d="M9 6.8a6 6 0 0 1 9 5.2c0 .47 0 .95-.07 1.43" />
-                <path d="M16 22h1.8" />
-                <path d="M13 22.4c-.05-1-.26-2-.35-3" />
-                <path d="M9 12.5a4.5 4.5 0 0 1 6.8-2.6" />
-            </svg> -->
-            <img src="assets/spy.png" alt="Spy" width="80%" />
-        </div>
-        <h1>Who is the Spy?</h1>
-        <div class="input-group">
-            <input [ngModel]="playerName()" (ngModelChange)="onNameInput($event)" [class.input-error]="isNameError()"
-                placeholder="Nhập tên của bạn..." />
-        </div>
 
-        @if (viewMode() === 'home') {
-        <button class="btn-primary" (click)="createRoom()">TẠO PHÒNG</button>
-        <button class="btn-secondary " style="margin-top: 1rem;" (click)="viewMode.set('join_input')">THAM GIA VÀO PHÒNG
-            →</button>
-        } @else {
-        <div class="input-group fade-in">
-            <label>ROOM ID</label>
-            <input type="text" placeholder="Nhập 8 số mã phòng..." [value]="joinRoomInput()"
-                (input)="onRoomInput($event)" [class.input-error]="isRoomError()" autofocus />
-        </div>
-
-        <div class="row-btn">
-            <button class="btn-primary" [disabled]="joinRoomInput().length !== 8" (click)="joinRoom()">
-                VÀO NGAY
-            </button>
-            <button class="btn-text" (click)="viewMode.set('home')">Quay lại</button>
-        </div>
-        }
-    </div>
-    }
-
-    <!-- ================= JOINED ================= -->
     @if (joined()) {
 
-    <!-- ===== ROLE OVERLAY / MAIN SCREEN ===== -->
     @if (showWord()) {
-    <div class="role-overlay fade-in">
-        <div class="role-card">
-            <!-- <div class="role-header">VAI TRÒ CỦA BẠN</div>
-            <h1 class="role-name" [class.spy]="myRoleRaw() === 'spy'">
-                {{ myRoleRaw() === 'spy' ? 'GIÁN ĐIỆP' : 'DÂN THƯỜNG' }}
-            </h1>
+    <div class="screen-lobby fade-in">
+        <ng-container *ngTemplateOutlet="headerTpl"></ng-container>
 
-            <div class="role-icon">
-                @if(myRoleRaw() === 'spy') { 🕵️‍♂️ } @else { 👤 }
-            </div> -->
-
-            <h1>Who is the Spy?</h1>
-            <p class="role-hint">Từ bí mật của bạn là:</p>
-            <div class="secret-word-row">
-                <div class="secret-word" [class.hidden]="!isWordVisible()">
-                    {{ isWordVisible() ? myWord() : '******' }}
+        <div class="lobby-scroll-container">
+            <main class="lobby-main centered-vertical">
+                <div class="secret-card-container">
+                    <div class="secret-card">
+                        <div class="top-bar"></div>
+                        <h3 class="card-title">Từ bí mật của bạn là:</h3>
+                        <div class="reveal-box" [class.revealed]="isWordVisible()" (click)="toggleWordVisibility()">
+                            @if (!isWordVisible()) {
+                            <div class="icon-circle"><span class="material-symbols-rounded">visibility_off</span></div>
+                            <span class="action-text">Bấm để xem</span>
+                            } @else {
+                            <span class="the-word">{{ myWord() }}</span>
+                            <span class="sub-text">(Bấm để ẩn)</span>
+                            }
+                        </div>
+                        <p class="security-note">Giữ bí mật! Đừng để người khác nhìn thấy.</p>
+                    </div>
                 </div>
-
-                <button class="btn-eye" (click)="toggleWordVisibility()">
-                    {{ isWordVisible() ? '🙈' : '👁️' }}
-                </button>
-            </div>
-            <p class="role-sub">Hãy ghi nhớ từ này và đừng để lộ!</p>
+            </main>
         </div>
 
-        <button class="btn-primary large ready-btn" (click)="acknowledgeRole()">
-            SẴN SÀNG ✓
-        </button>
-        <p class="waiting-text">ĐANG CHỜ NGƯỜI CHƠI KHÁC...</p>
+        <div class="lobby-footer">
+            <div class="footer-content">
+                <div class="footer-left">
+                    <button class="btn-round-box exit" (click)="openExitConfirm()" title="Thoát phòng">
+                        <span class="material-symbols-rounded">logout</span>
+                    </button>
+                </div>
+                <div class="footer-right">
+                    <button class="btn-start-pill green-gradient" (click)="acknowledgeRole()">
+                        <span>XONG</span>
+                        <span class="material-symbols-rounded filled">check_circle</span>
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
-    } @else {
-    <div class="screen-main fade-in">
+    }
 
-        <div class="main-header">
-            @if (isLobby()) {
-            <div class="room-info-group">
-                <span class="label">PHÒNG CHỜ</span>
-                <div class="code-wrapper">
-                    <h1 class="room-id">#{{ roomId() }}</h1>
-                    <button class="btn-copy" (click)="copyRoomId()">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2-2h2"></path>
-                        </svg>
-                    </button>
+    @else {
+    <div class="screen-lobby fade-in">
 
-                    <button class="btn-icon qr-btn" (click)="toggleQr(true)" title="Hiện mã QR">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <rect x="3" y="3" width="7" height="7"></rect>
-                            <rect x="14" y="3" width="7" height="7"></rect>
-                            <rect x="14" y="14" width="7" height="7"></rect>
-                            <rect x="3" y="14" width="7" height="7"></rect>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-            @if (isHost()) {
-            <div class="host-pill-card">
-                <div class="icon-shield">👑</div>
-                <div class="info">
-                    <span class="role-label">CHỦ PHÒNG</span>
-                    <span class="host-name">Bạn ({{ playerName() }})</span>
-                </div>
-            </div>
-            }
-            }
+        <ng-container *ngTemplateOutlet="headerTpl"></ng-container>
 
-            @if (isVoting()) {
-            <div class="vote-header fade-in">
-                <div class="timer-pill">⏱ {{ voteCountdown() }}s</div>
-                <h2>Who is the <span class="spy-text">Spy?</span></h2>
-                <p>Chọn người đáng ngờ nhất!</p>
-            </div>
-            }
-            @if (isDiscussion()) {
-            <div class="playing-header fade-in">
-                <h2>🗣️ Đang thảo luận</h2>
-                <p>Hãy tìm ra kẻ giả mạo!</p>
+        <div class="lobby-scroll-container">
+            <main class="lobby-main">
 
-                <div class="keyword-review-box" (click)="toggleReviewKeyword()" [class.active]="isReviewingKeyword()">
-                    <span class="icon">🔑</span>
-                    <span class="content">
-                        {{ isReviewingKeyword() ? myWord() : 'Xem lại từ khóa' }}
-                    </span>
-                    <span class="eye-mini">{{ isReviewingKeyword() ? '🙈' : '👁️' }}</span>
-                </div>
-
-                @if (!isEliminated()) {
-                <button class="btn-spy-guess fade-in mt-20" (click)="openGuessModal()">
-                    🎯 Đoán từ (Win ngay)
-                </button>
-                }
-            </div>
-            }
-        </div>
-
-        <div class="player-grid">
-            @for (slot of playersSlots(); track $index) {
-            @if (slot) {
-            <div class="card player-card" [class.selectable]="isVoting() && !slot.eliminated && slot.id !== playerId"
-                [class.offline]="!slot.isOnline" [class.selected]="selectedVoteId() === slot.id"
-                [class.eliminated]="slot.eliminated" [class.is-me]="slot.id === playerId"
-                [class.self-voting]="isVoting() && slot.id === playerId"
-                (click)="isVoting() ? selectForVote(slot.id) : onAvatarClick(slot)">
-
-                @if (selectedVoteId() === slot.id) { <div class="check-circle">✓</div> }
-                @if (isVoting() && getVoteDots(slot.id).length > 0) {
-                <div class="vote-dots-container">
-                    @for(dot of getVoteDots(slot.id); track $index) { <span class="vote-dot"></span> }
+                @if (isLobby()) {
+                <div class="room-code-section">
+                    <span class="section-label">MÃ PHÒNG</span>
+                    <div class="room-card">
+                        <div class="room-content">
+                            <h2 class="room-number">{{ roomId()?.slice(0,3) }} {{ roomId()?.slice(3) }}</h2>
+                            <div class="room-actions">
+                                <button class="btn-icon-soft" [class.copied]="isCopied()" (click)="copyRoomId()"
+                                    [title]="isCopied() ? 'Đã sao chép' : 'Sao chép mã'">
+                                    <span class="material-symbols-rounded">{{ isCopied() ? 'check' : 'content_copy'
+                                        }}</span>
+                                </button>
+                                <button class="btn-icon-soft" (click)="toggleQr(true)" title="QR">
+                                    <span class="material-symbols-rounded">qr_code_2</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 }
 
-                <div class="avatar-box" [class.has-image]="slot.avatar"
-                    [style.background-color]="slot.avatar ? 'transparent' : getAvatarColor(slot.name)">
-                    @if (slot.id === playerId) {
-                    <div class="me-badge">BẠN</div>
-                    }
-                    @if (slot.avatar) {
-                    <img [src]="'assets/avatars/' + slot.avatar" alt="Avatar" class="avatar-img" />
-                    } @else {
-                    {{ slot.name.substring(0,2).toUpperCase() }}
-                    }
-                    @if (slot.id === playerId && isLobby()) {
-                    <div class="edit-badge">✏️</div>
-                    }
-                </div>
-
-                <div class="info-box">
-                    <div class="p-name">{{ slot.name }} @if (slot.id === room().hostId) { <span
-                            class="txt-host">👑</span> }</div>
-                    <div class="p-role">
-                        @if (!slot.isOnline) {
-                        <span class="txt-offline">OFFLINE 🔴</span>
-                        }
-                        @else if (slot.eliminated) {
-                        <span class="txt-dead">ĐÃ LOẠI</span>
-                        }
-                        @else if (isLobby()) {
-                        <span class="txt-ready">SẴN SÀNG</span>
+                @if (isDiscussion()) {
+                <div class="playing-info-section">
+                    <div class="header-icon"><span class="material-symbols-rounded">record_voice_over</span></div>
+                    <h2>Đang thảo luận</h2>
+                    <p class="sub-text">Hãy tìm ra kẻ giả mạo!</p>
+                    <div class="action-pills">
+                        <div class="pill dashed" (click)="toggleReviewKeyword()" [class.active]="isReviewingKeyword()">
+                            <span class="icon-small">🔑</span>
+                            <span class="text">{{ isReviewingKeyword() ? myWord() : 'Xem lại từ khóa' }}</span>
+                            <span class="eye-icon">{{ isReviewingKeyword() ? '🙈' : '👁️' }}</span>
+                        </div>
+                        @if (!isEliminated()) {
+                        <button class="pill solid-orange" (click)="openGuessModal()">
+                            <span class="material-symbols-rounded icon-small">help</span>
+                            <span>Đoán từ (Win ngay)</span>
+                        </button>
                         }
                     </div>
                 </div>
-
-
-            </div>
-            }
-            @else {
-            @if (isLobby()) {
-            <div class="card empty-slot">
-                <div class="txt-empty">Trống</div>
-            </div>
-            }
-            }
-            }
-        </div>
-
-        <div class="footer-actions">
-
-            @if (isLobby()) {
-            <div class="left-group">
-                <button class="btn-white" (click)="openSettings()">
-                    <span>⚙️</span> Cài đặt game
-                </button>
-                <button class="btn-exit" (click)="exitGame()">
-                    <span>❌</span> Thoát
-                </button>
-            </div>
-
-            <div class="right-group">
-                @if (isHost()) {
-                <div class="start-hint">
-                    <strong>Sẵn sàng để bắt đầu?</strong>
-                    <span>Cần tối thiểu {{ minRequiredPlayers() }} người chơi</span>
-                </div>
-
-                <button class="btn-start" [ngClass]="playerCount() < minRequiredPlayers() ? 'disabled' : ''"
-                    [disabled]="playerCount() < minRequiredPlayers()" (click)="startGame()">
-                    BẮT ĐẦU GAME ▶
-                </button>
-                } @else {
-                <button class="btn-start disabled" disabled>Đang chờ chủ phòng...</button>
                 }
-            </div>
-            }
 
+                @if (isVoting()) {
+                <div class="vote-timer-card fade-in">
+                    <div class="progress-line"
+                        [style.width.%]="(voteCountdown() / (room()?.config?.voteDuration || 15)) * 100"></div>
+                    <div class="card-body">
+                        <div class="time-display">
+                            <div class="icon-circle"><span class="material-symbols-rounded">timer</span></div>
+                            <span class="time-text">00:{{ voteCountdown() < 10 ? '0' + voteCountdown() : voteCountdown()
+                                    }}</span>
+                        </div>
+                        <p class="hint-text">Ai là Gián điệp? <span class="highlight">Hãy bình chọn ngay!</span></p>
+                    </div>
+                </div>
+                }
 
-            @if (isDiscussion() && isHost()) {
-            <div class="center-group fade-in">
-                <button class="btn-primary vote-btn" (click)="startVoting()">
-                    BẮT ĐẦU VOTE ⚡
-                </button>
-            </div>
-            }
+                <div class="grid-section">
+                    @if (isLobby()) {
+                    <div class="grid-header">
+                        <h3>Người chơi <span class="badge">{{ playerCount() }}/{{ MAX_PLAYERS }}</span></h3>
+                        <span class="sub-text">{{ minRequiredPlayers() }}+ ĐỂ BẮT ĐẦU</span>
+                    </div>
+                    }
+                    <div class="lobby-grid">
+                        @for (slot of playersSlots(); track $index) {
+                        @if (slot) {
+                        <div class="lobby-card occupied" [class.is-host]="slot.id === room().hostId"
+                            [class.selectable]="isVoting() && !isEliminated() && !slot.eliminated && slot.id !== playerId && slot.isOnline"
+                            [class.selected]="selectedVoteId() === slot.id" [class.eliminated]="slot.eliminated"
+                            [class.offline]="!slot.isOnline" [class.is-me]="slot.id === playerId"
+                            [class.self-voting]="isVoting() && slot.id === playerId"
+                            (click)="isVoting() ? selectForVote(slot.id) : onAvatarClick(slot)">
 
-            @if (isVoting()) {
-            <div class="center-group fade-in">
-                <button class="btn-primary confirm-btn" [disabled]="!selectedVoteId()" (click)="confirmVote()">
-                    XÁC NHẬN →
-                </button>
-            </div>
-            }
+                            @if (selectedVoteId() === slot.id) { <div class="vote-check-overlay"><span
+                                    class="material-symbols-rounded">check_circle</span></div> }
+                            @if (slot.id === room().hostId) { <div class="host-badge"><span
+                                    class="material-symbols-rounded">workspace_premium</span></div> }
+                            @if (slot.id === playerId) { <div class="me-tag">BẠN</div> }
+                            @if (isVoting() && getVoteDots(slot.id).length > 0) {
+                            <div class="vote-dots-container">
+                                @for(dot of getVoteDots(slot.id); track $index) { <span class="vote-dot"></span> }
+                            </div>
+                            }
+
+                            <div class="avatar-wrapper">
+                                <div class="avatar-display"
+                                    [style.background-color]="slot.avatar ? 'transparent' : getAvatarColor(slot.name)">
+                                    @if (slot.avatar) { <img [src]="'assets/avatars/' + slot.avatar"
+                                        class="avatar-img" /> }
+                                    @else { {{ slot.name.substring(0,2).toUpperCase() }} }
+                                </div>
+                                <div class="status-dot" [class.online]="slot.isOnline" [class.offline]="!slot.isOnline">
+                                </div>
+                            </div>
+
+                            <div class="player-info">
+                                <p class="p-name">{{ slot.name }}</p>
+                                @if (!slot.isOnline) {
+                                <div class="status-pill offline">OFFLINE</div>
+                                }
+                                @else if (slot.eliminated) {
+                                <div class="status-pill dead">ĐÃ LOẠI</div>
+                                }
+                                @else if (isLobby()) {
+                                <div class="status-pill">SẴN SÀNG</div>
+                                }
+                            </div>
+                        </div>
+                        } @else {
+                        <div class="lobby-card empty">
+                            <div class="avatar-placeholder"><span class="material-symbols-rounded">person_add</span>
+                            </div>
+                            <p class="empty-text">ĐANG CHỜ</p>
+                        </div>
+                        }
+                        }
+                    </div>
+                </div>
+                <div class="footer-spacer"></div>
+            </main>
         </div>
+
+        <ng-container *ngTemplateOutlet="footerTpl"></ng-container>
     </div>
     }
+    }
+
+    <ng-template #headerTpl>
+        <nav class="lobby-nav">
+            <div class="nav-left">
+                <div class="logo-box"><span class="material-symbols-rounded">person_search</span></div>
+                <h1 class="logo-text">Ai là <span class="highlight">GIÁN ĐIỆP?</span></h1>
+            </div>
+            <div class="nav-right">
+                <div class="user-pill">
+                    @if(isVoting()){ <div class="timer-badge">{{ voteCountdown() }}s</div> }
+                    <div class="avatar-circle">{{ playerName().substring(0,2).toUpperCase() }}</div>
+                </div>
+            </div>
+        </nav>
+    </ng-template>
+
+    <ng-template #footerTpl>
+        <div class="lobby-footer">
+            <div class="footer-content">
+                <div class="footer-left">
+                    @if(isLobby()) {
+                    <button class="btn-round-box settings" (click)="openSettings()"><span
+                            class="material-symbols-rounded">settings</span></button>
+                    }
+                    <button class="btn-round-box exit" (click)="isLobby() ? exitGame() : openExitConfirm()">
+                        <span class="material-symbols-rounded">logout</span>
+                    </button>
+                </div>
+                <div class="footer-right">
+                    @if (isLobby()) {
+                    @if (isHost()) {
+                    <button class="btn-start-pill" [disabled]="playerCount() < minRequiredPlayers()"
+                        (click)="startGame()">
+                        <span>BẮT ĐẦU</span> <span class="material-symbols-rounded filled">play_circle</span>
+                    </button>
+                    } @else {
+                    <button class="btn-start-pill waiting" disabled><span>CHỜ CHỦ...</span></button>
+                    }
+                    }
+                    @if (isDiscussion()) {
+                    @if (isHost()) {
+                    <button class="btn-start-pill purple-gradient" (click)="startVoting()">
+                        <span>BẮT ĐẦU VOTE</span> <span class="material-symbols-rounded filled icon-bolt">bolt</span>
+                    </button>
+                    } @else {
+                    <button class="btn-start-pill waiting" disabled><span>ĐANG THẢO LUẬN...</span></button>
+                    }
+                    }
+                    @if (isVoting()) {
+                    @if (!isEliminated()) {
+                    <button class="btn-start-pill green-gradient" [disabled]="!selectedVoteId()"
+                        (click)="confirmVote()">
+                        <span>XÁC NHẬN</span> <span class="material-symbols-rounded filled">check_circle</span>
+                    </button>
+                    } @else {
+                    <button class="btn-start-pill waiting" disabled><span>BẠN ĐÃ BỊ LOẠI 💀</span></button>
+                    }
+                    }
+                </div>
+            </div>
+        </div>
+    </ng-template>
+
     @if (showQrModal()) {
     <div class="modal-backdrop fade-in" (click)="toggleQr(false)">
         <div class="modal-content" (click)="$event.stopPropagation()">
             <h3>Quét mã để tham gia</h3>
             <div class="qr-container">
-                @if (qrCodeUrl()) {
-                <img [src]="qrCodeUrl()" alt="Room QR Code" />
-                }
+                @if (qrCodeUrl()) { <img [src]="qrCodeUrl()" alt="Room QR Code" /> }
             </div>
             <p class="room-hint">Phòng: <strong>#{{ roomId() }}</strong></p>
             <button class="btn-primary" (click)="toggleQr(false)">Đóng</button>
         </div>
     </div>
     }
-    <!-- @if (isSpyGuessing()) {
-    <div class="modal-backdrop fade-in" (click)="closeSpyGuess()">
-        <div class="modal-content spy-modal" (click)="$event.stopPropagation()">
-            <h3>🕵️‍♂️ SPY GUESS</h3>
-            <p>Nếu bạn đoán đúng từ khóa của Dân Thường, bạn sẽ thắng ngay lập tức!</p>
 
-            <input class="spy-input" placeholder="Nhập từ bí mật..." [ngModel]="spyGuessInput()"
-                (ngModelChange)="spyGuessInput.set($event)" autofocus />
-
-            <div class="modal-actions">
-                <button class="btn-white" (click)="closeSpyGuess()">Hủy</button>
-                <button class="btn-primary" (click)="submitSpyGuess()">Đoán ngay</button>
-            </div>
-        </div>
-    </div>
-    } -->
     @if (showDrawModal()) {
     <div class="modal-backdrop fade-in">
         <div class="modal-content result-modal">
@@ -321,109 +318,27 @@
         </div>
     </div>
     }
-    @if (showAvatarModal()) {
-    <div class="modal-backdrop fade-in" (click)="showAvatarModal.set(false)">
-        <div class="modal-content avatar-modal" (click)="$event.stopPropagation()">
-
-            @if (previewAvatar()) {
-            <div class="preview-mode fade-in">
-                <h3>XEM TRƯỚC</h3>
-
-                <div class="preview-box">
-                    <img [src]="'assets/avatars/' + previewAvatar()" alt="Preview" />
-                </div>
-
-                <div class="action-row">
-                    <button class="btn-white" (click)="backToList()">
-                        ← Chọn hình khác
-                    </button>
-                    <button class="btn-primary" (click)="confirmAvatar()">
-                        Xác nhận ✓
-                    </button>
-                </div>
-            </div>
-            }
-
-            @else {
-            <div class="list-mode fade-in">
-                <h3>ĐỔI AVATAR</h3>
-                <p class="hint">Chọn một hình để xem trước</p>
-
-                <div class="avatar-list-grid">
-                    @for (img of AVATAR_LIST; track $index) {
-                    <div class="avatar-option small" (click)="openPreview(img)">
-                        <img [src]="'assets/avatars/' + img" loading="lazy" />
-                    </div>
-                    }
-                </div>
-
-                <button class="btn-white mt-20" (click)="showAvatarModal.set(false)">Đóng</button>
-            </div>
-            }
-
-        </div>
-    </div>
-    }
-    @if (isGuessing()) {
-    <div class="modal-backdrop fade-in" (click)="closeGuessModal()">
-        <div class="modal-content spy-modal" (click)="$event.stopPropagation()">
-            <h3>🎯 QUYẾT ĐỊNH TÁO BẠO</h3>
-
-            <p style="font-size: 13px; color: #636e72;">
-                Bạn sẽ đoán từ khóa của <strong>phe đối thủ</strong>.<br>
-                <span style="color: #ff4757; font-weight: bold;">CẢNH BÁO:</span>
-                Nếu đoán SAI, phe bạn sẽ <strong style="color: #ff4757">THUA NGAY LẬP TỨC</strong>!
-            </p>
-
-            <input class="spy-input" placeholder="Nhập từ khóa..." [ngModel]="guessInput()"
-                (ngModelChange)="guessInput.set($event)" autofocus />
-
-            <div class="modal-actions">
-                <button class="btn-white" (click)="closeGuessModal()">Hủy</button>
-                <button class="btn-primary" (click)="submitGuess()">Chốt đơn</button>
-            </div>
-        </div>
-    </div>
-    }
 
     @if (showResultModal()) {
     <div class="modal-backdrop fade-in" (click)="isGameOver() ? null : closeResultModal()">
         <div class="modal-content result-modal" (click)="$event.stopPropagation()">
-
             @if (isGameOver()) {
-            <div class="skull-icon">
-                {{ winner() === 'spy' ? '🏆' : randomEmoji() }} </div>
-
+            <div class="skull-icon">{{ winner() === 'spy' ? '🏆' : randomEmoji() }}</div>
             <h3>KẾT THÚC GAME</h3>
-
             <h1 class="eliminated-name" [style.color]="winner() === 'spy' ? '#ff4757' : '#0984e3'">
                 {{ winner() === 'spy' ? 'GIÁN ĐIỆP THẮNG' : 'DÂN THƯỜNG THẮNG' }}
             </h1>
-
             <div class="reason-box">
-                @if (endReason() === 'guessed_correct') {
-                <p><strong>{{ heroName() }}</strong> đã xuất sắc đoán đúng từ khóa!</p>
-                }
-                @else if (endReason() === 'guessed_wrong') {
-                <p><strong>{{ heroName() }}</strong> đã đoán sai và "báo" cả team! 🤣</p>
-                }
-                @else if (endReason() === 'not_enough_players') {
-                <p style="color: #e67e22; font-weight: bold;">
-                    ⚠️ Game bị hủy do không đủ người chơi!
-                </p>
-                <p class="small-text">(Các người chơi khác đã thoát)</p>
-                }
-                @else if (endReason() === 'player_left') {
-                <p>
-                    {{ winner() === 'spy' ? 'Dân thường' : 'Gián điệp' }} đã bỏ chạy! 🏃‍♂️💨
-                </p>
-                <p>Chiến thắng thuộc về phe còn lại!</p>
-                }
-                @else {
-                <p>Gián điệp đã bị loại hết!</p>
-                }
+                @if (endReason() === 'guessed_correct') { <p><strong>{{ heroName() }}</strong> đã xuất sắc đoán đúng từ
+                    khóa!</p> }
+                @else if (endReason() === 'guessed_wrong') { <p><strong>{{ heroName() }}</strong> đã đoán sai và "báo"
+                    cả team! 🤣</p> }
+                @else if (endReason() === 'not_enough_players') { <p style="color: #e67e22;">⚠️ Game bị hủy do không đủ
+                    người chơi!</p> }
+                @else if (endReason() === 'player_left') { <p>{{ winner() === 'spy' ? 'Dân thường' : 'Gián điệp' }} đã
+                    bỏ chạy!</p> }
+                @else { <p>Gián điệp đã bị loại hết!</p> }
             </div>
-
             <div class="spy-reveal-section">
                 <p class="reveal-label">DANH TÍNH GIÁN ĐIỆP:</p>
                 <div class="spy-list">
@@ -437,13 +352,8 @@
                     }
                 </div>
             </div>
-
-            @if (isHost()) {
-            <button class="btn-primary mt-20" (click)="backToLobby()">🔄 Chơi ván mới</button>
-            } @else {
-            <p class="waiting-text">Chờ chủ phòng...</p>
-            }
-
+            @if (isHost()) { <button class="btn-primary mt-20" (click)="backToLobby()">🔄 Chơi ván mới</button> }
+            @else { <p class="waiting-text">Chờ chủ phòng...</p> }
             } @else {
             <div class="skull-icon">☠️</div>
             <h3>NGƯỜI BỊ LOẠI</h3>
@@ -456,49 +366,71 @@
                 </strong>
             </div>
             }
-
             <button class="btn-primary mt-20" (click)="closeResultModal()">Đóng (5s)</button>
             }
-
         </div>
     </div>
     }
+
+    @if (showAvatarModal()) {
+    <div class="modal-backdrop fade-in" (click)="showAvatarModal.set(false)">
+        <div class="modal-content avatar-modal" (click)="$event.stopPropagation()">
+            @if (previewAvatar()) {
+            <div class="preview-mode fade-in">
+                <h3>XEM TRƯỚC</h3>
+                <div class="preview-box"><img [src]="'assets/avatars/' + previewAvatar()" alt="Preview" /></div>
+                <div class="action-row">
+                    <button class="btn-white" (click)="backToList()">← Chọn hình khác</button>
+                    <button class="btn-primary" (click)="confirmAvatar()">Xác nhận ✓</button>
+                </div>
+            </div>
+            } @else {
+            <div class="list-mode fade-in">
+                <h3>ĐỔI AVATAR</h3>
+                <p class="hint">Chọn một hình để xem trước</p>
+                <div class="avatar-list-grid">
+                    @for (img of AVATAR_LIST; track $index) {
+                    <div class="avatar-option small" (click)="openPreview(img)">
+                        <img [src]="'assets/avatars/' + img" loading="lazy" />
+                    </div>
+                    }
+                </div>
+                <button class="btn-white mt-20" (click)="showAvatarModal.set(false)">Đóng</button>
+            </div>
+            }
+        </div>
+    </div>
+    }
+
     @if (viewingUser()) {
     <div class="modal-backdrop fade-in" (click)="closeViewUser()">
         <div class="modal-content avatar-view-modal" (click)="$event.stopPropagation()">
-
             <h3 class="user-name-title">{{ viewingUser().name }}</h3>
-
             <div class="preview-box large">
-                @if (viewingUser().avatar) {
-                <img [src]="'assets/avatars/' + viewingUser().avatar" alt="User Avatar" />
-                } @else {
+                @if (viewingUser().avatar) { <img [src]="'assets/avatars/' + viewingUser().avatar" alt="User Avatar" />
+                }
+                @else {
                 <div class="fallback-avatar" [style.background-color]="getAvatarColor(viewingUser().name)">
                     {{ viewingUser().name.substring(0,2).toUpperCase() }}
                 </div>
                 }
             </div>
-
             <button class="btn-white mt-20" (click)="closeViewUser()">Đóng</button>
         </div>
     </div>
     }
 
-
     @if (showSettingsModal()) {
     <div class="modal-backdrop fade-in" (click)="closeSettings()">
         <div class="modal-content settings-modal" (click)="$event.stopPropagation()">
             <h3>⚙️ CÀI ĐẶT PHÒNG</h3>
-
             <div class="settings-form">
                 <div class="config-section">
                     <label>⏱️ Thời gian Vote:</label>
                     <div class="time-options">
                         @for (time of timeOptions; track time) {
                         <button class="btn-time" [class.active]="tempVoteDuration() === time"
-                            (click)="tempVoteDuration.set(time)">
-                            {{ time }}s
-                        </button>
+                            (click)="tempVoteDuration.set(time)">{{ time }}s</button>
                         }
                     </div>
                 </div>
@@ -511,12 +443,9 @@
                             <option [value]="3">3 Spies (Hỗn loạn)</option>
                         </select>
                     </div>
-                    <p class="hint-text">
-                        Lưu ý: Chế độ {{ tempSpyCount() }} Spy cần ít nhất
-                        <strong>{{ tempMinRequired() }} người chơi</strong>.
-                    </p>
+                    <p class="hint-text">Lưu ý: Chế độ {{ tempSpyCount() }} Spy cần ít nhất <strong>{{ tempMinRequired()
+                            }} người chơi</strong>.</p>
                 </div>
-
                 <div class="form-group row-between">
                     <label>Cho phép đổi Vote?</label>
                     <div class="toggle-switch">
@@ -525,48 +454,72 @@
                         <label for="voteChange" class="slider"></label>
                     </div>
                 </div>
-
             </div>
-
             <div class="modal-actions">
                 <button class="btn-white" (click)="closeSettings()">Hủy</button>
-                @if (isHost()) {
-                <button class="btn-primary" (click)="saveSettings()">Lưu Cài Đặt</button>
-                } @else {
-                <button class="btn-primary" disabled>Chỉ Host chỉnh được</button>
-                }
+                @if (isHost()) { <button class="btn-primary" (click)="saveSettings()">Lưu Cài Đặt</button> }
+                @else { <button class="btn-primary" disabled>Chỉ Host chỉnh được</button> }
             </div>
         </div>
     </div>
     }
+
+    @if (isGuessing()) {
+    <div class="modal-backdrop fade-in" (click)="closeGuessModal()">
+        <div class="modal-content spy-modal" (click)="$event.stopPropagation()">
+            <h3>🎯 QUYẾT ĐỊNH TÁO BẠO</h3>
+            <p style="font-size: 13px; color: #636e72;">
+                Bạn sẽ đoán từ khóa của <strong>phe đối thủ</strong>.<br>
+                <span style="color: #ff4757; font-weight: bold;">CẢNH BÁO:</span> Nếu đoán SAI, phe bạn sẽ <strong
+                    style="color: #ff4757">THUA NGAY LẬP TỨC</strong>!
+            </p>
+            <input class="spy-input" placeholder="Nhập từ khóa..." [ngModel]="guessInput()"
+                (ngModelChange)="guessInput.set($event)" autofocus />
+            <div class="modal-actions">
+                <button class="btn-white" (click)="closeGuessModal()">Hủy</button>
+                <button class="btn-primary" (click)="submitGuess()">Chốt đơn</button>
+            </div>
+        </div>
+    </div>
     }
+
+    @if (showExitConfirm()) {
+    <div class="modal-backdrop fade-in" (click)="closeExitConfirm()">
+        <div class="modal-content confirm-modal" (click)="$event.stopPropagation()">
+            <div class="icon-warning red">🛑</div>
+            <h3>{{ isHost() ? 'GIẢI TÁN PHÒNG?' : 'RỜI KHỎI GAME?' }}</h3>
+            <p class="confirm-msg">
+                @if (isHost()) { Bạn là chủ phòng. Nếu bạn thoát, phòng sẽ bị hủy và tất cả người chơi sẽ bị out. }
+                @else { Bạn có chắc chắn muốn thoát khi game đang diễn ra không? }
+            </p>
+            <div class="modal-actions">
+                <button class="btn-white" (click)="closeExitConfirm()">Hủy</button>
+                <button class="btn-primary danger-btn" (click)="confirmExit()">{{ isHost() ? 'Giải tán ngay' : 'Thoát
+                    luôn' }}</button>
+            </div>
+        </div>
+    </div>
+    }
+
     @if (showErrorModal()) {
     <div class="modal-backdrop fade-in" (click)="closeErrorModal()">
         <div class="modal-content error-modal" (click)="$event.stopPropagation()">
-
             <div class="icon-warning">⚠️</div>
-
             <h3>RẤT TIẾC!</h3>
-
             <p class="error-msg">{{ errorMessage() }}</p>
-
             <button class="btn-primary mt-20" (click)="closeErrorModal()">Đã hiểu</button>
         </div>
     </div>
     }
-</div>
 
-
-@if (showToast()) {
-<div class="toast-connection fade-in" [class.warning]="connectionStatus() === 'connecting'"
-    [class.success]="connectionStatus() === 'connected'">
-
-    @if (connectionStatus() === 'connecting') {
-    <div class="spinner"></div>
-    <span>Đang cố gắng kết nối...</span>
-    } @else {
-    <span class="icon">🟢</span>
-    <span>Đã kết nối lại mạng!</span>
+    @if (showToast()) {
+    <div class="toast-connection fade-in" [class.warning]="connectionStatus() === 'connecting'"
+        [class.success]="connectionStatus() === 'connected'">
+        @if (connectionStatus() === 'connecting') {
+        <div class="spinner"></div> <span>Đang cố gắng kết nối...</span>
+        } @else {
+        <span class="icon">🟢</span> <span>Đã kết nối lại mạng!</span>
+        }
+    </div>
     }
 </div>
-}

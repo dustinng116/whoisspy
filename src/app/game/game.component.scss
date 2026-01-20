@@ -1,45 +1,51 @@
-// ==========================================
-// 1. VARIABLES & CONFIG
-// ==========================================
-$primary: #6c5ce7;
-$primary-gradient: linear-gradient(135deg, #8e44ad 0%, #6c5ce7 100%);
-$bg-gradient: linear-gradient(135deg, #f8f9fd 0%, #e3f2fd 100%);
-$text-dark: #2d3436; // Main Text
-$text-light: #636e72; // Sub Text
-$white: #ffffff;
-$danger: #ff4757; // Màu đỏ cho Spy/Eliminated
-$blue: #0984e3; // Màu xanh cho Villain/Vote Dot
-$orange: #e67e22;
-$success: #00b894; // Màu xanh lá cho Ready
+@import url("https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
 
-$text-gray: #636e72;
-$radius-card: 20px;
-$radius-btn: 12px;
+// --- VARIABLES ---
+$violet-primary: #7c3aed;
+$blue: #3b82f6;
+$success: #10b981;
+$danger: #ef4444;
+$warning: #f59e0b;
+$bg-light: #f8fafc;
+$slate-800: #1e293b;
+$slate-400: #94a3b8;
+$text-dark: #2d3436;
+$text-light: #636e72;
 
-$radius-xl: 24px;
-$radius-md: 12px;
-$shadow-soft: 0 10px 30px rgba(108, 92, 231, 0.15);
-$shadow-card: 0 4px 20px rgba(0, 0, 0, 0.05);
-$transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+// Font config
+$font-family-base: "Be Vietnam Pro", "Plus Jakarta Sans", "Segoe UI", Roboto,
+  Helvetica, Arial, sans-serif;
 
-// ==========================================
-// 2. GLOBAL RESET & LAYOUT
-// ==========================================
+// --- GLOBAL RESET ---
 :host {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background: $bg-gradient;
-  font-family: "Poppins", "Segoe UI", sans-serif;
-  color: $text-dark;
-  padding: 20px;
+  flex-direction: column;
+  width: 100%;
+
+  // Dùng 100dvh để tránh lỗi thanh địa chỉ trên mobile che mất nút
+  height: 100dvh;
+  min-height: -webkit-fill-available;
+
+  overflow: hidden;
+  background-color: $bg-light;
+  font-family: $font-family-base;
+  color: $slate-800;
+
+  // [FIX QUAN TRỌNG] Áp dụng box-sizing cho tất cả phần tử con
+  // Giúp padding không làm vỡ layout width 100%
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
 }
 
 .app-container {
   width: 100%;
-  max-width: 1000px; // Rộng rãi cho Desktop
-  margin: 0 auto;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 // ANIMATIONS
@@ -56,19 +62,16 @@ $transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     transform: translateY(0);
   }
 }
-
 @keyframes popIn {
   0% {
-    transform: scale(0);
-  }
-  80% {
-    transform: scale(1.2);
+    transform: scale(0.8);
+    opacity: 0;
   }
   100% {
     transform: scale(1);
+    opacity: 1;
   }
 }
-
 @keyframes zoomIn {
   from {
     transform: scale(0.8);
@@ -79,848 +82,950 @@ $transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     opacity: 1;
   }
 }
-
-.mt-30 {
-  margin-top: 30px;
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
 }
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes slideDown {
+  from {
+    transform: translate(-50%, -20px);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+}
+
+// Helper
 .mt-20 {
   margin-top: 20px;
 }
 
-// ==========================================
-// 3. COMMON COMPONENTS (Buttons, Inputs)
-// ==========================================
-button {
-  cursor: pointer;
-  border: none;
-  font-family: inherit;
-  transition: transform 0.1s;
-  &:active {
-    transform: scale(0.98);
-  }
-}
-
-.btn-primary {
-  background: $primary-gradient;
-  color: white;
-  padding: 16px;
-  border-radius: $radius-md;
-  font-weight: 700;
-  font-size: 15px;
-  width: 100%;
+// ============================================
+// 1. SCREEN: HOME (LOGIN) - MODERN
+// ============================================
+.screen-home-modern {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
-  box-shadow: 0 4px 15px rgba($primary, 0.4);
-  transition: 0.3s;
-
-  &.large {
-    border-radius: 50px;
-    font-size: 16px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-  &.ready-btn {
-    width: 25%;
-  }
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    box-shadow: none;
-  }
-  &:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba($primary, 0.5);
-  }
-}
-
-.btn-secondary {
-  background: white;
-  border: 1px solid #dfe6e9;
-  color: $text-dark;
-  padding: 16px;
-  border-radius: $radius-md;
-  font-weight: 600;
-  font-size: 15px;
   width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  &:hover {
-    background: #f7f9fc;
-  }
-}
+  height: 100%;
+  padding: 20px;
+  margin: auto;
 
-.btn-white {
-  background: white;
-  color: $text-dark;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
-  padding: 10px 15px;
-  border-radius: 12px;
-  font-weight: 600;
-  &:hover {
-    background: #f1f2f6;
-  }
-  &.danger {
-    color: $danger;
-  }
-}
-
-.btn-text {
-  background: none;
-  color: $text-light;
-  text-decoration: underline;
-  font-size: 13px;
-  margin-top: 10px;
-}
-
-.input-group {
-  text-align: left;
-  margin-bottom: 20px;
-  label {
-    display: block;
-    font-size: 11px;
-    font-weight: 700;
-    color: #b2bec3;
-    margin-bottom: 8px;
-    letter-spacing: 1px;
-  }
-  input {
+  .login-card {
+    background: white;
     width: 100%;
-    padding: 16px;
-    background: #f7f9fc;
-    border: 1px solid transparent;
-    border-radius: $radius-md;
-    font-size: 16px;
-    transition: 0.3s;
-    outline: none;
-    box-sizing: border-box;
-    &:focus {
-      background: white;
-      border-color: $primary;
-      box-shadow: 0 0 0 4px rgba($primary, 0.1);
-    }
-  }
-}
+    max-width: 380px;
+    border-radius: 24px;
+    padding: 40px 30px;
+    box-shadow: 0 20px 60px -10px rgba(124, 58, 237, 0.15);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
 
-// ==========================================
-// 4. HOME SCREEN
-// ==========================================
-.screen-home {
-  background: $white;
-  padding: 40px 30px;
-  border-radius: $radius-xl;
-  box-shadow: $shadow-soft;
-  text-align: center;
-  max-width: 400px;
-  margin: 0 auto;
-
-  .fingerprint-icon {
-    background: rgba($primary, 0.1);
-    width: 80px;
-    height: 80px;
-    border-radius: 20px;
-    margin: 0 auto 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  h1 {
-    font-size: 28px;
-    font-weight: 700;
-    margin-bottom: 5px;
-    color: $text-dark;
-  }
-  .row-btn {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-  }
-}
-
-// ==========================================
-// 5. MAIN GAME SCREEN
-// ==========================================
-.screen-main {
-  width: 100%;
-
-  // --- A. HEADER ---
-  .main-header {
-    margin-bottom: 30px;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    min-height: 80px;
-    .room-info-group {
-      .label {
-        font-size: 12px;
-        font-weight: 700;
-        color: $text-light;
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
-        margin-bottom: 5px;
-        display: block;
-      }
-      .code-wrapper {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        .room-id {
-          font-size: 48px;
-          font-weight: 600;
-          color: $text-dark;
-          margin: 0;
-          letter-spacing: -1px;
-          line-height: 1;
-        }
-        .btn-copy {
-          background: none;
-          border: none;
-          color: $text-light;
-          cursor: pointer;
-          transition: 0.2s;
-          &:hover {
-            color: $primary;
-            transform: scale(1.1);
-          }
-        }
-      }
-      .sub-status {
-        margin-top: 10px;
-        font-size: 14px;
-        color: $text-gray;
-        font-weight: 500;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        .user-icon {
-          opacity: 0.7;
-        }
-      }
-    }
-
-    // B. Host Pill (Right)
-    .host-pill-card {
-      background: $white;
-      padding: 8px 20px 8px 10px;
-      border-radius: 50px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-
-      .icon-shield {
-        background: #eae6ff;
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 18px;
-      }
-      .info {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        .role-label {
-          font-size: 9px;
-          font-weight: 700;
-          color: $text-light;
-          text-transform: uppercase;
-        }
-        .host-name {
-          font-size: 14px;
-          font-weight: 700;
-          color: $text-dark;
-        }
-      }
-    }
-    // Room Info
-    .room-info {
-      .label {
-        font-size: 11px;
-        font-weight: 600;
-        color: $text-light;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        display: block;
-        margin-bottom: 4px;
-      }
-      .code-row {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        h1 {
-          font-size: 42px;
-          font-weight: 700;
-          margin: 0;
-          color: $text-dark;
-          letter-spacing: -1px;
-        }
-        .btn-icon {
-          background: #f1f2f6;
-          width: 36px;
-          height: 36px;
-          border-radius: 8px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: #b2bec3;
-          transition: $transition;
-          &:hover {
-            color: $primary;
-            background: #dfe6e9;
-          }
-        }
-      }
-    }
-
-    // Host Pill
-    .host-pill {
-      background: white;
-      padding: 6px 12px;
-      border-radius: 20px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      box-shadow: $shadow-card;
-      font-size: 12px;
-      font-weight: 700;
-      color: #d35400;
-      background: #ffeaa7;
-    }
-
-    // Dynamic Headers (Voting/Playing)
-    .vote-header,
-    .playing-header {
+    .top-decoration {
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
-      text-align: center;
-      h2 {
-        font-size: 32px;
-        margin: 10px 0;
-      }
-      p {
-        color: $text-light;
-        margin: 0;
-      }
-      .spy-text {
-        color: $primary;
-        font-style: italic;
-      }
-      .timer-pill {
-        background: white;
-        display: inline-block;
-        padding: 6px 16px;
-        border-radius: 20px;
-        font-weight: 700;
-        color: $primary;
-        box-shadow: $shadow-card;
-        margin-bottom: 10px;
-      }
+      height: 6px;
+      background: linear-gradient(90deg, $violet-primary, $blue);
     }
-    .playing-header {
-      .keyword-review-box {
-        background: white;
-        border: 1px dashed #6c5ce7;
-        padding: 10px 20px;
-        border-radius: 20px;
-        margin-top: 15px;
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        user-select: none;
-        box-shadow: 0 4px 10px rgba(108, 92, 231, 0.1);
-        margin-right: 1rem;
-
-        .icon {
-          font-size: 16px;
-        }
-
-        .content {
-          font-weight: 700;
-          color: $primary;
-          font-size: 14px;
-          min-width: 100px; // Cố định chiều rộng tối thiểu
-        }
-
-        .eye-mini {
-          font-size: 14px;
-          opacity: 0.5;
-        }
-
-        &:hover {
-          transform: translateY(-2px);
-          background: #fdfdff;
-          box-shadow: 0 6px 15px rgba(108, 92, 231, 0.2);
-        }
-
-        // Khi đang xem từ khóa
-        &.active {
-          background: $primary;
-          border-style: solid;
-
-          .content {
-            color: white;
-            font-size: 16px; // Chữ to hơn chút cho rõ
-          }
-          .eye-mini,
-          .icon {
-            filter: grayscale(100%) brightness(200%); // Làm icon trắng đi
-          }
-        }
-      }
-    }
-  }
-
-  // --- B. GRID SYSTEM ---
-  .player-grid {
-    display: grid;
-    // Mặc định vẫn là 3 cột
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px; // Khoảng cách lớn trên PC
-    margin-bottom: 40px;
-
-    // Trên màn hình lớn (Tablet/PC) thì tăng lên 4 cột cho đẹp
-    @media (min-width: 768px) {
-      grid-template-columns: repeat(4, 1fr);
-    }
-
-    // ============================================
-    // [NEW] CẤU HÌNH CHO MOBILE (Màn nhỏ < 600px)
-    // ============================================
-    @media (max-width: 600px) {
-      gap: 8px; // 1. Giảm khoảng cách giữa các thẻ xuống tối thiểu
-      margin-bottom: 20px;
-
-      .player-card {
-        border-radius: 12px; // Bo góc nhỏ lại cho cân đối
-
-        // 2. Thu nhỏ Avatar
-        .avatar-box {
-          width: 36px; // Giảm từ 50px -> 36px
-          height: 36px;
-          border-radius: 12px;
-          margin-bottom: 6px;
-          font-size: 14px; // Chữ trong avatar mặc định nhỏ lại
-
-          .avatar-img {
-            border-radius: 12px;
-          }
-        }
-
-        // 3. Thu nhỏ Tên
-        .p-name {
-          font-size: 11px; // Giảm font chữ tên
-          line-height: 1.2;
-          margin-bottom: 2px;
-
-          // Cắt bớt nếu tên quá dài (Thêm dấu ...)
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          max-width: 100%;
-          padding: 0 4px;
-        }
-
-        // 4. Thu nhỏ Role / Trạng thái
-        .p-role {
-          font-size: 9px;
-          letter-spacing: 0;
-        }
-
-        // 5. Chỉnh lại Badge "BẠN"
-        .me-badge {
-          font-size: 8px;
-          padding: 1px 5px;
-          top: -8px;
-          border-width: 1px;
-        }
-
-        // 6. Chỉnh lại Icon Vote (Dấu tích)
-        .check-circle {
-          width: 18px;
-          height: 18px;
-          font-size: 10px;
-          top: -5px;
-          right: -5px;
-        }
-
-        // 7. Chỉnh lại dấu chấm Vote (Dots)
-        .vote-dots-container {
-          top: 5px;
-          left: 5px;
-          .vote-dot {
-            width: 5px;
-            height: 5px;
-          }
-        }
-      }
-    }
-
-    .card {
-      aspect-ratio: 4/3;
-      border-radius: 20px;
+    .logo-wrapper {
+      margin-bottom: 16px;
       display: flex;
-      flex-direction: column;
-      align-items: center;
       justify-content: center;
-      position: relative;
-      transition: $transition;
-    }
-
-    // Player Card Logic
-    .player-card {
-      background: white;
-      box-shadow: $shadow-card;
-      border: 2px solid transparent;
-      &.is-me:not(.eliminated) {
-        cursor: pointer;
-        .avatar-box {
-          transition: transform 0.2s;
-        }
-        &:hover .avatar-box {
-          transform: scale(1.1);
-          box-shadow: 0 0 0 3px $primary;
-        }
-      }
-      &.cursor-pointer:not(.eliminated) {
-        cursor: pointer;
-        &:hover .avatar-box {
-          transform: scale(1.05); // Hiệu ứng zoom nhẹ khi hover
-        }
-      }
-      .me-badge {
-        position: absolute;
-        top: -6px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: $primary; // Màu tím chủ đạo
-        color: white;
-        font-size: 9px;
-        font-weight: 800;
-        padding: 2px 8px;
-        border-radius: 10px;
-        z-index: 10;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        border: 2px solid white; // Viền trắng cho nổi
-      }
-      &.self-voting {
-        background-color: #f1f2f6;
-        border: 2px dashed #dcdde1; // Viền nét đứt
-        opacity: 0.8;
-        transform: scale(0.95); // Thu nhỏ lại xíu để nhường chỗ cho người khác
-        pointer-events: none; // Chặn click luôn cho chắc
-
-        .avatar-box {
-          filter: grayscale(100%); // Làm đen trắng avatar
-          opacity: 0.7;
-        }
-
-        .p-name {
-          color: #b2bec3; // Làm mờ tên
-        }
-      }
-      .avatar-box {
-        width: 50px;
-        height: 50px;
+      .logo-icon {
+        width: 64px;
+        height: 64px;
+        background: #f3e8ff;
         border-radius: 16px;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-bottom: 12px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        position: relative;
-        overflow: hidden; // Để ảnh không tràn ra ngoài bo góc
-
-        &.has-image {
-          background: transparent; // Xóa màu nền nếu có ảnh
-          border: 2px solid #f1f2f6; // Viền nhẹ cho ảnh
-        }
-
-        .avatar-img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover; // Đảm bảo ảnh lấp đầy khung
-        }
-
-        .edit-badge {
-          position: absolute;
-          bottom: 0;
-          right: 0;
-          background: white;
-          font-size: 8px;
-          width: 14px;
-          height: 14px;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        color: $violet-primary;
+        span {
+          font-size: 32px;
         }
       }
-      .p-name {
+    }
+    .app-title {
+      font-size: 28px;
+      font-weight: 800;
+      color: $slate-800;
+      margin: 0 0 8px 0;
+      .highlight {
+        color: $violet-primary;
+      }
+    }
+    .app-subtitle {
+      font-size: 13px;
+      color: $slate-400;
+      margin: 0 0 32px 0;
+    }
+
+    .form-group {
+      text-align: left;
+      margin-bottom: 20px;
+      label {
+        font-size: 11px;
         font-weight: 700;
-        font-size: 15px;
-        color: $text-dark;
-        margin-bottom: 4px;
-        text-align: center;
-      }
-      &.offline {
-        opacity: 0.7; // Làm mờ cả thẻ
-        border-color: #bdc3c7;
-        background-color: #f5f6fa;
-
-        .avatar-box {
-          filter: grayscale(100%); // Avatar đen trắng
-          border-color: #b2bec3;
-        }
-
-        .p-name {
-          color: #7f8c8d;
-        }
-      }
-      .p-role {
-        font-size: 15px;
-        font-weight: 700;
+        color: $slate-400;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
-        .txt-host {
-          color: $primary;
-        }
-        .txt-ready {
-          color: $success;
-        }
-        .txt-dead {
-          color: $danger;
-          text-decoration: none;
-        }
-        .txt-offline {
-          color: #7f8c8d; // Màu xám đậm
-          font-weight: 800;
-          font-size: 10px;
-          letter-spacing: 0.5px;
-        }
+        margin-bottom: 8px;
+        display: block;
       }
-
-      // 1. Selectable (Voting Mode)
-      &.selectable {
-        cursor: pointer;
-        &:hover {
-          transform: translateY(-5px);
-          box-shadow: 0 10px 30px rgba(108, 92, 231, 0.2);
-          border-color: #dfe6e9;
-        }
-      }
-
-      // 2. Selected (Active Vote)
-      &.selected {
-        border-color: $primary;
-        background: #fdfdff;
-        .check-circle {
+      .input-wrapper {
+        position: relative;
+        .input-icon {
           position: absolute;
-          top: -8px;
-          right: -8px;
-          width: 24px;
-          height: 24px;
-          background: $primary;
-          color: white;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 14px;
-          font-weight: bold;
-          animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+          top: 50%;
+          left: 16px;
+          transform: translateY(-50%);
+          color: $slate-400;
+          font-size: 20px;
         }
-      }
-
-      // 3. Eliminated (Dead State)
-      &.eliminated {
-        opacity: 0.6;
-        filter: grayscale(100%);
-        pointer-events: none;
-        background: #f1f2f6;
-        .p-name {
-          text-decoration: line-through;
-        }
-      }
-
-      // 4. Vote Dots (Blue Dots - NEW!)
-      .vote-dots-container {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 4px;
-        max-width: 50px;
-
-        .vote-dot {
-          width: 8px;
-          height: 8px;
-          border-radius: 50%;
-          background-color: $blue;
-          box-shadow: 0 0 4px rgba($blue, 0.5);
-          animation: popIn 0.2s ease-out;
-        }
-      }
-    }
-
-    // Empty Slot
-    .empty-slot {
-      background: transparent;
-      border: 2px dashed #dfe6e9;
-      box-shadow: none;
-      .txt-empty {
-        color: #b2bec3;
-        font-size: 13px;
-        font-weight: 500;
-      }
-    }
-  }
-
-  .footer-actions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 10px;
-
-    // Left Group: Settings & Exit
-    .left-group {
-      display: flex;
-      gap: 15px;
-      button {
-        background: $white;
-        border: 1px solid transparent;
-        padding: 12px 20px;
-        border-radius: $radius-btn;
-        font-weight: 600;
-        color: $text-dark;
-        font-size: 14px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
-        transition: 0.2s;
-
-        &:hover {
-          background: #fff;
-          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-          transform: translateY(-1px);
-        }
-        &.btn-exit {
-          color: $danger;
-          &:hover {
-            background: #fff0f0;
+        input {
+          width: 100%;
+          padding: 14px 14px 14px 48px;
+          background: $bg-light;
+          border: 1px solid #e2e8f0;
+          border-radius: 16px;
+          font-size: 15px;
+          font-weight: 600;
+          color: $slate-800;
+          outline: none;
+          transition: 0.2s;
+          &::placeholder {
+            color: #cbd5e1;
+          }
+          &:focus {
+            background: white;
+            border-color: $violet-primary;
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+          }
+          &.input-error {
+            border-color: $danger;
+            background: #fef2f2;
           }
         }
-        span {
-          font-size: 16px;
-        }
       }
     }
 
-    // Right Group: Hint & Start Button
-    .right-group {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-
-      .start-hint {
-        text-align: right;
-        display: flex;
-        flex-direction: column;
-        strong {
-          font-size: 13px;
-          color: $text-dark;
-        }
-        span {
-          font-size: 11px;
-          color: $text-light;
-        }
-      }
-
-      .btn-start {
-        background: $primary-gradient;
-        color: white;
-        border: none;
-        padding: 14px 32px;
-        border-radius: $radius-btn;
-        font-weight: 700;
-        font-size: 15px;
-        letter-spacing: 0.5px;
-        box-shadow: 0 5px 15px rgba(108, 92, 231, 0.4);
-        transition: 0.2s;
-
-        &:hover:not(:disabled) {
-          transform: translateY(-2px);
-          box-shadow: 0 8px 20px rgba(108, 92, 231, 0.5);
-        }
-        &.disabled {
-          background: #b2bec3;
-          box-shadow: none;
-          cursor: not-allowed;
-        }
-      }
-    }
-
-    // Căn giữa cho màn hình Vote/Playing
-    .center-group {
-      width: 100%;
-      display: flex;
-      justify-content: center;
-    }
-    .vote-btn,
-    .confirm-btn {
-      padding: 16px 40px;
-      font-size: 16px;
-      border-radius: 50px;
-      width: auto;
-      min-width: 200px;
-    }
-  }
-  // --- C. FOOTER ACTIONS ---
-  .footer-actions {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-top: 10px;
-
-    .left-group,
-    .right-group {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
-    .center-group {
-      width: 100%;
+    .action-buttons {
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
-
-    .vote-btn,
-    .confirm-btn {
-      padding: 16px 40px;
-      font-size: 16px;
-      border-radius: 50px;
-      width: auto;
-      min-width: 200px;
+      gap: 12px;
+      margin-bottom: 30px;
+      button {
+        width: 100%;
+        padding: 16px;
+        border-radius: 16px;
+        border: none;
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: transform 0.1s;
+        &:active {
+          transform: scale(0.98);
+        }
+      }
+      .btn-modern-primary {
+        background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+        color: white;
+        box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+      }
+      .btn-modern-dark {
+        background: $slate-800;
+        color: white;
+        box-shadow: 0 4px 15px rgba(30, 41, 59, 0.3);
+      }
+      .btn-text-only {
+        background: transparent;
+        color: $slate-400;
+        &:hover {
+          color: $slate-800;
+        }
+      }
     }
   }
 }
 
-// ==========================================
-// 6. MODALS & OVERLAYS
-// ==========================================
+// ============================================
+// 2. SCREEN: LOBBY & GAME
+// ============================================
+.screen-lobby {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
 
-// Common Backdrop
+  // A. HEADER
+  .lobby-nav {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid #e2e8f0;
+    z-index: 10;
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      .logo-box {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, $violet-primary, #9333ea);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+      }
+      .logo-text {
+        font-size: 18px;
+        font-weight: 800;
+        color: $slate-800;
+        .highlight {
+          color: $violet-primary;
+        }
+      }
+    }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      .btn-icon-circle {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: #f1f5f9;
+        border: none;
+        color: #64748b;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        &:hover {
+          background: #e2e8f0;
+        }
+      }
+      .user-pill {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: #f1f5f9;
+        padding: 4px 12px 4px 4px;
+        border-radius: 50px;
+        border: 1px solid #e2e8f0;
+        .avatar-circle {
+          width: 28px;
+          height: 28px;
+          border-radius: 50%;
+          background: linear-gradient(to top right, #fb923c, #fde047);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          font-weight: 700;
+          font-size: 11px;
+        }
+        .timer-badge {
+          background: #fef3c7;
+          color: #d97706;
+          font-size: 12px;
+          font-weight: 800;
+          padding: 2px 8px;
+          border-radius: 12px;
+        }
+      }
+    }
+  }
+
+  // B. SCROLL CONTENT
+  .lobby-scroll-container {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-bottom: 100px;
+    display: flex;
+    flex-direction: column;
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 10px;
+    }
+  }
+
+  .lobby-main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 24px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &.centered-vertical {
+      flex-grow: 1;
+      justify-content: center;
+      min-height: auto;
+      padding-bottom: 0;
+    }
+
+    // Room Code Section
+    .room-code-section {
+      width: 100%;
+      margin-bottom: 24px;
+      text-align: center;
+      .section-label {
+        font-size: 11px;
+        font-weight: 700;
+        color: $slate-400;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        display: block;
+        margin-bottom: 8px;
+      }
+      .room-card {
+        background: white;
+        border-radius: 24px;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+        border: 1px solid #f1f5f9;
+        .room-content {
+          padding: 20px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 20px;
+          .room-number {
+            font-size: 48px;
+            font-weight: 900;
+            color: $slate-800;
+            margin: 0;
+            line-height: 1;
+            letter-spacing: -2px;
+          }
+          .room-actions {
+            display: flex;
+            gap: 8px;
+            .btn-icon-soft {
+              width: 44px;
+              height: 44px;
+              border-radius: 12px;
+              background: #f8fafc;
+              color: #475569;
+              border: 1px solid #e2e8f0;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              cursor: pointer;
+              &.copied {
+                background-color: #dcfce7 !important;
+                color: $success !important;
+                border-color: $success !important;
+                transform: scale(1.1);
+              }
+              &:hover {
+                background: $violet-primary;
+                color: white;
+                border-color: $violet-primary;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // Discussion Header
+    .playing-info-section {
+      text-align: center;
+      margin-bottom: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      .header-icon {
+        color: #334155;
+        margin-bottom: 8px;
+        span {
+          font-size: 32px;
+        }
+      }
+      h2 {
+        font-size: 24px;
+        font-weight: 800;
+        color: $slate-800;
+        margin: 0 0 4px 0;
+      }
+      .sub-text {
+        font-size: 13px;
+        color: $slate-400;
+        margin: 0 0 16px 0;
+      }
+      .action-pills {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+        .pill {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          padding: 8px 16px;
+          border-radius: 50px;
+          font-size: 13px;
+          font-weight: 700;
+          cursor: pointer;
+          user-select: none;
+          transition: 0.2s;
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+          &.dashed {
+            background: white;
+            border: 1px dashed #a855f7;
+            color: $violet-primary;
+            &:hover {
+              background: #faf5ff;
+              transform: translateY(-2px);
+            }
+            &.active {
+              background: #f3e8ff;
+              border-style: solid;
+            }
+            .eye-icon {
+              opacity: 0.5;
+              margin-left: 4px;
+            }
+          }
+          &.solid-orange {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            border: none;
+            color: white;
+            box-shadow: 0 4px 10px rgba(234, 88, 12, 0.3);
+            &:hover {
+              transform: translateY(-2px);
+              box-shadow: 0 6px 15px rgba(234, 88, 12, 0.4);
+            }
+          }
+        }
+      }
+    }
+
+    // Vote Timer Card
+    .vote-timer-card {
+      background: white;
+      width: 100%;
+      max-width: 400px;
+      margin: 0 auto 24px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.08);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid #f1f5f9;
+      .progress-line {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 6px;
+        background: linear-gradient(90deg, #ff8a65, #ff7043);
+        transition: width 1s linear;
+        z-index: 1;
+      }
+      .card-body {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        .time-display {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          .icon-circle {
+            width: 32px;
+            height: 32px;
+            background: $violet-primary;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            span {
+              font-size: 20px;
+            }
+          }
+          .time-text {
+            font-size: 36px;
+            font-weight: 800;
+            color: $slate-800;
+            letter-spacing: -1px;
+            font-variant-numeric: tabular-nums;
+          }
+        }
+        .hint-text {
+          font-size: 14px;
+          color: #475569;
+          margin: 0;
+          font-weight: 600;
+          .highlight {
+            color: $violet-primary;
+            font-weight: 800;
+          }
+        }
+      }
+    }
+
+    // Secret Reveal Card
+    .secret-card-container {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      margin-bottom: 40px;
+      padding-bottom: 0;
+      .secret-card {
+        background: white;
+        width: 100%;
+        max-width: 400px;
+        border-radius: 24px;
+        box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+        padding: 30px 24px;
+        text-align: center;
+        border: 1px solid #f1f5f9;
+        .top-bar {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 6px;
+          background: $violet-primary;
+        }
+        .card-title {
+          font-size: 16px;
+          font-weight: 700;
+          color: #334155;
+          margin: 10px 0 24px 0;
+        }
+        .reveal-box {
+          background: #f8fafc;
+          border: 2px dashed #cbd5e1;
+          border-radius: 20px;
+          height: 160px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: 0.2s;
+          user-select: none;
+          margin-bottom: 20px;
+          .icon-circle {
+            width: 48px;
+            height: 48px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 12px;
+            color: $violet-primary;
+            span {
+              font-size: 24px;
+            }
+          }
+          .action-text {
+            font-size: 14px;
+            font-weight: 700;
+            color: #64748b;
+          }
+          &:hover {
+            background: #f1f5f9;
+            border-color: $slate-400;
+          }
+          &.revealed {
+            background: #f5f3ff;
+            border: 2px solid $violet-primary;
+            .the-word {
+              font-size: 28px;
+              font-weight: 900;
+              color: $violet-primary;
+              margin-bottom: 4px;
+              text-transform: uppercase;
+              animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            }
+            .sub-text {
+              font-size: 11px;
+              color: $slate-400;
+            }
+          }
+        }
+        .security-note {
+          font-size: 12px;
+          color: $slate-400;
+          margin: 0;
+        }
+      }
+    }
+
+    // Grid System
+    .grid-section {
+      width: 100%;
+      .grid-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+        h3 {
+          font-size: 16px;
+          font-weight: 700;
+          color: #334155;
+          margin: 0;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          .badge {
+            background: rgba($violet-primary, 0.1);
+            color: $violet-primary;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 6px;
+          }
+        }
+        .sub-text {
+          font-size: 11px;
+          font-weight: 700;
+          color: $slate-400;
+          background: #f1f5f9;
+          padding: 4px 8px;
+          border-radius: 6px;
+        }
+      }
+      .lobby-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+      }
+    }
+
+    // Player Card
+    .lobby-card {
+      height: 140px;
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      position: relative;
+      transition: transform 0.2s;
+      &.occupied {
+        background: white;
+        border: 2px solid $violet-primary;
+        box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.1);
+        cursor: pointer;
+        &:hover {
+          transform: translateY(-2px);
+        }
+        .host-badge {
+          position: absolute;
+          top: 8px;
+          right: 8px;
+          color: $warning;
+          span {
+            font-size: 18px;
+          }
+        }
+        .vote-check-overlay {
+          position: absolute;
+          top: -8px;
+          right: -8px;
+          color: $success;
+          background: white;
+          border-radius: 50%;
+          span {
+            font-size: 24px;
+          }
+        }
+        .me-tag {
+          position: absolute;
+          top: -6px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: $violet-primary;
+          color: white;
+          font-size: 8px;
+          font-weight: 800;
+          padding: 2px 6px;
+          border-radius: 8px;
+          border: 2px solid white;
+          z-index: 2;
+        }
+        .vote-dots-container {
+          position: absolute;
+          top: 8px;
+          left: 8px;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 3px;
+          max-width: 60px;
+          z-index: 5;
+          .vote-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: $blue;
+            box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+            border: 1px solid #ffffff;
+            animation: popIn 0.3s;
+          }
+        }
+        .avatar-wrapper {
+          position: relative;
+          width: 56px;
+          height: 56px;
+          .avatar-display {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: #e0e7ff;
+            color: $violet-primary;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 20px;
+            img {
+              width: 100%;
+              height: 100%;
+              border-radius: 50%;
+              object-fit: cover;
+            }
+          }
+          .status-dot {
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid white;
+            &.online {
+              background: $success;
+            }
+            &.offline {
+              background: $danger;
+            }
+          }
+        }
+        .player-info {
+          text-align: center;
+          width: 100%;
+          .p-name {
+            font-weight: 700;
+            font-size: 14px;
+            color: $slate-800;
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 0 4px;
+          }
+          .status-pill {
+            font-size: 9px;
+            font-weight: 800;
+            color: $success;
+            background: rgba($success, 0.1);
+            padding: 3px 8px;
+            border-radius: 50px;
+            display: inline-block;
+            margin-top: 2px;
+            &.dead {
+              color: $danger;
+              background: #fee2e2;
+            }
+            &.offline {
+              color: $danger !important;
+              background: #fee2e2 !important;
+              border: 1px solid #fecaca;
+            }
+          }
+        }
+        &.selectable:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        &.selected {
+          border-color: $success !important;
+          background: #ecfdf5;
+        }
+        &.eliminated {
+          opacity: 0.6;
+          filter: grayscale(100%);
+          pointer-events: none;
+          .p-name {
+            text-decoration: line-through;
+          }
+        }
+      }
+      &.empty {
+        background: rgba(248, 250, 252, 0.5);
+        border: 2px dashed #e2e8f0;
+        .avatar-placeholder {
+          width: 48px;
+          height: 48px;
+          background: #f1f5f9;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #cbd5e1;
+        }
+        .empty-text {
+          font-size: 10px;
+          font-weight: 700;
+          color: #cbd5e1;
+          text-transform: uppercase;
+          margin-top: 4px;
+        }
+      }
+    }
+  }
+
+  // C. FOOTER (Fixed)
+  .lobby-footer {
+    position: fixed;
+    bottom: 0;
+
+    // [FIX] Thay width: 100% bằng left:0, right:0 để tránh tràn khi có padding
+    left: 0;
+    right: 0;
+    width: auto;
+
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid #e2e8f0;
+    padding: 20px 0;
+    z-index: 50;
+
+    .footer-content {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .footer-left {
+        display: flex;
+        gap: 12px;
+        .btn-round-box {
+          width: 50px;
+          height: 50px;
+          border-radius: 16px;
+          background: #f1f5f9;
+          color: #64748b;
+          border: 1px solid #e2e8f0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: 0.2s;
+          &:hover {
+            background: #e2e8f0;
+          }
+          &.exit {
+            background: #fff1f2;
+            color: #f43f5e;
+            border-color: #fecdd3;
+            &:hover {
+              background: #ffe4e6;
+            }
+          }
+        }
+      }
+      .footer-right {
+        flex-grow: 1;
+        display: flex;
+        justify-content: flex-end;
+        .btn-start-pill {
+          background: $success;
+          color: white;
+          padding: 0 32px;
+          height: 50px;
+          border-radius: 16px;
+          border: none;
+          font-size: 16px;
+          font-weight: 800;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          box-shadow: 0 4px 10px rgba($success, 0.4);
+          cursor: pointer;
+          &.waiting {
+            background: #cbd5e1;
+            cursor: not-allowed;
+            box-shadow: none;
+          }
+          &.purple-gradient {
+            background: linear-gradient(135deg, #a855f7, #7c3aed);
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
+            border-bottom: 4px solid #6d28d9;
+            &:active {
+              transform: translateY(2px);
+              border-bottom-width: 2px;
+            }
+            .icon-bolt {
+              animation: pulse 1s infinite;
+            }
+          }
+          &.green-gradient {
+            background: linear-gradient(135deg, #34d399, #10b981);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+            border-bottom: 4px solid #059669;
+            &:disabled {
+              background: #e2e8f0;
+              color: #94a3b8;
+              border-color: #cbd5e1;
+              box-shadow: none;
+              cursor: not-allowed;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// ============================================
+// 3. COMMON MODALS STYLES
+// ============================================
 .modal-backdrop,
 .role-overlay {
   position: fixed;
@@ -928,7 +1033,7 @@ button {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(244, 246, 249, 0.95);
+  background: rgba(30, 41, 59, 0.7);
   z-index: 1000;
   display: flex;
   flex-direction: column;
@@ -936,159 +1041,120 @@ button {
   justify-content: center;
 }
 
-// A. Role Reveal Overlay
-.role-overlay {
-  .role-card {
+.modal-content {
+  background: white;
+  width: 90%;
+  max-width: 320px;
+  padding: 30px;
+  border-radius: 24px;
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+  animation: zoomIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  h3 {
+    margin-bottom: 15px;
+    font-weight: 800;
+    color: $slate-800;
+  }
+  .qr-container {
     background: white;
-    padding: 50px;
-    border-radius: 30px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    width: 90%;
-    max-width: 400px;
-    margin-bottom: 30px;
-
-    .role-header {
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      color: #b2bec3;
-      margin-bottom: 10px;
-    }
-    .role-name {
-      font-size: 36px;
-      color: $blue;
-      margin: 0 0 30px;
-      &.spy {
-        color: $danger;
-      }
-    }
-    .role-icon {
-      font-size: 60px;
-      margin-bottom: 30px;
-    }
-    .secret-word-row {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 15px;
-      background: #f8f9fd;
-      padding: 15px 20px;
-      border-radius: 16px;
-      margin-bottom: 20px;
-      border: 2px solid #dfe6e9;
-
-      .secret-word {
-        font-size: 32px;
-        font-weight: 700;
-        color: $text-dark;
-        min-width: 150px; // Để không bị nhảy kích thước khi ẩn/hiện
-
-        &.hidden {
-          color: #b2bec3;
-          letter-spacing: 5px;
-          font-family: monospace; // Để dấu * đẹp hơn
-        }
-      }
-
-      .btn-eye {
-        background: white;
-        border: 1px solid #dfe6e9;
-        width: 45px;
-        height: 45px;
-        border-radius: 50%;
-        font-size: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: 0.2s;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-
-        &:hover {
-          background: $primary;
-          border-color: $primary;
-          transform: scale(1.1);
-        }
-      }
-    }
-    .role-sub {
-      font-size: 13px;
-      color: $text-light;
-      font-style: italic;
+    padding: 10px;
+    border-radius: 16px;
+    border: 2px dashed #e2e8f0;
+    margin-bottom: 20px;
+    img {
+      width: 100%;
+      display: block;
+      border-radius: 8px;
     }
   }
-  .waiting-text {
-    margin-top: 20px;
-    font-size: 12px;
-    font-weight: 700;
-    color: #cbd5e0;
-    letter-spacing: 1px;
+  .room-hint {
+    margin-bottom: 20px;
+    color: $slate-400;
   }
-}
-
-.btn-spy-guess {
-  margin-top: 10px;
-  background: linear-gradient(135deg, #f39c12 0%, #d35400 100%);
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 20px;
-  font-weight: 700;
-  font-size: 13px;
-  box-shadow: 0 4px 15px rgba(230, 126, 34, 0.4);
-  cursor: pointer;
-  transition: 0.2s;
-  height: 43px;
-
-  &:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 20px rgba(230, 126, 34, 0.6);
-  }
-}
-.spy-modal {
-  .spy-input {
-    // width: 100%;
-    padding: 15px;
-    border: 2px solid #dfe6e9;
+  button {
+    width: 100%;
+    padding: 12px;
     border-radius: 12px;
-    font-size: 18px;
-    margin: 20px 0;
-    text-align: center;
-    outline: none;
-    transition: 0.3s;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+  }
+  .btn-primary {
+    background: $violet-primary;
+    color: white;
+  }
+  .btn-white {
+    background: white;
+    color: $text-dark;
+    border: 1px solid #e2e8f0;
+  }
+}
 
-    &:focus {
-      border-color: $orange;
-      box-shadow: 0 0 0 4px rgba(230, 126, 34, 0.1);
+// A. Avatar Modal
+.avatar-modal {
+  max-width: 400px !important;
+  padding: 25px !important;
+  min-height: 300px;
+  h3 {
+    color: $violet-primary;
+    text-transform: uppercase;
+  }
+  .avatar-list-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+    gap: 12px;
+    max-height: 320px;
+    overflow-y: auto;
+    padding: 5px;
+    .avatar-option.small {
+      aspect-ratio: 1/1;
+      border-radius: 12px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      overflow: hidden;
+      background: #f8f9fd;
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      &:hover {
+        border-color: $violet-primary;
+        box-shadow: 0 4px 10px rgba(108, 92, 231, 0.2);
+      }
     }
   }
-
-  .modal-actions {
-    display: flex;
-    gap: 10px;
-    button {
-      flex: 1;
+  .preview-mode {
+    .preview-box {
+      width: 200px;
+      height: 200px;
+      margin: 20px auto;
+      border-radius: 24px;
+      overflow: hidden;
+      border: 4px solid white;
+      background: #f8f9fd;
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+    .action-row {
+      display: flex;
+      gap: 10px;
+      button {
+        flex: 1;
+      }
     }
   }
 }
-// B. Result / Elimination Modal (NEW!)
-.result-modal {
-  @extend .modal-content;
-  max-width: 350px !important;
 
+// B. Result Modal
+.result-modal {
   .skull-icon {
     font-size: 60px;
     margin-bottom: 15px;
-    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  }
-  h3 {
-    font-size: 14px;
-    font-weight: 700;
-    color: $text-light;
-    letter-spacing: 1px;
-    margin-bottom: 5px;
-    text-transform: uppercase;
+    animation: popIn 0.5s;
   }
   .eliminated-name {
     font-size: 32px;
@@ -1096,49 +1162,38 @@ button {
     color: $danger;
     margin: 0 0 25px;
   }
-
   .identity-box {
     background: #f1f2f6;
     padding: 15px;
     border-radius: 12px;
     font-size: 16px;
     color: $text-dark;
-    strong {
-      color: $blue;
-      &.spy {
-        color: $danger;
-      }
+    strong.spy {
+      color: $danger;
     }
   }
-
-  .reason-text {
-    color: #636e72;
-    font-style: italic;
-    margin-bottom: 15px;
+  .reason-box {
+    margin-bottom: 20px;
     font-size: 14px;
+    color: $text-light;
   }
-
   .spy-reveal-section {
-    background: #fff0f1; // Nền đỏ nhạt
+    background: #fff0f1;
     border: 1px dashed #ff4757;
     padding: 15px;
     border-radius: 12px;
     margin-bottom: 20px;
-
     .reveal-label {
       font-size: 11px;
       font-weight: 700;
       color: #ff4757;
       margin-bottom: 10px;
-      text-transform: uppercase;
     }
-
     .spy-list {
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
       gap: 10px;
-
       .spy-card-mini {
         display: flex;
         align-items: center;
@@ -1147,7 +1202,6 @@ button {
         padding: 6px 12px;
         border-radius: 20px;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-
         .avatar-mini {
           width: 24px;
           height: 24px;
@@ -1159,95 +1213,38 @@ button {
           font-weight: bold;
           color: white;
         }
-
         .spy-name {
           font-size: 13px;
           font-weight: 700;
-          color: #2d3436;
+          color: $text-dark;
         }
       }
     }
   }
 }
 
-// C. Generic Modal Content (Used by QR & Result)
-.modal-content {
-  background: white;
-  width: 100%;
-  max-width: 320px;
-  padding: 30px;
-  border-radius: 24px;
-  text-align: center;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
-  animation: zoomIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-
-  .qr-container {
-    background: white;
-    padding: 10px;
-    border-radius: 16px;
-    border: 2px dashed #dfe6e9;
-    margin-bottom: 20px;
-    img {
-      width: 100%;
-      display: block;
-      border-radius: 8px;
-    }
-  }
-}
-// ==========================================
-// STYLE CHO MODAL CÀI ĐẶT (SETTINGS)
-// ==========================================
+// C. Settings Modal
 .settings-modal {
-  // Override lại text-align center mặc định của modal gốc
-  text-align: left;
   width: 90%;
   max-width: 380px !important;
-
+  text-align: left;
   h3 {
     text-align: center;
-    margin-bottom: 25px;
-    color: $primary;
-    font-size: 18px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    color: $violet-primary;
+    margin-bottom: 20px;
   }
-
-  // --- 1. SECTIONS & GROUPS ---
   .settings-form {
     display: flex;
     flex-direction: column;
     gap: 20px;
   }
-
-  .config-section,
-  .form-group {
-    label {
-      display: block;
-      font-size: 13px;
-      font-weight: 700;
-      color: $text-dark;
-      margin-bottom: 8px;
-    }
-
-    .hint-text {
-      font-size: 11px;
-      color: #b2bec3;
-      margin-top: 6px;
-      font-style: italic;
-    }
-
-    // Dùng cho dòng "Cho phép đổi vote" nằm ngang
-    &.row-between {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      label {
-        margin-bottom: 0;
-      }
-    }
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: $text-dark;
+    margin-bottom: 8px;
   }
-
-  // --- 2. TIME OPTIONS (Nút chọn giờ 15s 30s 60s) ---
   .time-options {
     display: flex;
     gap: 8px;
@@ -1255,9 +1252,8 @@ button {
     padding: 5px;
     border-radius: 12px;
     border: 1px solid #dfe6e9;
-
     .btn-time {
-      flex: 1; // Chia đều chiều rộng
+      flex: 1;
       padding: 10px 0;
       border: none;
       background: transparent;
@@ -1266,49 +1262,25 @@ button {
       font-weight: 600;
       color: #b2bec3;
       cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
-
-      &:hover {
-        color: $primary;
-        background: rgba(108, 92, 231, 0.05);
-      }
-
-      // Trạng thái được chọn
       &.active {
-        background: $white;
-        color: $primary;
+        background: white;
+        color: $violet-primary;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        border: 1px solid #e3e6f0;
       }
     }
   }
-
-  // --- 3. CUSTOM SELECT BOX (Số lượng Spy) ---
   .select-wrapper {
     position: relative;
-
     select {
       width: 100%;
       padding: 12px 15px;
       border-radius: 12px;
       border: 2px solid #dfe6e9;
       background: white;
-      font-family: inherit;
-      font-size: 14px;
       font-weight: 600;
-      color: $text-dark;
       outline: none;
-      appearance: none; // Ẩn mũi tên mặc định của trình duyệt
-      cursor: pointer;
-      transition: 0.2s;
-
-      &:focus {
-        border-color: $primary;
-        box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.1);
-      }
+      appearance: none;
     }
-
-    // Tạo mũi tên giả bằng CSS
     &::after {
       content: "▼";
       position: absolute;
@@ -1320,19 +1292,15 @@ button {
       pointer-events: none;
     }
   }
-
-  // --- 4. TOGGLE SWITCH (Nút gạt Bật/Tắt) ---
   .toggle-switch {
     position: relative;
     width: 50px;
     height: 26px;
-
     input {
       opacity: 0;
       width: 0;
       height: 0;
     }
-
     .slider {
       position: absolute;
       cursor: pointer;
@@ -1343,7 +1311,6 @@ button {
       background-color: #dfe6e9;
       transition: 0.4s;
       border-radius: 34px;
-
       &::before {
         position: absolute;
         content: "";
@@ -1354,529 +1321,93 @@ button {
         background-color: white;
         transition: 0.4s;
         border-radius: 50%;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
       }
     }
-
-    // Khi input được checked (Bật)
     input:checked + .slider {
-      background-color: $success; // Màu xanh lá
+      background-color: $success;
     }
-
     input:checked + .slider::before {
-      transform: translateX(24px); // Di chuyển nút tròn sang phải
+      transform: translateX(24px);
     }
   }
-
-  // --- 5. ACTION BUTTONS (Hủy / Lưu) ---
   .modal-actions {
     display: flex;
     gap: 12px;
-    margin-top: 30px;
-
+    margin-top: 20px;
     button {
       flex: 1;
       padding: 12px;
-      font-size: 14px;
     }
   }
 }
 
-// STYLE CHO MODAL AVATAR (UPDATED)
-.avatar-modal {
-  width: 90%;
-  max-width: 400px !important;
-  padding: 25px !important;
-  min-height: 300px; // Giữ chiều cao ổn định
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-
-  h3 {
-    margin: 0 0 5px 0;
-    font-size: 16px;
-    color: $primary;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-
-  .hint {
-    font-size: 12px;
-    color: #b2bec3;
-    margin-bottom: 20px;
-  }
-
-  // --- 1. LIST MODE STYLE ---
-  .avatar-list-grid {
-    display: grid;
-    // Chia cột tự động, mỗi hình tối thiểu 60px (nhỏ gọn)
-    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-    gap: 12px;
-    max-height: 320px;
-    overflow-y: auto;
-    padding: 5px;
-
-    &::-webkit-scrollbar {
-      width: 4px;
-    }
-    &::-webkit-scrollbar-thumb {
-      background: #dfe6e9;
-      border-radius: 4px;
-    }
-
-    .avatar-option.small {
-      aspect-ratio: 1/1;
-      border-radius: 12px;
-      cursor: pointer;
-      border: 2px solid transparent;
-      overflow: hidden;
-      background: #f8f9fd;
-      transition: 0.2s;
-
-      img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.2s;
-      }
-
-      &:hover {
-        border-color: $primary;
-        box-shadow: 0 4px 10px rgba(108, 92, 231, 0.2);
-        img {
-          transform: scale(1.1);
-        }
-      }
-    }
-  }
-
-  // --- 2. PREVIEW MODE STYLE ---
-  .preview-mode {
+// D. Spy Guess Modal
+.spy-modal {
+  .spy-input {
+    padding: 15px;
+    border: 2px solid #dfe6e9;
+    border-radius: 12px;
+    font-size: 18px;
+    margin: 20px 0;
     text-align: center;
-
-    .preview-box {
-      width: 300px;
-      height: 300px;
-      margin: 20px auto 30px;
-      border-radius: 24px;
-      overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-      border: 4px solid white;
-      background: #f8f9fd;
-
-      img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
-    }
-
-    .action-row {
-      display: flex;
-      gap: 10px;
-
-      button {
-        flex: 1;
-        font-size: 13px;
-        padding: 12px;
-      }
+    width: 100%;
+    box-sizing: border-box;
+    outline: none;
+    &:focus {
+      border-color: $warning;
     }
   }
-}
-.avatar-view-modal {
-  max-width: 350px !important;
-  text-align: center;
-
-  .user-name-title {
-    font-size: 20px;
-    font-weight: 700;
-    color: $text-dark;
-    margin-bottom: 20px;
-  }
-
-  .preview-box.large {
-    width: 200px;
-    height: 200px;
-    margin: 0 auto;
-    border-radius: 30px; // Bo góc tròn hơn chút cho đẹp
-    overflow: hidden;
-    box-shadow: 0 15px 40px rgba(108, 92, 231, 0.2);
-    border: 4px solid white;
-    background: #f8f9fd;
+  .modal-actions {
     display: flex;
-    align-items: center;
-    justify-content: center;
-
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    // Style cho trường hợp Avatar chữ cái
-    .fallback-avatar {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 60px;
-      font-weight: 800;
-      color: white;
-    }
-  }
-}
-input.input-error {
-  border-color: #ff4757 !important;
-  background-color: #fff0f1 !important; // Nền đỏ rất nhạt
-  color: #ff4757;
-  box-shadow: 0 0 0 4px rgba(255, 71, 87, 0.2) !important;
-  animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
-
-  &::placeholder {
-    color: rgba(255, 71, 87, 0.6);
+    gap: 10px;
   }
 }
 
-// Hiệu ứng rung lắc
-@keyframes shake {
-  10%,
-  90% {
-    transform: translate3d(-1px, 0, 0);
-  }
-  20%,
-  80% {
-    transform: translate3d(2px, 0, 0);
-  }
-  30%,
-  50%,
-  70% {
-    transform: translate3d(-4px, 0, 0);
-  }
-  40%,
-  60% {
-    transform: translate3d(4px, 0, 0);
-  }
-}
-
+// E. Error Modal
 .error-modal {
-  max-width: 320px !important;
-  text-align: center;
-
   .icon-warning {
     font-size: 50px;
     margin-bottom: 15px;
-    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
-
   h3 {
-    color: #ff4757; // Màu đỏ cảnh báo
-    margin-bottom: 10px;
-    font-weight: 800;
-    font-size: 20px;
+    color: $danger;
   }
-
   .error-msg {
-    color: #636e72;
-    font-size: 15px;
-    line-height: 1.5;
+    color: $text-light;
     margin-bottom: 20px;
   }
-
   button {
-    background: #ff4757;
-    box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4);
-    &:hover {
-      box-shadow: 0 6px 20px rgba(255, 71, 87, 0.5);
-    }
-  }
-}
-@media (max-width: 600px) {
-  // 1. SỬA CONTAINER NGOÀI CÙNG (:host)
-  :host {
-    display: flex; // [QUAN TRỌNG] Chuyển thành Flexbox
-    flex-direction: column;
-    min-height: 100vh; // [QUAN TRỌNG] Chiều cao bằng 100% màn hình
-    padding: 15px; // Padding xung quanh để không dính sát mép
-    box-sizing: border-box;
-  }
-
-  .app-container {
-    width: 100%;
-    max-width: 100%;
-    margin: 0;
-    padding-bottom: env(safe-area-inset-bottom);
-
-    // [QUAN TRỌNG] Biến app-container thành flex container
-    display: flex;
-    flex-direction: column;
-    flex: 1; // Chiếm hết không gian còn lại của :host
-  }
-
-  // 2. CĂN GIỮA CARD LOGIN (SCREEN HOME)
-  .screen-home {
-    // [QUAN TRỌNG] "margin: auto" trong Flexbox sẽ tự động đẩy phần tử vào CHÍNH GIỮA (dọc + ngang)
-    margin: auto;
-
-    width: 100%;
-    padding: 30px 20px;
-    box-sizing: border-box;
-
-    h1 {
-      font-size: 24px;
-    }
-
-    .input-group input {
-      font-size: 16px;
-    }
-
-    .row-btn {
-      flex-direction: column;
-      gap: 12px;
-      button {
-        width: 100%;
-      }
-    }
-  }
-
-  // 3. MÀN HÌNH GAME (GIỮ NGUYÊN TỪ TRÊN XUỐNG)
-  // Để khi danh sách dài thì vẫn cuộn được bình thường, không bị ép vào giữa
-  .screen-main {
-    margin-top: 20px;
-    margin-bottom: 20px;
-
-    // --- HEADER ---
-    .main-header {
-      flex-direction: column; // Xếp dọc
-      align-items: center;
-      margin-bottom: 20px;
-      min-height: auto;
-      gap: 15px;
-
-      .room-info-group {
-        text-align: center;
-        width: 100%;
-
-        .label {
-          font-size: 11px;
-        }
-
-        .code-wrapper {
-          justify-content: center;
-          gap: 10px;
-          flex-wrap: wrap; // Cho phép xuống dòng nếu cần
-
-          .room-id {
-            font-size: 40px; // Giảm từ 48px xuống 40px
-            line-height: 1.2;
-          }
-
-          // Nút copy/QR nhỏ lại chút
-          .btn-copy,
-          .qr-btn {
-            width: 32px;
-            height: 32px;
-            padding: 0;
-          }
-        }
-      }
-
-      // Thẻ Host nằm giữa
-      .host-pill-card {
-        width: fit-content;
-        max-width: 90%; // Không cho quá rộng
-        padding: 6px 15px 6px 6px;
-
-        .info {
-          .host-name {
-            font-size: 13px;
-            // Cắt tên nếu quá dài
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 150px;
-          }
-        }
-      }
-
-      // Header khi Vote/Thảo luận
-      .vote-header,
-      .playing-header {
-        h2 {
-          font-size: 24px;
-        }
-        .timer-pill {
-          font-size: 14px;
-          padding: 4px 12px;
-        }
-      }
-    }
-
-    // --- GRID PLAYER (Như đã sửa trước đó) ---
-    .player-grid {
-      gap: 8px;
-
-      .player-card {
-        border-radius: 12px;
-        .avatar-box {
-          width: 40px;
-          height: 40px;
-          border-radius: 12px;
-          font-size: 14px;
-        }
-        .p-name {
-          font-size: 11px;
-          padding: 0 2px;
-        }
-        .me-badge {
-          font-size: 8px;
-          padding: 2px 4px;
-        }
-      }
-    }
-
-    // --- FOOTER (QUAN TRỌNG NHẤT - SỬA LỖI BREAK LAYOUT) ---
-    .footer-actions {
-      display: flex;
-      flex-direction: column-reverse; // Đảo ngược: Nút Start lên trên, Cài đặt xuống dưới
-      gap: 15px;
-      width: 100%;
-      padding-top: 10px;
-
-      // Xử lý các nhóm nút con
-      .left-group,
-      .right-group,
-      .center-group {
-        width: 100%;
-        display: flex;
-        flex-direction: column; // Các nút con cũng xếp dọc luôn
-        gap: 10px;
-        align-items: stretch; // Kéo giãn full chiều ngang
-      }
-
-      // Cấu hình chung cho tất cả nút ở Footer Mobile
-      button {
-        width: 100% !important; // Bắt buộc full width
-        justify-content: center;
-        padding: 14px;
-        margin: 0;
-      }
-
-      // Chỉnh lại text gợi ý (Sẵn sàng để bắt đầu...)
-      .start-hint {
-        text-align: center;
-        align-items: center;
-        margin-bottom: 5px;
-      }
-
-      // Ẩn bớt text trong nút nếu cần, hoặc chỉnh font nhỏ lại
-      .btn-white,
-      .btn-exit {
-        font-size: 14px;
-      }
-    }
-  }
-
-  // 4. MODAL
-  .modal-content {
-    width: 85% !important; // Tránh dính sát lề
-    padding: 20px !important;
-    max-height: 80vh;
-    overflow-y: auto; // Cho phép cuộn nếu modal dài
-  }
-}
-.btn-power-exit {
-  position: fixed;
-  top: 15px;
-  right: 15px;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: #ff4757; // Màu đỏ
-  color: white;
-  border: 2px solid white;
-  box-shadow: 0 4px 10px rgba(255, 71, 87, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 900; // Cao hơn nội dung nhưng thấp hơn Modal
-  transition: transform 0.2s;
-
-  .icon {
-    font-size: 18px;
-    font-weight: bold;
-  }
-
-  &:hover {
-    transform: scale(1.1);
-    background: #ff6b81;
-  }
-
-  &:active {
-    transform: scale(0.9);
+    background: $danger;
+    color: white;
   }
 }
 
-// [NEW] STYLE CHO MODAL CONFIRM
+// F. Confirm Modal
 .confirm-modal {
-  max-width: 320px !important;
-
   .icon-warning.red {
     font-size: 40px;
     margin-bottom: 10px;
   }
-
   h3 {
-    color: #ff4757;
-    margin-bottom: 10px;
+    color: $danger;
   }
-
-  .confirm-msg {
-    font-size: 14px;
-    color: #636e72;
-    line-height: 1.5;
-    margin-bottom: 25px;
-  }
-
   .modal-actions {
     display: flex;
     gap: 10px;
-
-    button {
-      flex: 1;
-    }
-
     .danger-btn {
-      background: linear-gradient(135deg, #ff6b81 0%, #ff4757 100%);
-      box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4);
-
-      &:hover {
-        box-shadow: 0 6px 20px rgba(255, 71, 87, 0.5);
-      }
+      background: $danger;
+      color: white;
     }
   }
 }
 
-// Tinh chỉnh lại vị trí nút Power trên Mobile (tránh bị cấn tai thỏ/status bar)
-@media (max-width: 600px) {
-  .btn-power-exit {
-    top: 10px;
-    right: 10px;
-    width: 36px;
-    height: 36px;
-    .icon {
-      font-size: 16px;
-    }
-  }
-}
+// G. Toast
 .toast-connection {
   position: fixed;
-  top: 20px; // Hiển thị ở trên cùng
+  top: 20px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 2000; // Cao hơn cả Modal
-
+  z-index: 2000;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -1886,13 +1417,10 @@ input.input-error {
   font-weight: 600;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
   animation: slideDown 0.3s ease-out;
-
-  // Trạng thái đang kết nối (Vàng/Cam)
   &.warning {
     background: #fff3cd;
     color: #856404;
     border: 1px solid #ffeeba;
-
     .spinner {
       width: 16px;
       height: 16px;
@@ -1902,8 +1430,6 @@ input.input-error {
       animation: spin 1s linear infinite;
     }
   }
-
-  // Trạng thái thành công (Xanh)
   &.success {
     background: #d4edda;
     color: #155724;
@@ -1911,23 +1437,127 @@ input.input-error {
   }
 }
 
-// Animation
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
+// ============================================
+// 4. MOBILE RESPONSIVE
+// ============================================
+@media (max-width: 600px) {
+  .screen-home-modern {
+    padding: 15px;
+    .login-card {
+      padding: 30px 20px;
+    }
   }
-  100% {
-    transform: rotate(360deg);
-  }
-}
+  .screen-lobby {
+    .lobby-nav {
+      padding: 12px 16px;
+      .nav-left .logo-text {
+        display: none;
+      }
+      .nav-right .user-pill {
+        padding: 4px;
+        .u-name {
+          display: none;
+        }
+      }
+    }
+    .lobby-main {
+      padding: 16px;
+      .room-code-section {
+        margin-bottom: 20px;
+        .section-label {
+          text-align: left;
+          margin-left: 8px;
+        }
+        .room-card {
+          border-radius: 20px;
+          .room-content {
+            padding: 16px;
+            justify-content: space-between;
+            .room-number {
+              font-size: 36px;
+            }
+            .room-actions .btn-icon-soft {
+              width: 40px;
+              height: 40px;
+            }
+          }
+        }
+      }
+      .grid-section .lobby-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 8px;
+        .lobby-card {
+          height: 110px;
+          border-radius: 16px;
+          .avatar-wrapper {
+            width: 42px;
+            height: 42px;
+            margin-bottom: 4px;
+            .status-dot {
+              width: 14px;
+              height: 14px;
+            }
+          }
+          .player-info {
+            .p-name {
+              font-size: 11px;
+              margin-bottom: 2px;
+            }
+            .status-pill {
+              font-size: 8px;
+              padding: 2px 6px;
+            }
+          }
+          &.empty {
+            .avatar-placeholder {
+              width: 36px;
+              height: 36px;
+              span {
+                font-size: 20px;
+              }
+            }
+            .empty-text {
+              font-size: 9px;
+            }
+          }
+        }
+      }
+    }
 
-@keyframes slideDown {
-  from {
-    transform: translate(-50%, -20px);
-    opacity: 0;
-  }
-  to {
-    transform: translate(-50%, 0);
-    opacity: 1;
+    // [FIX] Cập nhật lại phần Footer Mobile
+    .lobby-footer {
+      padding: 12px 16px;
+
+      // Giữ padding an toàn cho iPhone
+      padding-bottom: calc(20px + env(safe-area-inset-bottom));
+
+      // [FIX] Vì dùng left:0, right:0 ở trên nên ở đây không cần set width 100% nữa
+      // Nếu muốn chắc chắn:
+      width: auto;
+
+      .footer-content {
+        padding: 0;
+        gap: 10px;
+        justify-content: flex-start;
+        .footer-left {
+          gap: 8px;
+          flex-shrink: 0;
+          .btn-round-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+          }
+        }
+        .footer-right {
+          width: 100%;
+          .btn-start-pill {
+            width: 100%;
+            justify-content: center;
+            height: 48px;
+            font-size: 16px;
+          }
+        }
+      }
+    }
   }
 }
