@@ -135,7 +135,7 @@ export class GameComponent {
       }
       const DURATION_SEC = this.room()?.config?.voteDuration || 30;
       const DURATION_MS = DURATION_SEC * 1000;
-
+      
       const tick = () => {
         if (!g.voteStartedAt) {
           return;
@@ -205,9 +205,9 @@ export class GameComponent {
     this.route.queryParams.subscribe((params) => {
       const roomFromUrl = params['room'];
 
-      if (roomFromUrl) {
-        this.joinRoomInput.set(roomFromUrl);
-
+      if (roomFromUrl) { 
+        this.joinRoomInput.set(roomFromUrl); 
+        this.qrCodeUrl.set(null); 
         this.viewMode.set('join_input');
       }
     });
@@ -335,6 +335,7 @@ export class GameComponent {
     localStorage.setItem('spy_username', this.playerName());
     const id = this.generateRoomId();
     this.roomId.set(id);
+    this.qrCodeUrl.set(null);
     const pair = wordData[Math.floor(Math.random() * wordData.length)];
     await this.game.createRoom(
       id,
@@ -469,19 +470,20 @@ export class GameComponent {
     this.resetLocalState();
   }
   private resetLocalState() {
-    // Ngắt kết nối Firebase listener
     if (this.unsubRoom) {
       this.unsubRoom();
       this.unsubRoom = null;
     }
 
-    // Reset các Signal
     this.joined.set(false);
     this.roomId.set(null);
     this.room.set(null);
-    this.joinRoomInput.set('');
+    
+    // [FIX] Reset sạch Input và QR Code
+    this.joinRoomInput.set(''); 
+    this.qrCodeUrl.set(null); 
 
-    // Reset các modal/trạng thái game
+    // Reset các modal...
     this.showResultModal.set(false);
     this.showDrawModal.set(false);
     this.showSettingsModal.set(false);
@@ -491,7 +493,7 @@ export class GameComponent {
     this.voteCountdown.set(0);
     this.isWordVisible.set(false);
     this.isReviewingKeyword.set(false);
-    // Quay về màn hình Home
+    
     this.viewMode.set('home');
   }
   selectForVote(id: string) {
