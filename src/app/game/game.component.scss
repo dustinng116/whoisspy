@@ -27,7 +27,7 @@ $font-family-base: "Be Vietnam Pro";
 
   overflow: hidden;
   background-color: $bg-light;
-  font-family: $font-family-base;
+  font-family: $font-family-base !important;
   color: $slate-800;
 
   // [FIX QUAN TRỌNG] Áp dụng box-sizing cho tất cả phần tử con
