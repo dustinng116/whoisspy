@@ -27,13 +27,14 @@ export class GameService {
     hostName: string,
     wordPair: any,
     voteDuration: number = 15,
-    initialIndex: number
+    initialIndex: number,
+    maxPlayers: number = 12
   ) {
     const roomRef = ref(this.db, `rooms/${roomId}`);
 
     await set(roomRef, {
       hostId,
-      maxPlayers: 12,
+      maxPlayers,
       wordPair,
       usedIndices: [initialIndex],
       config: {
