@@ -33,7 +33,7 @@ export class GameService {
 
     await set(roomRef, {
       hostId,
-      maxPlayers: 8,
+      maxPlayers: 12,
       wordPair,
       usedIndices: [initialIndex],
       config: {
