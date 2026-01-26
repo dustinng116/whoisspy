@@ -357,7 +357,8 @@ export class GameComponent implements OnDestroy {
       this.playerName(),
       pair,
       this.selectedTime(),
-      initialIndex
+      initialIndex,
+      this.MAX_PLAYERS
     );
     this.joined.set(true);
     this.listen();
